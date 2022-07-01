@@ -1,23 +1,27 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import NavigationBar from './components/NavigationBar';
+import Button from '@mui/material/Button';
+import { Route, Routes, useNavigate } from "react-router-dom";
+import AllRecepis from './pages/AllRecipes';
+import MyRecepis from './pages/MyRecipes';
 
 function App() {
+  const navigate = useNavigate()
+
+  const navigateToHome = () => {
+    navigate('/all-recipes', { replace: true });
+  };
+
   return (
     <div className="App">
+      <NavigationBar></NavigationBar>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Recipes
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <Routes>
+        <Route path='/all-recipes' element={<AllRecepis />} />
+        <Route path='/my-recipes' element={<MyRecepis />} />
+      </Routes>
       </header>
     </div>
   );
