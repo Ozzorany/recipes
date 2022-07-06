@@ -40,7 +40,7 @@ export default function RecipeReviewCard({ recipe }: any) {
   };
 
   return (
-    <Card sx={{ width: '85%' }}>
+    <Card sx={{width: '100%'}}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -62,62 +62,67 @@ export default function RecipeReviewCard({ recipe }: any) {
         alt={recipe.description}
       />
 
-<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {recipe.ingredients?.map((value: any) => {
-        const labelId = `checkbox-list-label-${value}`;
+      { !!recipe.ingredients.length &&
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          {recipe.ingredients?.map((value: any) => {
+            const labelId = `checkbox-list-label-${value}`;
 
-        return (
-          <ListItem
-            key={value}
-            disablePadding
-          >
-            <ListItemButton role={undefined} dense>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
-                />
-              </ListItemIcon>
-              <ListItemText style={{textAlign: 'right'}} id={labelId} primary={`${value}`} />
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
-    </List>
+            return (
+              <ListItem
+                key={value}
+                disablePadding
+              >
+                <ListItemButton role={undefined} dense>
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText style={{ textAlign: 'right' }} id={labelId} primary={`${value}`} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      }
 
-        <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          {
-            recipe.tags.map((tag: any) => {
-              return (
-                <Stack direction="row" spacing={1}>
-                  <Chip label={tag} />
-                </Stack>
-              )
-        })}
-          
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography paragraph>:אופן ההכנה</Typography>
-            <Typography paragraph>
-              {recipe.method}
-            </Typography>
-          </CardContent>
-        </Collapse>
-      </Card>
+
+      <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton>
+        {
+          recipe.tags.map((tag: any) => {
+            return (
+              <Stack direction="row"
+                key={tag}
+                spacing={1}>
+                <Chip label={tag} />
+              </Stack>
+            )
+          })}
+
+        <ExpandMore
+          expand={expanded}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </ExpandMore>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography paragraph>:אופן ההכנה</Typography>
+          <Typography paragraph>
+           {recipe.method}
+          </Typography>
+        </CardContent>
+      </Collapse>
+    </Card>
 
   );
 }
