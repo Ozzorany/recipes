@@ -63,7 +63,7 @@ export default function RecipeReviewCard({ recipe }: any) {
       />
 
       { !!recipe.ingredients.length &&
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
           {recipe.ingredients?.map((value: any) => {
             const labelId = `checkbox-list-label-${value}`;
 
