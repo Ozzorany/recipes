@@ -43,6 +43,11 @@ const NavigationBar = () => {
     handleCloseNavMenu();
   };
 
+  const navigateToCreateRecipe = () => {
+    navigate('/create-recipe', { replace: true });
+    handleCloseNavMenu();
+  };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -137,6 +142,12 @@ const NavigationBar = () => {
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               My Recepis
+            </Button>
+            <Button
+              onClick={navigateToCreateRecipe}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Create Recipe
             </Button>
           </Box>
 
