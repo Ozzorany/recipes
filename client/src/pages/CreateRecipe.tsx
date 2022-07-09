@@ -1,24 +1,26 @@
-import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import TextField from "@mui/material/TextField";
 import { useRef, useState } from "react";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
-import styles from './CreateRecipe.module.css'
+import { Recipe } from "../models/recipe.model";
+import styles from './CreateRecipe.module.css';
 
-function CreateRecipe() {
+function CreateRecipe({submitRecipe}: {submitRecipe : (recipe: Recipe) => {}}) {
     const [ingredients, setIngredients] = useState<string[]>([])
-    const ref = useRef<any>();
+    const ingredientRef = useRef<any>();
 
     const confirmHandler = (event: any) => {
         event.preventDefault();
+        const newRecipe: Recipe = { id: '1', description: 'das', ingredients: ingredients, method: 'coock well', tags: ['איטלקי'] };
+        console.log(newRecipe);
+        submitRecipe(newRecipe);
+        
+
     };
 
     const addIngredient = () => {
-        if (!!ref.current && ref.current.value.trim() !== '') {
-            setIngredients(currentIngredients => [...currentIngredients, ref.current.value]);
-            ref.current.value = '';
+        if (!!ingredientRef.current && ingredientRef.current.value.trim() !== '') {
+            setIngredients(currentIngredients => [...currentIngredients, ingredientRef.current.value]);
+            ingredientRef.current.value = '';
         }
     };
 
@@ -31,7 +33,7 @@ function CreateRecipe() {
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
                 <div>
-                    <input type='text' id='street' autoComplete="off" ref={ref} />
+                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} />
                     <button onClick={addIngredient}>הוספה</button>
                 </div>
             </div>

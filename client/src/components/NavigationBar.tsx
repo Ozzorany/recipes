@@ -104,11 +104,15 @@ const NavigationBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              <MenuItem onClick={navigateToAllRecepis}>
+                  <Typography textAlign="center">כל המתכונים</Typography>
                 </MenuItem>
-              ))}
+                <MenuItem onClick={navigateToMyRecepis}>
+                  <Typography textAlign="center">המתכונים שלי</Typography>
+                </MenuItem>      
+                <MenuItem onClick={navigateToCreateRecipe}>
+                  <Typography textAlign="center">יצירת מתכון</Typography>
+                </MenuItem>               
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -135,19 +139,19 @@ const NavigationBar = () => {
               onClick={navigateToAllRecepis}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
-              All Recepis
+              כל המתכונים
             </Button>
             <Button
               onClick={navigateToMyRecepis}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
-              My Recepis
+              המתכונים שלי
             </Button>
             <Button
               onClick={navigateToCreateRecipe}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
-              Create Recipe
+              יצירת מתכון
             </Button>
           </Box>
 

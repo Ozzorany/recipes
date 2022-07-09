@@ -43,6 +43,12 @@ async function updateRecipe(recipe) {
     return recipe;
 }
 
+async function createRecipe(recipe) {
+    recipes.push(recipe);
+
+    return recipe;
+}
+
 async function deleteRecipe(recipeId) {
     const index = recipes.findIndex(currentRecipe => currentRecipe.id === recipeId);
     recipes.splice(index, 1);
@@ -52,5 +58,6 @@ async function deleteRecipe(recipeId) {
 module.exports = {
     fetchRecipes,
     updateRecipe,
-    deleteRecipe
+    deleteRecipe,
+    createRecipe
 };
