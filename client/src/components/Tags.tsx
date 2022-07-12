@@ -26,17 +26,14 @@ const names = [
   'בשרי'
 ];
 
-function Tags() {
-    const [personName, setPersonName] = useState<string[]>([]);
+function Tags({ submitTagsChange }: { submitTagsChange: (tags: string[]) => void }) {
+    const [tags, setTags] = useState<string[]>([]);
 
-    const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-      const {
-        target: { value },
-      } = event;
-      setPersonName(
-        // On autofill we get a stringified value.
-        typeof value === 'string' ? value.split(',') : value,
-      );
+    const handleChange = (event: SelectChangeEvent<typeof tags>) => {
+      const {target: { value }} = event;
+      const newTags: string[] = typeof value === 'string' ? value.split(',') : value;
+      setTags(newTags);
+      submitTagsChange(newTags);
     };
     
     return (
@@ -48,7 +45,7 @@ function Tags() {
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
-              value={personName}
+              value={tags}
               onChange={handleChange}
               input={<OutlinedInput label="Tag" />}
               renderValue={(selected) => selected.join(', ')}
@@ -56,7 +53,7 @@ function Tags() {
             >
               {names.map((name) => (
                 <MenuItem key={name} value={name}>
-                  <Checkbox checked={personName.indexOf(name) > -1} />
+                  <Checkbox checked={tags.indexOf(name) > -1} />
                   <ListItemText primary={name} />
                 </MenuItem>
               ))}
