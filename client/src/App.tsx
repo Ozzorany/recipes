@@ -1,13 +1,15 @@
+import { CacheProvider } from '@emotion/react';
+import CssBaseline from '@mui/material/CssBaseline';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import { Route, Routes, useNavigate } from "react-router-dom";
 import './App.css';
 import NavigationBar from './components/NavigationBar';
-import { Route, Routes, useNavigate } from "react-router-dom";
-import AllRecepis from './pages/AllRecipes';
-import MyRecepis from './pages/MyRecipes';
-import CreateRecipe from './pages/CreateRecipe';
 import useRecipes from './hooks/useRecipes';
-import theme from './settings';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
-import CssBaseline from '@mui/material/CssBaseline';
+import AllRecepis from './pages/AllRecipes';
+import CreateRecipe from './pages/CreateRecipe';
+import MyRecepis from './pages/MyRecipes';
+import {cacheRtl, theme} from './settings';
+
 
 
 function App() {
@@ -20,17 +22,19 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={theme}>
-       <CssBaseline />
-      <div className="App">
-        <NavigationBar></NavigationBar>
-        <Routes>
-          <Route path='/all-recipes' element={<AllRecepis recipes={recipes} />} />
-          <Route path='/my-recipes' element={<MyRecepis />} />
-          <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe} />} />
-        </Routes>
-      </div>
-    </ThemeProvider>
+    <CacheProvider value={cacheRtl}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className="App">
+          <NavigationBar></NavigationBar>
+          <Routes>
+            <Route path='/all-recipes' element={<AllRecepis recipes={recipes} />} />
+            <Route path='/my-recipes' element={<MyRecepis />} />
+            <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe} />} />
+          </Routes>
+        </div>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 

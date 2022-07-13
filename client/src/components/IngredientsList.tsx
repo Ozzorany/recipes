@@ -23,10 +23,10 @@ function IngredientsList({ ingredients }: { ingredients: string[] }) {
                                     return (
                                         <div key={ingredient}>
                                             <ListItem>
-                                                <ListItemText sx={{ color: 'black', textAlign: 'right' }}
+                                                <ListItemText sx={{ color: 'black' }}
                                                     primary={ingredient}
                                                 />
-                                                <ListItemIcon sx={{ textAlign: 'left' }}>
+                                                <ListItemIcon>
                                                     <MenuBookTwoToneIcon />
                                                 </ListItemIcon>
                                             </ListItem>
