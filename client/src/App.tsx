@@ -5,6 +5,10 @@ import AllRecepis from './pages/AllRecipes';
 import MyRecepis from './pages/MyRecipes';
 import CreateRecipe from './pages/CreateRecipe';
 import useRecipes from './hooks/useRecipes';
+import theme from './settings';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import CssBaseline from '@mui/material/CssBaseline';
+
 
 function App() {
   const navigate = useNavigate()
@@ -16,16 +20,17 @@ function App() {
 
 
   return (
-    <div className="App">
-      <NavigationBar></NavigationBar>
-      <header className="App-header">
+    <ThemeProvider theme={theme}>
+       <CssBaseline />
+      <div className="App">
+        <NavigationBar></NavigationBar>
         <Routes>
-          <Route path='/all-recipes' element={<AllRecepis recipes={recipes}/>} />
+          <Route path='/all-recipes' element={<AllRecepis recipes={recipes} />} />
           <Route path='/my-recipes' element={<MyRecepis />} />
-          <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe}/>} />
+          <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe} />} />
         </Routes>
-      </header>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

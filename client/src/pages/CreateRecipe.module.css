@@ -1,7 +1,7 @@
 .form {
     margin: 1rem 0;
-    height: 60rem;
     overflow: auto;
+    color: white;
   }
   
   .control {
@@ -50,23 +50,14 @@
   
   .actions .submit {
     margin-top: 2rem;
-    border: 1px solid #5a1a01;
-    background-color: #5a1a01;
+    border: 1px solid #3d74eb;
+    background-color: #3d74eb;
     color: white;
   }
   
   .actions .submit:hover,
   .actions .submit:active {
-    background-color: #7a2706;
-  }
-  
-  .invalid label {
-    color: #ca3e51;
-  }
-  
-  .invalid input {
-    border-color: #aa0b20;
-    background-color: #ffeff1;
+    background-color: #5b88e9;
   }
 
 

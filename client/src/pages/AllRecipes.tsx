@@ -8,7 +8,7 @@ function AllRecepis({recipes}: {recipes: Recipe[]}) {
 
   return (
     <div className={styles.container}>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1,  height: '20%' }}>
         <Grid container
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}>

@@ -1,4 +1,6 @@
+import Button from "@mui/material/Button";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
 import { Recipe } from "../models/recipe.model";
@@ -10,6 +12,8 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
     const ingredientRef = useRef<any>();
     const methodRef = useRef<any>();
     const descriptionRef = useRef<any>();
+    const navigate = useNavigate()
+
 
     const confirmHandler = (event: any) => {
         event.preventDefault();
@@ -23,6 +27,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
         };
 
         submitRecipe(newRecipe);
+        navigate('/all-recipes', { replace: true });
     };
 
     const handleTagsChange = (tags: string[]) => {
@@ -39,6 +44,12 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
         ingredientRef.current.value = '';
     }
 
+    const resetForm = (): void => {
+        reseIngredientsRef();
+        methodRef.current.value = '';
+        descriptionRef.current.value = '';
+    }
+
     useEffect(() => {
         reseIngredientsRef();
     }, [ingredients]);
@@ -52,8 +63,8 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
                 <div>
-                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} />
-                    <button type="button" onClick={addIngredient}>הוספה</button>
+                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{height: '2.2rem'}}/>
+                    <Button variant="contained" onClick={addIngredient}>הוספה</Button>
                 </div>
             </div>
             {
