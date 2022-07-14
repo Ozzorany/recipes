@@ -6,6 +6,7 @@
   
   .control {
     margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
   }
 
   .ingredients {
@@ -63,6 +64,7 @@
 
   textarea {
     text-align: right;
-    width: 32vw !important;
+    width: 100% !important;
     height: 20vh !important;
+    max-width: 100%;
   }

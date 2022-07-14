@@ -26,8 +26,8 @@ function IngredientsList({ ingredients }: { ingredients: string[] }) {
                                                 <ListItemText sx={{ color: 'black' }}
                                                     primary={ingredient}
                                                 />
-                                                <ListItemIcon>
-                                                    <MenuBookTwoToneIcon />
+                                                <ListItemIcon style={{direction: 'ltr'}}>
+                                                    <MenuBookTwoToneIcon/>
                                                 </ListItemIcon>
                                             </ListItem>
                                         </div>

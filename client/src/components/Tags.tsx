@@ -54,7 +54,7 @@ function Tags({ submitTagsChange }: { submitTagsChange: (tags: string[]) => void
               {names.map((name) => (
                 <MenuItem key={name} value={name}>
                   <Checkbox checked={tags.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
+                  <ListItemText primary={name} sx={{textAlign: 'left'}} />
                 </MenuItem>
               ))}
             </Select>
