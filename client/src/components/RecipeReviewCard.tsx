@@ -115,7 +115,7 @@ export default function RecipeReviewCard({ recipe }: any) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>:אופן ההכנה</Typography>
-          <Typography paragraph>
+          <Typography paragraph sx={{wordWrap: 'break-word'}}>
            {recipe.method}
           </Typography>
         </CardContent>
