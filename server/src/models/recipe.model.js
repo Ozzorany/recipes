@@ -28,7 +28,7 @@ let recipes =
             description: 'פנקייק',
             tags: ['אמריקאי'],
             method: 'לשים את הבלילה על המחבת ולהוציא',
-            ingredients: []
+            ingredients: ['כף שמן 0.5', 'גרם בלילה 50','גרם של אהבה']
 
         }
     ]

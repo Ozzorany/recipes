@@ -74,10 +74,10 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
                 </div>
             }
 
-            <div className={styles.control}>
+            <div className={styles.control} style={{paddingLeft: '1rem', paddingRight: '1rem'}}>
                 <label htmlFor='method'>אופן הכנה</label>
                 <textarea id='method'
-                    style={{ width: '30vw', height: '20vh' }}
+                    style={{ width: '30vw', height: '20vh'}}
                     ref={methodRef}
                 >
                 </textarea>
