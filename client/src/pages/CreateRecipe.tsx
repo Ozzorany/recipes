@@ -88,7 +88,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             </div>
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
-                <div>
+                <div className="d-flex justify-content-center">
                     <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{ height: '2.2rem' }} />
                     <Button variant="contained" onClick={addIngredient}>הוספה</Button>
                 </div>
