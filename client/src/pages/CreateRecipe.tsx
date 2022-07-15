@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
+import UploadImages from "../components/UploadImages";
 import { Recipe } from "../models/recipe.model";
 import styles from './CreateRecipe.module.css';
 
@@ -11,11 +12,11 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
     const [tags, setTags] = useState<string[]>([]);
     const [recipeDescriptionValid, setRecipeDescriptionValid] = useState<boolean>(true);
     const [methodValid, setMethodValid] = useState<boolean>(true);
+    const [selectedImage, setSelectedImage] = useState<any>();
     const ingredientRef = useRef<any>();
     const methodRef = useRef<any>();
     const descriptionRef = useRef<any>();
     const navigate = useNavigate()
-
 
     const confirmHandler = (event: any) => {
         event.preventDefault();
@@ -26,23 +27,25 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             description: descriptionRef.current.value,
             ingredients: ingredients,
             method: methodRef.current.value,
-            tags: tags
+            tags: tags,
+            image: selectedImage
         };
+        
 
-        if(methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
-        submitRecipe(newRecipe);
-        navigate('/all-recipes', { replace: true });
+        if (methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
+            submitRecipe(newRecipe);
+            navigate('/all-recipes', { replace: true });
         }
     };
 
     const setErrorValidations = () => {
-        if(descriptionRef.current.value.trim() === '') {
+        if (descriptionRef.current.value.trim() === '') {
             setRecipeDescriptionValid(false);
         } else {
             setRecipeDescriptionValid(true);
         }
 
-        if(methodRef.current.value.trim() === '') {
+        if (methodRef.current.value.trim() === '') {
             setMethodValid(false);
         } else {
             setRecipeDescriptionValid(true);
@@ -69,6 +72,10 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
         descriptionRef.current.value = '';
     }
 
+    const handleSelectImage = (imageValue: any) => {
+        setSelectedImage(imageValue);
+    }
+
     useEffect(() => {
         reseIngredientsRef();
     }, [ingredients]);
@@ -83,7 +90,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
                 <div>
-                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{height: '2.2rem'}}/>
+                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{ height: '2.2rem' }} />
                     <Button variant="contained" onClick={addIngredient}>הוספה</Button>
                 </div>
             </div>
@@ -94,18 +101,23 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
                 </div>
             }
 
-            <div className={styles.control} style={{paddingLeft: '1rem', paddingRight: '1rem'}}>
+            <div className={styles.control} style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
                 <label htmlFor='method'>אופן הכנה</label>
                 <textarea id='method'
-                    style={{ width: '30vw', height: '20vh'}}
+                    style={{ width: '30vw', height: '20vh' }}
                     ref={methodRef}
                 >
                 </textarea>
                 {!methodValid && <p className={styles.errorValidation}>יש להזין אופן הכנה</p>}
             </div>
             <div className={styles.control}>
-                <Tags submitTagsChange={handleTagsChange}/>
+                <Tags submitTagsChange={handleTagsChange} />
             </div>
+            
+            <div>
+                <UploadImages onSelectedImage={handleSelectImage}/>
+            </div>
+
             <div className={styles.actions}>
                 <button type="submit" className={styles.submit}>יצירת מתכון</button>
             </div>
