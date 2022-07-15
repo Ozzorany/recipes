@@ -71,3 +71,7 @@
     height: 20vh !important;
     max-width: 100%;
   }
+
+  .errorValidation {
+    color: #dc4747;
+  }

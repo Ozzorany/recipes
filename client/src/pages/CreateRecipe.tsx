@@ -7,8 +7,10 @@ import { Recipe } from "../models/recipe.model";
 import styles from './CreateRecipe.module.css';
 
 function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }) {
-    const [ingredients, setIngredients] = useState<string[]>([])
-    const [tags, setTags] = useState<string[]>([])
+    const [ingredients, setIngredients] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [recipeDescriptionValid, setRecipeDescriptionValid] = useState<boolean>(true);
+    const [methodValid, setMethodValid] = useState<boolean>(true);
     const ingredientRef = useRef<any>();
     const methodRef = useRef<any>();
     const descriptionRef = useRef<any>();
@@ -17,6 +19,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
 
     const confirmHandler = (event: any) => {
         event.preventDefault();
+        setErrorValidations();
 
         const newRecipe: Recipe = {
             id: '1',
@@ -26,9 +29,25 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             tags: tags
         };
 
+        if(methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
         submitRecipe(newRecipe);
         navigate('/all-recipes', { replace: true });
+        }
     };
+
+    const setErrorValidations = () => {
+        if(descriptionRef.current.value.trim() === '') {
+            setRecipeDescriptionValid(false);
+        } else {
+            setRecipeDescriptionValid(true);
+        }
+
+        if(methodRef.current.value.trim() === '') {
+            setMethodValid(false);
+        } else {
+            setRecipeDescriptionValid(true);
+        }
+    }
 
     const handleTagsChange = (tags: string[]) => {
         setTags(() => tags);
@@ -59,6 +78,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             <div className={styles.control}>
                 <label htmlFor='name'>שם מתכון</label>
                 <input type='text' id='name' ref={descriptionRef} autoComplete="off" />
+                {!recipeDescriptionValid && <p className={styles.errorValidation}>יש להזין שם מתכון</p>}
             </div>
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
@@ -81,12 +101,13 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
                     ref={methodRef}
                 >
                 </textarea>
+                {!methodValid && <p className={styles.errorValidation}>יש להזין אופן הכנה</p>}
             </div>
             <div className={styles.control}>
                 <Tags submitTagsChange={handleTagsChange}/>
             </div>
             <div className={styles.actions}>
-                <button className={styles.submit}>יצירת מתכון</button>
+                <button type="submit" className={styles.submit}>יצירת מתכון</button>
             </div>
         </form>
     );
