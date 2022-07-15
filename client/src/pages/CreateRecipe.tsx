@@ -30,7 +30,6 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             tags: tags,
             image: selectedImage
         };
-        
 
         if (methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
             submitRecipe(newRecipe);
@@ -113,9 +112,9 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             <div className={styles.control}>
                 <Tags submitTagsChange={handleTagsChange} />
             </div>
-            
+
             <div>
-                <UploadImages onSelectedImage={handleSelectImage}/>
+                <UploadImages onSelectedImage={handleSelectImage} />
             </div>
 
             <div className={styles.actions}>

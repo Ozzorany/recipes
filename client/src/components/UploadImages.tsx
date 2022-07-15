@@ -1,12 +1,11 @@
+import Button from "@mui/material/Button";
 import { useState } from "react";
 
 function UploadImages({ onSelectedImage }: { onSelectedImage: (image: any) => void }) {
     const [selectedImage, setSelectedImage] = useState<any>();
 
     const handleImageUpload = (event: any) => {
-        setSelectedImage(event.target!.files[0]!);
-        console.log(event.target!.files[0]!);
-        
+        setSelectedImage(event.target!.files[0]!);        
         onSelectedImage(event.target!.files[0]!);
     }
 
@@ -16,7 +15,7 @@ function UploadImages({ onSelectedImage }: { onSelectedImage: (image: any) => vo
                 <div>
                     <img alt="not fount" width={"250px"} src={URL.createObjectURL(selectedImage)} />
                     <br />
-                    <button onClick={() => setSelectedImage(null)}>Remove</button>
+                    <Button variant="contained" onClick={() => setSelectedImage(null)}>Remove</Button>
                 </div>
             )}
             <br />
