@@ -14,7 +14,7 @@ import { cacheRtl, theme } from './settings';
 
 function App() {
   const navigate = useNavigate()
-  const { recipes, submitRecipe } = useRecipes();
+  const { submitRecipe } = useRecipes();
 
   const navigateToHome = () => {
     navigate('/all-recipes', { replace: true });
@@ -29,7 +29,7 @@ function App() {
           <NavigationBar></NavigationBar>
           <Routes>
             <Route path="/" element={<Navigate to="/all-recipes" />} />
-            <Route path='/all-recipes' element={<AllRecepis recipes={recipes} />} />
+            <Route path='/all-recipes' element={<AllRecepis />} />
             <Route path='/my-recipes' element={<MyRecepis />} />
             <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe} />} />
           </Routes>

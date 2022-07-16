@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import RecipeReviewCard from "../components/RecipeReviewCard";
-import { Recipe } from "../models/recipe.model";
+import useRecipes from "../hooks/useRecipes";
 import styles from './AllRecipes.module.css'; // Import css modules stylesheet as styles
 
-function AllRecepis({recipes}: {recipes: Recipe[]}) {
+function AllRecepis() {
+  const { recipes } = useRecipes();
 
   return (
     <div className={styles.container}>
