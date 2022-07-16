@@ -1,14 +1,14 @@
 import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import './App.css';
 import NavigationBar from './components/NavigationBar';
 import useRecipes from './hooks/useRecipes';
 import AllRecepis from './pages/AllRecipes';
 import CreateRecipe from './pages/CreateRecipe';
 import MyRecepis from './pages/MyRecipes';
-import {cacheRtl, theme} from './settings';
+import { cacheRtl, theme } from './settings';
 
 
 
@@ -28,6 +28,7 @@ function App() {
         <div className="App">
           <NavigationBar></NavigationBar>
           <Routes>
+            <Route path="/" element={<Navigate to="/all-recipes" />} />
             <Route path='/all-recipes' element={<AllRecepis recipes={recipes} />} />
             <Route path='/my-recipes' element={<MyRecepis />} />
             <Route path='/create-recipe' element={<CreateRecipe submitRecipe={submitRecipe} />} />

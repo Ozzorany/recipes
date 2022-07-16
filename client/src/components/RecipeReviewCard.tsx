@@ -1,7 +1,7 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Checkbox, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Checkbox, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Stack } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -61,6 +61,7 @@ export default function RecipeReviewCard({ recipe }: any) {
       />
 
       { !!recipe.ingredients.length &&
+      <Paper style={{maxHeight: 200, overflow: 'auto'}}>
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
           {recipe.ingredients?.map((value: any) => {
             const labelId = `checkbox-list-label-${value}`;
@@ -85,6 +86,7 @@ export default function RecipeReviewCard({ recipe }: any) {
             );
           })}
         </List>
+        </Paper>
       }
 
 
