@@ -1,7 +1,7 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Checkbox, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Stack } from '@mui/material';
+import { Checkbox, Chip, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -14,6 +14,8 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -46,9 +48,20 @@ export default function RecipeReviewCard({ recipe }: any) {
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <PopupState variant="popover" popupId="demo-popup-menu">
+            {(popupState) => (
+              <React.Fragment>
+                <IconButton aria-label="settings" {...bindTrigger(popupState)}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu {...bindMenu(popupState)}>
+                  <MenuItem onClick={popupState.close}>מחיקה</MenuItem>
+                  <MenuItem onClick={popupState.close}>עריכה</MenuItem>
+                </Menu>
+              </React.Fragment>
+            )}
+          </PopupState>
+          
         }
         title={recipe.description}
         subheader="September 14, 2016"
