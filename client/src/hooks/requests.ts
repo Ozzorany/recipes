@@ -18,7 +18,19 @@ async function httpSubmitRecipe(recipe: Recipe) {
   }
 }
 
+async function httpDeleteRecipe(id: string) {
+  try {
+    return await fetch(`http://localhost:8080/recipes/${id}`,
+      {
+        method: 'delete',
+      });
+  } catch {
+    return { ok: false };
+  }
+}
+
 export {
   httpGetAllRecipes,
-  httpSubmitRecipe
+  httpSubmitRecipe,
+  httpDeleteRecipe
 };

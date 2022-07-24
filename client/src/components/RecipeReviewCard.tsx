@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import useRecipes from '../hooks/useRecipes';
 
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -34,10 +35,16 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 export default function RecipeReviewCard({ recipe }: any) {
   const [expanded, setExpanded] = React.useState(false);
+  const { deleteRecipe } = useRecipes();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const handleDeleteRecipe = (popupState: any) => {
+    popupState.close();
+    deleteRecipe(recipe.id);
+  }
 
   return (
     <Card sx={{width: '100%'}}>
@@ -55,7 +62,7 @@ export default function RecipeReviewCard({ recipe }: any) {
                   <MoreVertIcon />
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>
-                  <MenuItem onClick={popupState.close}>מחיקה</MenuItem>
+                  <MenuItem onClick={() => handleDeleteRecipe(popupState)}>מחיקה</MenuItem>
                   <MenuItem onClick={popupState.close}>עריכה</MenuItem>
                 </Menu>
               </React.Fragment>
