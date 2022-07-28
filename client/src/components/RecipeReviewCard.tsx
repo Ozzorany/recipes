@@ -15,7 +15,8 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import useRecipes from '../hooks/useRecipes';
+import { useAppDispatch } from '../hooks/storeHooks';
+import { deleteRecipe } from '../state/recipesSlice';
 
 
 interface ExpandMoreProps extends IconButtonProps {
@@ -35,7 +36,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 export default function RecipeReviewCard({ recipe }: any) {
   const [expanded, setExpanded] = React.useState(false);
-  const { deleteRecipe } = useRecipes();
+  const dispatch = useAppDispatch();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -43,11 +44,11 @@ export default function RecipeReviewCard({ recipe }: any) {
 
   const handleDeleteRecipe = (popupState: any) => {
     popupState.close();
-    deleteRecipe(recipe.id);
+    dispatch(deleteRecipe(recipe.id));
   }
 
   return (
-    <Card sx={{width: '100%'}}>
+    <Card sx={{ width: '100%' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -68,7 +69,7 @@ export default function RecipeReviewCard({ recipe }: any) {
               </React.Fragment>
             )}
           </PopupState>
-          
+
         }
         title={recipe.description}
         subheader="September 14, 2016"
@@ -80,32 +81,32 @@ export default function RecipeReviewCard({ recipe }: any) {
         alt={recipe.description}
       />
 
-      { !!recipe.ingredients.length &&
-      <Paper style={{maxHeight: 200, overflow: 'auto'}}>
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-          {recipe.ingredients?.map((value: any) => {
-            const labelId = `checkbox-list-label-${value}`;
+      {!!recipe.ingredients.length &&
+        <Paper style={{ maxHeight: 200, overflow: 'auto' }}>
+          <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            {recipe.ingredients?.map((value: any) => {
+              const labelId = `checkbox-list-label-${value}`;
 
-            return (
-              <ListItem
-                key={value}
-                disablePadding
-              >
-                <ListItemButton role={undefined} dense>
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText style={{ textAlign: 'right' }} id={labelId} primary={`${value}`} />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
+              return (
+                <ListItem
+                  key={value}
+                  disablePadding
+                >
+                  <ListItemButton role={undefined} dense>
+                    <ListItemIcon>
+                      <Checkbox
+                        edge="start"
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText style={{ textAlign: 'right' }} id={labelId} primary={`${value}`} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
         </Paper>
       }
 
@@ -137,8 +138,8 @@ export default function RecipeReviewCard({ recipe }: any) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>:אופן ההכנה</Typography>
-          <Typography paragraph sx={{wordWrap: 'break-word'}}>
-           {recipe.method}
+          <Typography paragraph sx={{ wordWrap: 'break-word' }}>
+            {recipe.method}
           </Typography>
         </CardContent>
       </Collapse>
