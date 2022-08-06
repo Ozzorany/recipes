@@ -21,9 +21,9 @@ export const useRecipes = () => {
     }, [getRecipes]);
 
     const submitRecipe = useCallback(async (recipe: Recipe) => {
-        const response = await httpSubmitRecipe(recipe);
-        // TODO: Set success based on response.
-        const success = response.ok;
+        const response: Recipe = (await httpSubmitRecipe(recipe)).data;
+        
+        return response;        
     }, []);
 
 

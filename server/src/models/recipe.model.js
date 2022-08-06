@@ -9,19 +9,22 @@ async function fetchRecipes() {
 }
 
 async function updateRecipe(recipe) {
-  // const index = recipes.findIndex(currentRecipe => currentRecipe.id === recipe.id);
-  //recipes[index] = recipe;
+  const cityRef = firestore.collection(COLLECTION).doc(recipe.id);
+  const res = await cityRef.update(recipe);
+
   return recipe;
 }
 
 async function createRecipe(recipe) {
-  await firestore.collection(COLLECTION).doc().set(recipe);
+  const ref = await firestore.collection(COLLECTION);
+  const newId = ref.doc().id;
+  ref.doc(newId).set(recipe);
+  recipe.id = newId;
   return recipe;
 }
 
 async function deleteRecipe(recipeId) {
-  //const index = recipes.findIndex(currentRecipe => currentRecipe.id === recipeId);
-  //recipes.splice(index, 1);
+  const res = await firestore.collection(COLLECTION).doc(recipeId).delete();
   return true;
 }
 
