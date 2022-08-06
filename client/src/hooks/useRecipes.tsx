@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Recipe } from "../models/recipe.model";
 import { httpDeleteRecipe, httpGetAllRecipes, httpSubmitRecipe } from "./requests";
 
 export const useRecipes = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([])
 
-    const getRecipes = useCallback(async () => {
+    const getRecipes = useCallback(async () => {        
         const fetchedRecipes = await httpGetAllRecipes();
         setRecipes(fetchedRecipes);
     }, []);
@@ -18,10 +18,6 @@ export const useRecipes = () => {
             getRecipes();
         }
 
-    }, [getRecipes]);
-
-    useEffect(() => {
-        getRecipes();
     }, [getRecipes]);
 
     const submitRecipe = useCallback(async (recipe: Recipe) => {
