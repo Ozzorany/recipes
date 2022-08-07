@@ -78,12 +78,18 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
         setSelectedImage(imageValue);
     }
 
+    const handlngredientsKeyPress = (event: any) => {
+        if(event.keyCode == 13){
+            addIngredient();
+         }
+    }
+
     useEffect(() => {
         reseIngredientsRef();
     }, [ingredients]);
 
     return (
-        <form className={styles.form} onSubmit={confirmHandler}>
+        <form className={styles.form}>
             <div className={styles.control}>
                 <label htmlFor='name'>שם מתכון</label>
                 <input type='text' id='name' ref={descriptionRef} autoComplete="off" />
@@ -92,7 +98,8 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             <div className={styles.control}>
                 <label htmlFor='street'>מצרכים</label>
                 <div className="d-flex justify-content-center">
-                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{ height: '2.2rem' }} />
+                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{ height: '2.2rem' }} 
+                        onKeyDown={handlngredientsKeyPress}/>
                     <Button variant="contained" onClick={addIngredient}>הוספה</Button>
                 </div>
             </div>
@@ -121,7 +128,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
             </div>
 
             <div className={styles.actions}>
-                <button type="submit" className={styles.submit}>יצירת מתכון</button>
+                <button type="button" className={styles.submit} onClick={confirmHandler}>יצירת מתכון</button>
             </div>
         </form>
     );
