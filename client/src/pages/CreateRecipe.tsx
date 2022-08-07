@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
+import { useAppDispatch } from "../hooks/storeHooks";
 import { Recipe } from "../models/recipe.model";
+import { createRecipe } from "../state/recipesSlice";
 import styles from './CreateRecipe.module.css';
 
 function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }) {
@@ -16,7 +18,8 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
     const ingredientRef = useRef<any>();
     const methodRef = useRef<any>();
     const descriptionRef = useRef<any>();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const confirmHandler = (event: any) => {
         event.preventDefault();
@@ -32,7 +35,7 @@ function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }
         };
 
         if (methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
-            submitRecipe(newRecipe);
+            dispatch(createRecipe(newRecipe));
             navigate('/all-recipes', { replace: true });
         }
     };

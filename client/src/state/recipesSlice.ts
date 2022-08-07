@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { httpDeleteRecipe, httpGetAllRecipes } from "../hooks/requests";
+import { httpDeleteRecipe, httpGetAllRecipes, httpSubmitRecipe } from "../hooks/requests";
 import { Recipe } from "../models/recipe.model";
 import { RootState } from "./store";
 
 interface RecipesState {
-  recipes: [];
+  recipes: Recipe[];
 }
 
 const initialState: RecipesState = {
@@ -27,6 +27,14 @@ export const deleteRecipe = createAsyncThunk(
   }
 );
 
+export const createRecipe = createAsyncThunk(
+  "recipes/createRecipe",
+  async (recipe: Recipe) => {
+    const response: Recipe = (await httpSubmitRecipe(recipe)).data;
+    return response;
+  }
+);
+
 export const recipesSlice = createSlice({
   name: "recipes",
   initialState,
@@ -36,6 +44,9 @@ export const recipesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchRecipes.fulfilled, (state, action) => {
       state.recipes = action.payload;
+    });
+    builder.addCase(createRecipe.fulfilled, (state, action) => {
+      state.recipes.push(action.payload);
     });
     builder.addCase(deleteRecipe.fulfilled, (state, action) => {
       const recipeId: string = action.payload;
