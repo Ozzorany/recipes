@@ -15,6 +15,23 @@ async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
   return response;
 }
 
+async function httpUploadImage(file: any): Promise<any> {
+  const  bodyFormData = new FormData();
+  bodyFormData.append('image', file); 
+
+  const response = await axios.post<any>(
+    "http://localhost:8080/recipes/upload-image",
+    bodyFormData, 
+    {
+      headers: {
+        'Content-Type': file.type
+      }
+    }
+  );
+
+  return response;
+}
+
 async function httpDeleteRecipe(id: string) {
   try {
     return await fetch(`http://localhost:8080/recipes/${id}`, {
@@ -25,4 +42,4 @@ async function httpDeleteRecipe(id: string) {
   }
 }
 
-export { httpGetAllRecipes, httpSubmitRecipe, httpDeleteRecipe };
+export { httpGetAllRecipes, httpSubmitRecipe, httpDeleteRecipe, httpUploadImage };

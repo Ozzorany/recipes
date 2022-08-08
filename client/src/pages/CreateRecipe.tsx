@@ -4,134 +4,170 @@ import { useNavigate } from "react-router-dom";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
+import { httpUploadImage } from "../hooks/requests";
 import { useAppDispatch } from "../hooks/storeHooks";
 import { Recipe } from "../models/recipe.model";
 import { createRecipe } from "../state/recipesSlice";
-import styles from './CreateRecipe.module.css';
+import styles from "./CreateRecipe.module.css";
 
-function CreateRecipe({ submitRecipe }: { submitRecipe: (recipe: Recipe) => {} }) {
-    const [ingredients, setIngredients] = useState<string[]>([]);
-    const [tags, setTags] = useState<string[]>([]);
-    const [recipeDescriptionValid, setRecipeDescriptionValid] = useState<boolean>(true);
-    const [methodValid, setMethodValid] = useState<boolean>(true);
-    const [selectedImage, setSelectedImage] = useState<any>();
-    const ingredientRef = useRef<any>();
-    const methodRef = useRef<any>();
-    const descriptionRef = useRef<any>();
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+function CreateRecipe({
+  submitRecipe,
+}: {
+  submitRecipe: (recipe: Recipe) => {};
+}) {
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [recipeDescriptionValid, setRecipeDescriptionValid] =
+    useState<boolean>(true);
+  const [methodValid, setMethodValid] = useState<boolean>(true);
+  const [selectedImage, setSelectedImage] = useState<any>();
+  const ingredientRef = useRef<any>();
+  const methodRef = useRef<any>();
+  const descriptionRef = useRef<any>();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-    const confirmHandler = (event: any) => {
-        event.preventDefault();
-        setErrorValidations();
+  const confirmHandler = (event: any) => {
+    event.preventDefault();
+    setErrorValidations();
 
-        const newRecipe: Recipe = {
-            id: '1',
-            description: descriptionRef.current.value,
-            ingredients: ingredients,
-            method: methodRef.current.value,
-            tags: tags,
-            image: selectedImage
-        };
-
-        if (methodRef.current.value.trim() !== '' && descriptionRef.current.value.trim() !== '') {
-            dispatch(createRecipe(newRecipe));
-            navigate('/all-recipes', { replace: true });
-        }
+    const newRecipe: Recipe = {
+      id: "1",
+      description: descriptionRef.current.value,
+      ingredients: ingredients,
+      method: methodRef.current.value,
+      tags: tags,
+      image: selectedImage,
     };
 
-    const setErrorValidations = () => {
-        if (descriptionRef.current.value.trim() === '') {
-            setRecipeDescriptionValid(false);
-        } else {
-            setRecipeDescriptionValid(true);
-        }
+    if (
+      methodRef.current.value.trim() !== "" &&
+      descriptionRef.current.value.trim() !== ""
+    ) {
+      const downloadUrl = httpUploadImage(selectedImage).then((res: any) => {
+        newRecipe.image = res.data.downloadUrl;
+        dispatch(createRecipe(newRecipe));
+      });
 
-        if (methodRef.current.value.trim() === '') {
-            setMethodValid(false);
-        } else {
-            setRecipeDescriptionValid(true);
-        }
+      navigate("/all-recipes", { replace: true });
+    }
+  };
+
+  const setErrorValidations = () => {
+    if (descriptionRef.current.value.trim() === "") {
+      setRecipeDescriptionValid(false);
+    } else {
+      setRecipeDescriptionValid(true);
     }
 
-    const handleTagsChange = (tags: string[]) => {
-        setTags(() => tags);
+    if (methodRef.current.value.trim() === "") {
+      setMethodValid(false);
+    } else {
+      setRecipeDescriptionValid(true);
     }
+  };
 
-    const addIngredient = () => {
-        if (!!ingredientRef.current && ingredientRef.current.value.trim() !== '') {
-            setIngredients(currentIngredients => [...currentIngredients, ingredientRef.current.value]);
-        }
-    };
+  const handleTagsChange = (tags: string[]) => {
+    setTags(() => tags);
+  };
 
-    const reseIngredientsRef = () => {
-        ingredientRef.current.value = '';
+  const addIngredient = () => {
+    if (!!ingredientRef.current && ingredientRef.current.value.trim() !== "") {
+      setIngredients((currentIngredients) => [
+        ...currentIngredients,
+        ingredientRef.current.value,
+      ]);
     }
+  };
 
-    const resetForm = (): void => {
-        reseIngredientsRef();
-        methodRef.current.value = '';
-        descriptionRef.current.value = '';
+  const reseIngredientsRef = () => {
+    ingredientRef.current.value = "";
+  };
+
+  const resetForm = (): void => {
+    reseIngredientsRef();
+    methodRef.current.value = "";
+    descriptionRef.current.value = "";
+  };
+
+  const handleSelectImage = (imageValue: any) => {
+    setSelectedImage(imageValue);
+  };
+
+  const handlngredientsKeyPress = (event: any) => {
+    if (event.keyCode == 13) {
+      addIngredient();
     }
+  };
 
-    const handleSelectImage = (imageValue: any) => {
-        setSelectedImage(imageValue);
-    }
+  useEffect(() => {
+    reseIngredientsRef();
+  }, [ingredients]);
 
-    const handlngredientsKeyPress = (event: any) => {
-        if(event.keyCode == 13){
-            addIngredient();
-         }
-    }
+  return (
+    <form className={styles.form}>
+      <div className={styles.control}>
+        <label htmlFor="name">שם מתכון</label>
+        <input type="text" id="name" ref={descriptionRef} autoComplete="off" />
+        {!recipeDescriptionValid && (
+          <p className={styles.errorValidation}>יש להזין שם מתכון</p>
+        )}
+      </div>
+      <div className={styles.control}>
+        <label htmlFor="street">מצרכים</label>
+        <div className="d-flex justify-content-center">
+          <input
+            type="text"
+            id="street"
+            autoComplete="off"
+            ref={ingredientRef}
+            style={{ height: "2.2rem" }}
+            onKeyDown={handlngredientsKeyPress}
+          />
+          <Button variant="contained" onClick={addIngredient}>
+            הוספה
+          </Button>
+        </div>
+      </div>
+      {!!ingredients.length && (
+        <div className={styles.ingredients}>
+          <IngredientsList ingredients={ingredients} />
+        </div>
+      )}
 
-    useEffect(() => {
-        reseIngredientsRef();
-    }, [ingredients]);
+      <div
+        className={styles.control}
+        style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
+      >
+        <label htmlFor="method">אופן הכנה</label>
+        <textarea
+          id="method"
+          style={{ width: "30vw", height: "20vh" }}
+          ref={methodRef}
+        ></textarea>
+        {!methodValid && (
+          <p className={styles.errorValidation}>יש להזין אופן הכנה</p>
+        )}
+      </div>
+      <div className={styles.control}>
+        <Tags submitTagsChange={handleTagsChange} />
+      </div>
 
-    return (
-        <form className={styles.form}>
-            <div className={styles.control}>
-                <label htmlFor='name'>שם מתכון</label>
-                <input type='text' id='name' ref={descriptionRef} autoComplete="off" />
-                {!recipeDescriptionValid && <p className={styles.errorValidation}>יש להזין שם מתכון</p>}
-            </div>
-            <div className={styles.control}>
-                <label htmlFor='street'>מצרכים</label>
-                <div className="d-flex justify-content-center">
-                    <input type='text' id='street' autoComplete="off" ref={ingredientRef} style={{ height: '2.2rem' }} 
-                        onKeyDown={handlngredientsKeyPress}/>
-                    <Button variant="contained" onClick={addIngredient}>הוספה</Button>
-                </div>
-            </div>
-            {
-                !!ingredients.length &&
-                <div className={styles.ingredients}>
-                    <IngredientsList ingredients={ingredients} />
-                </div>
-            }
+      <div>
+        <UploadImages onSelectedImage={handleSelectImage} />
+      </div>
 
-            <div className={styles.control} style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
-                <label htmlFor='method'>אופן הכנה</label>
-                <textarea id='method'
-                    style={{ width: '30vw', height: '20vh' }}
-                    ref={methodRef}
-                >
-                </textarea>
-                {!methodValid && <p className={styles.errorValidation}>יש להזין אופן הכנה</p>}
-            </div>
-            <div className={styles.control}>
-                <Tags submitTagsChange={handleTagsChange} />
-            </div>
-
-            <div>
-                <UploadImages onSelectedImage={handleSelectImage} />
-            </div>
-
-            <div className={styles.actions}>
-                <button type="button" className={styles.submit} onClick={confirmHandler}>יצירת מתכון</button>
-            </div>
-        </form>
-    );
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.submit}
+          onClick={confirmHandler}
+        >
+          יצירת מתכון
+        </button>
+      </div>
+    </form>
+  );
 }
 
 export default CreateRecipe;

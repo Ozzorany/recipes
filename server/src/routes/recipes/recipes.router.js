@@ -1,11 +1,15 @@
 const express = require('express');
-const {httpGetAllRecipes, httpUpdateRecipe, httpDeleteRecipe, httpCreateRecipe} = require('./recipes.controller');
+const multer = require("multer");
+const memoStorage = multer.memoryStorage();
+const upload = multer({ memoStorage });
+const {httpGetAllRecipes, httpUpdateRecipe, httpDeleteRecipe, httpCreateRecipe, httpUploadImage} = require('./recipes.controller');
 
 const recipesRouter = express.Router();
 
 recipesRouter.get('/', httpGetAllRecipes);
 recipesRouter.post('/', httpUpdateRecipe);
 recipesRouter.post('/create', httpCreateRecipe);
+recipesRouter.post('/upload-image',upload.single("image") ,httpUploadImage);
 recipesRouter.delete('/:id', httpDeleteRecipe);
 
 module.exports = recipesRouter;

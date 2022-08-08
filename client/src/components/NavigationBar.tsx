@@ -1,17 +1,18 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import { RestaurantMenu } from '@mui/icons-material';
 import AdbIcon from '@mui/icons-material/Adb';
+import MenuIcon from '@mui/icons-material/Menu';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 
 const pages = ['All Recipes', 'My Recipes'];
@@ -56,7 +57,7 @@ const NavigationBar = () => {
     <AppBar position="static">
       <Container  maxWidth={false}>
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <RestaurantMenu sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
           <Typography
             variant="h6"
             noWrap
@@ -72,7 +73,7 @@ const NavigationBar = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            BAROZ
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

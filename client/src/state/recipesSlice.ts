@@ -30,8 +30,8 @@ export const deleteRecipe = createAsyncThunk(
 export const createRecipe = createAsyncThunk(
   "recipes/createRecipe",
   async (recipe: Recipe) => {
-    const response: Recipe = (await httpSubmitRecipe(recipe)).data;
-    return response;
+    const response: any = await httpSubmitRecipe(recipe);
+    return response.data;
   }
 );
 
