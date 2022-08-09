@@ -6,16 +6,15 @@ import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
 import { httpUploadImage } from "../hooks/requests";
 import { useAppDispatch } from "../hooks/storeHooks";
+import { Ingredient } from "../models/ingredient.model";
 import { Recipe } from "../models/recipe.model";
 import { createRecipe } from "../state/recipesSlice";
 import styles from "./CreateRecipe.module.css";
+import { v4 as uuidv4 } from 'uuid';
 
-function CreateRecipe({
-  submitRecipe,
-}: {
-  submitRecipe: (recipe: Recipe) => {};
-}) {
-  const [ingredients, setIngredients] = useState<string[]>([]);
+
+function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};}) {
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [recipeDescriptionValid, setRecipeDescriptionValid] =
     useState<boolean>(true);
@@ -34,7 +33,7 @@ function CreateRecipe({
     const newRecipe: Recipe = {
       id: "1",
       description: descriptionRef.current.value,
-      ingredients: ingredients,
+      ingredients: ingredients.map(ingredient => ingredient.description),
       method: methodRef.current.value,
       tags: tags,
       image: selectedImage,
@@ -72,10 +71,11 @@ function CreateRecipe({
   };
 
   const addIngredient = () => {
+    const newId = uuidv4();
     if (!!ingredientRef.current && ingredientRef.current.value.trim() !== "") {
       setIngredients((currentIngredients) => [
         ...currentIngredients,
-        ingredientRef.current.value,
+        {id: newId, description: ingredientRef.current.value},
       ]);
     }
   };
@@ -99,6 +99,10 @@ function CreateRecipe({
       addIngredient();
     }
   };
+
+  const removeIngredient = (ingredient: Ingredient) => {
+    setIngredients((currentIngredients) => currentIngredients.filter(currIngredient => currIngredient.id !== ingredient.id));
+  }
 
   useEffect(() => {
     reseIngredientsRef();
@@ -131,7 +135,7 @@ function CreateRecipe({
       </div>
       {!!ingredients.length && (
         <div className={styles.ingredients}>
-          <IngredientsList ingredients={ingredients} />
+          <IngredientsList ingredients={ingredients} removeIngredient={removeIngredient}/>
         </div>
       )}
 
