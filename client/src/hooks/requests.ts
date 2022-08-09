@@ -1,14 +1,18 @@
 import axios, { AxiosResponse } from "axios";
 import { Recipe } from "../models/recipe.model";
+import * as React from 'react';
 
-async function httpGetAllRecipes() {
-  const response = await fetch("http://localhost:8080/recipes");
+const d = process.env.REACT_APP_ENVIRONMENT;
+const serverUrl = process.env.REACT_APP_LOCAL_SERVER;
+
+async function httpGetAllRecipes() {  
+  const response = await fetch(`${serverUrl}/recipes`);
   return await response.json();
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
   const response = await axios.post<Recipe>(
-    "http://localhost:8080/recipes/create",
+    `${serverUrl}/recipes/create`,
     recipe
   );
 
@@ -20,7 +24,7 @@ async function httpUploadImage(file: any): Promise<any> {
   bodyFormData.append('image', file); 
 
   const response = await axios.post<any>(
-    "http://localhost:8080/recipes/upload-image",
+    `${serverUrl}/recipes/upload-image`,
     bodyFormData, 
     {
       headers: {
@@ -34,7 +38,7 @@ async function httpUploadImage(file: any): Promise<any> {
 
 async function httpDeleteRecipe(id: string) {
   try {
-    return await fetch(`http://localhost:8080/recipes/${id}`, {
+    return await fetch(`${serverUrl}recipes/${id}`, {
       method: "delete",
     });
   } catch {
