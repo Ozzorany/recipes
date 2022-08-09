@@ -2,8 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Recipe } from "../models/recipe.model";
 import * as React from 'react';
 
-const d = process.env.REACT_APP_ENVIRONMENT;
-const serverUrl = process.env.REACT_APP_LOCAL_SERVER;
+const serverUrl = process.env.REACT_APP_SERVER;
 
 async function httpGetAllRecipes() {  
   const response = await fetch(`${serverUrl}/recipes`);
