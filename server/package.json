@@ -1,6 +1,10 @@
 {
   "name": "recipes",
   "version": "1.0.0",
+  "engines": {
+    "node": "16.13.1",
+    "npm": "8.5.0"
+  },
   "description": "",
   "main": "src/server.js",
   "scripts": {
