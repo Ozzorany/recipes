@@ -29,6 +29,8 @@ import * as React from "react";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import { useAppDispatch } from "../hooks/storeHooks";
 import { deleteRecipe } from "../state/recipesSlice";
+import { useNavigate } from "react-router";
+import noImagePath from '../assets/images/recipe-book.jpg';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -48,6 +50,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 export default function RecipeReviewCard({ recipe }: any) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -57,6 +60,11 @@ export default function RecipeReviewCard({ recipe }: any) {
     popupState.close();
     dispatch(deleteRecipe(recipe.id));
   };
+
+  const handleEditRecipe = (popupState: any) => {
+    popupState.close();
+    navigate('/edit-recipe', { state: { isEdit: true, recipe: recipe } });
+  }
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -77,7 +85,7 @@ export default function RecipeReviewCard({ recipe }: any) {
                   <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
                     מחיקה
                   </MenuItem>
-                  <MenuItem onClick={popupState.close}>עריכה</MenuItem>
+                  <MenuItem onClick={() => handleEditRecipe(popupState)}>עריכה</MenuItem>
                 </Menu>
               </React.Fragment>
             )}
@@ -87,9 +95,13 @@ export default function RecipeReviewCard({ recipe }: any) {
         subheader="September 14, 2016"
       />
       <CardMedia
+      style={{
+        width: 'auto',
+        height: '31vh',
+        margin: 'auto'
+      }}
         component="img"
-        height="194"
-        image={recipe.image}
+        image={!!recipe.image ? recipe.image : noImagePath}
         alt={recipe.description}
       />
 

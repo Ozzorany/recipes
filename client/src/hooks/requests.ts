@@ -1,6 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Recipe } from "../models/recipe.model";
-import * as React from 'react';
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
@@ -12,6 +11,15 @@ async function httpGetAllRecipes() {
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
   const response = await axios.post<Recipe>(
     `${serverUrl}/recipes/create`,
+    recipe
+  );
+
+  return response;
+}
+
+async function httpUpdateRecipe(recipe: Recipe): Promise<any> {
+  const response = await axios.post<Recipe>(
+    `${serverUrl}/recipes/update`,
     recipe
   );
 
@@ -45,4 +53,11 @@ async function httpDeleteRecipe(id: string) {
   }
 }
 
-export { httpGetAllRecipes, httpSubmitRecipe, httpDeleteRecipe, httpUploadImage };
+export {
+  httpGetAllRecipes,
+  httpSubmitRecipe,
+  httpDeleteRecipe,
+  httpUploadImage,
+  httpUpdateRecipe,
+};
+

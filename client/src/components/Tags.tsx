@@ -5,7 +5,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -26,7 +26,7 @@ const names = [
   'בשרי'
 ];
 
-function Tags({ submitTagsChange }: { submitTagsChange: (tags: string[]) => void }) {
+function Tags({ currentTags, submitTagsChange }: { currentTags: string[], submitTagsChange: (tags: string[]) => void }) {
     const [tags, setTags] = useState<string[]>([]);
 
     const handleChange = (event: SelectChangeEvent<typeof tags>) => {
@@ -35,6 +35,10 @@ function Tags({ submitTagsChange }: { submitTagsChange: (tags: string[]) => void
       setTags(newTags);
       submitTagsChange(newTags);
     };
+
+    useEffect(() => {
+      setTags(currentTags);
+    }, [currentTags])
     
     return (
         <div>

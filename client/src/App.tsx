@@ -6,7 +6,6 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import NavigationBar from "./components/NavigationBar";
 import { useAppDispatch } from "./hooks/storeHooks";
-import useRecipes from "./hooks/useRecipes";
 import AllRecepis from "./pages/AllRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
 import MyRecepis from "./pages/MyRecipes";
@@ -16,7 +15,6 @@ import { fetchRecipes } from "./state/recipesSlice";
 function App() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { submitRecipe } = useRecipes();
   const isMounted = useRef(true);
 
   const initApp = useCallback(async () => {
@@ -45,8 +43,14 @@ function App() {
             <Route path="/all-recipes" element={<AllRecepis />} />
             <Route path="/my-recipes" element={<MyRecepis />} />
             <Route
+              key="create-recipe"
               path="/create-recipe"
-              element={<CreateRecipe submitRecipe={submitRecipe} />}
+              element={<CreateRecipe/>}
+            />
+            <Route
+              key="edit-recipe"
+              path="/edit-recipe"
+              element={<CreateRecipe/>}
             />
           </Routes>
         </div>

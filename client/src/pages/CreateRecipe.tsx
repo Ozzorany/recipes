@@ -1,6 +1,7 @@
+//@ts-check
 import Button from "@mui/material/Button";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
@@ -8,49 +9,73 @@ import { httpUploadImage } from "../hooks/requests";
 import { useAppDispatch } from "../hooks/storeHooks";
 import { Ingredient } from "../models/ingredient.model";
 import { Recipe } from "../models/recipe.model";
-import { createRecipe } from "../state/recipesSlice";
+import { createRecipe, updateRecipe } from "../state/recipesSlice";
 import styles from "./CreateRecipe.module.css";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-
-function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};}) {
+function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [recipeDescriptionValid, setRecipeDescriptionValid] =
     useState<boolean>(true);
   const [methodValid, setMethodValid] = useState<boolean>(true);
-  const [selectedImage, setSelectedImage] = useState<any>();
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   const ingredientRef = useRef<any>();
   const methodRef = useRef<any>();
   const descriptionRef = useRef<any>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { state }: { state: any } = useLocation();
+  const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
+  const editRecipe: Recipe = !!state?.recipe ? state?.recipe : false;
+
+  useEffect(() => {
+    if (isEdit) {
+      descriptionRef.current.value = editRecipe.description;
+      methodRef.current.value = editRecipe.method;
+      setTags(() => editRecipe.tags);
+      setIngredients(() =>
+        editRecipe.ingredients.map((ingredient) => {
+          return { id: uuidv4(), description: ingredient };
+        })
+      );
+    }
+  }, [isEdit, editRecipe]);
 
   const confirmHandler = (event: any) => {
     event.preventDefault();
     setErrorValidations();
 
     const newRecipe: Recipe = {
-      id: "1",
+      id: isEdit ? editRecipe.id : "1",
       description: descriptionRef.current.value,
-      ingredients: ingredients.map(ingredient => ingredient.description),
+      ingredients: ingredients.map((ingredient) => ingredient.description),
       method: methodRef.current.value,
       tags: tags,
       image: selectedImage,
     };
 
-    if (
-      methodRef.current.value.trim() !== "" &&
-      descriptionRef.current.value.trim() !== ""
-    ) {
-      const downloadUrl = httpUploadImage(selectedImage).then((res: any) => {
-        newRecipe.image = res.data.downloadUrl;
-        dispatch(createRecipe(newRecipe));
-      });
-
+    if (methodRef.current.value.trim() !== "" && descriptionRef.current.value.trim() !== "") {
+      if(!!selectedImage) {
+        httpUploadImage(selectedImage).then((res: any) => {
+          newRecipe.image = res.data.downloadUrl;
+          executeSubmition(newRecipe);
+        });
+      } else {
+        executeSubmition(newRecipe);
+      }
+    
       navigate("/all-recipes", { replace: true });
     }
   };
+
+  const executeSubmition = (recipe: Recipe): void => {
+    if(isEdit) {
+      dispatch(updateRecipe(recipe));
+    } else {
+      dispatch(createRecipe(recipe));
+    }
+  }
 
   const setErrorValidations = () => {
     if (descriptionRef.current.value.trim() === "") {
@@ -75,7 +100,7 @@ function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};})
     if (!!ingredientRef.current && ingredientRef.current.value.trim() !== "") {
       setIngredients((currentIngredients) => [
         ...currentIngredients,
-        {id: newId, description: ingredientRef.current.value},
+        { id: newId, description: ingredientRef.current.value },
       ]);
     }
   };
@@ -84,25 +109,23 @@ function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};})
     ingredientRef.current.value = "";
   };
 
-  const resetForm = (): void => {
-    reseIngredientsRef();
-    methodRef.current.value = "";
-    descriptionRef.current.value = "";
-  };
-
   const handleSelectImage = (imageValue: any) => {
     setSelectedImage(imageValue);
   };
 
   const handlngredientsKeyPress = (event: any) => {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       addIngredient();
     }
   };
 
   const removeIngredient = (ingredient: Ingredient) => {
-    setIngredients((currentIngredients) => currentIngredients.filter(currIngredient => currIngredient.id !== ingredient.id));
-  }
+    setIngredients((currentIngredients) =>
+      currentIngredients.filter(
+        (currIngredient) => currIngredient.id !== ingredient.id
+      )
+    );
+  };
 
   useEffect(() => {
     reseIngredientsRef();
@@ -135,7 +158,10 @@ function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};})
       </div>
       {!!ingredients.length && (
         <div className={styles.ingredients}>
-          <IngredientsList ingredients={ingredients} removeIngredient={removeIngredient}/>
+          <IngredientsList
+            ingredients={ingredients}
+            removeIngredient={removeIngredient}
+          />
         </div>
       )}
 
@@ -154,7 +180,7 @@ function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};})
         )}
       </div>
       <div className={styles.control}>
-        <Tags submitTagsChange={handleTagsChange} />
+        <Tags submitTagsChange={handleTagsChange} currentTags={tags} />
       </div>
 
       <div>
@@ -167,7 +193,7 @@ function CreateRecipe({submitRecipe,}: { submitRecipe: (recipe: Recipe) => {};})
           className={styles.submit}
           onClick={confirmHandler}
         >
-          יצירת מתכון
+          {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
         </button>
       </div>
     </form>
