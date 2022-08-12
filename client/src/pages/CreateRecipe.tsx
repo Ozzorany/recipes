@@ -39,6 +39,11 @@ function CreateRecipe() {
           return { id: uuidv4(), description: ingredient };
         })
       );
+    } else {
+      descriptionRef.current.value = '';
+      methodRef.current.value = '';
+      setTags(() => []);
+      setIngredients(() => []);
     }
   }, [isEdit, editRecipe]);
 

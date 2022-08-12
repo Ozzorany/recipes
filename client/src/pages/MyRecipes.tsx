@@ -11,9 +11,6 @@ function MyRecepis() {
   
   return (
     <div>
-      {recipes.map((recipe: any) => {
-        return <div>{recipe.description}</div>;
-      })}
     </div>
   );
 }
