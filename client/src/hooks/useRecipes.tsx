@@ -12,9 +12,8 @@ export const useRecipes = () => {
 
     const deleteRecipe = useCallback(async (id: string) => {
         const response = await httpDeleteRecipe(id);
-        const success = response.ok;
 
-        if (success) {
+        if (response) {
             getRecipes();
         }
 

@@ -44,13 +44,11 @@ async function httpUploadImage(file: any): Promise<any> {
 }
 
 async function httpDeleteRecipe(id: string) {
-  try {
-    return await fetch(`${serverUrl}recipes/${id}`, {
-      method: "delete",
-    });
-  } catch {
-    return { ok: false };
-  }
+  const response = await axios.delete<string>(`${serverUrl}/recipes`, {
+    data: { id: id },
+  });
+
+  return response;
 }
 
 export {

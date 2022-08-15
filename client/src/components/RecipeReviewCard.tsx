@@ -108,11 +108,11 @@ export default function RecipeReviewCard({ recipe }: any) {
       {!!recipe.ingredients.length && (
         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
           <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-            {recipe.ingredients?.map((value: any) => {
+            {recipe.ingredients?.map((value: any, index: number) => {
               const labelId = `checkbox-list-label-${value}`;
 
               return (
-                <ListItem key={value} disablePadding>
+                <ListItem key={index} disablePadding>
                   <ListItemButton role={undefined} dense>
                     <ListItemIcon>
                       <Checkbox

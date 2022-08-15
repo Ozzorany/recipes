@@ -10,6 +10,6 @@ recipesRouter.get('/', httpGetAllRecipes);
 recipesRouter.post('/update', httpUpdateRecipe);
 recipesRouter.post('/create', httpCreateRecipe);
 recipesRouter.post('/upload-image',upload.single("image") ,httpUploadImage);
-recipesRouter.delete('/:id', httpDeleteRecipe);
+recipesRouter.delete('/', httpDeleteRecipe);
 
 module.exports = recipesRouter;

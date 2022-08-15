@@ -27,7 +27,7 @@ function CreateRecipe() {
   const dispatch = useAppDispatch();
   const { state }: { state: any } = useLocation();
   const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
-  const editRecipe: Recipe = !!state?.recipe ? state?.recipe : false;
+  const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
 
   useEffect(() => {
     if (isEdit) {
@@ -189,7 +189,7 @@ function CreateRecipe() {
       </div>
 
       <div>
-        <UploadImages onSelectedImage={handleSelectImage} />
+        <UploadImages onSelectedImage={handleSelectImage} currentImage={isEdit ? editRecipe.image : null} />
       </div>
 
       <div className={styles.actions}>

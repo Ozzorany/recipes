@@ -20,7 +20,7 @@ async function httpCreateRecipe(req, res) {
 }
 
 async function httpDeleteRecipe(req, res) {
-  res.status(200).json(await deleteRecipe(req.params.id));
+  res.status(200).json(await deleteRecipe(req.body.id));
 }
 
 async function httpUploadImage(req, res) {
