@@ -31,6 +31,8 @@ import { useAppDispatch } from "../hooks/storeHooks";
 import { deleteRecipe } from "../state/recipesSlice";
 import { useNavigate } from "react-router";
 import noImagePath from '../assets/images/recipe-book.jpg';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -83,16 +85,24 @@ export default function RecipeReviewCard({ recipe }: any) {
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>
                   <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
-                    מחיקה
+                    <ListItemIcon>
+                      <DeleteOutlineOutlinedIcon/>
+                    </ListItemIcon>
+                    <ListItemText>מחיקה</ListItemText>
                   </MenuItem>
-                  <MenuItem onClick={() => handleEditRecipe(popupState)}>עריכה</MenuItem>
+                  <MenuItem onClick={() => handleEditRecipe(popupState)}>
+                  <ListItemIcon>
+                      <ModeEditOutlineOutlinedIcon/>
+                    </ListItemIcon>
+                    <ListItemText>עריכה</ListItemText>
+                  </MenuItem>
                 </Menu>
               </React.Fragment>
             )}
           </PopupState>
         }
         title={recipe.description}
-        subheader="September 14, 2016"
+        //subheader="September 14, 2016"
       />
       <CardMedia
       style={{
