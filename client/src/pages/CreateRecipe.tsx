@@ -20,6 +20,7 @@ function CreateRecipe() {
     useState<boolean>(true);
   const [methodValid, setMethodValid] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [isImageRemoved, setIsImageRemoved] = useState<boolean>(false);
   const ingredientRef = useRef<any>();
   const methodRef = useRef<any>();
   const descriptionRef = useRef<any>();
@@ -57,7 +58,7 @@ function CreateRecipe() {
       ingredients: ingredients.map((ingredient) => ingredient.description),
       method: methodRef.current.value,
       tags: tags,
-      image: selectedImage,
+      image: getNewImage(),
     };
 
     if (methodRef.current.value.trim() !== "" && descriptionRef.current.value.trim() !== "") {
@@ -72,6 +73,18 @@ function CreateRecipe() {
     
       navigate("/all-recipes", { replace: true });
     }
+  };
+
+  const getNewImage = () => {
+    if (isImageRemoved) {
+      return null;
+    } else if (!!selectedImage) {
+      return selectedImage;
+    } else if (isEdit && !selectedImage) {
+      return editRecipe.image;
+    }
+
+    return null;
   };
 
   const executeSubmition = (recipe: Recipe): void => {
@@ -116,6 +129,11 @@ function CreateRecipe() {
 
   const handleSelectImage = (imageValue: any) => {
     setSelectedImage(imageValue);
+    if(!!imageValue) {
+      setIsImageRemoved(false);
+    } else {
+      setIsImageRemoved(true);
+    }
   };
 
   const handlngredientsKeyPress = (event: any) => {

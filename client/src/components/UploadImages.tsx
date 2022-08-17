@@ -28,6 +28,7 @@ function UploadImages({ onSelectedImage, currentImage }: { onSelectedImage: (ima
     const handleRemoveImage = () => {
         setSelectedImage(null);
         setShowImage(false);
+        onSelectedImage(null);
     }
 
     return (
