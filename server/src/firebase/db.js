@@ -1,6 +1,7 @@
 var admin = require("firebase-admin");
+const path = require('path')
 const { privateKey } = JSON.parse(process.env.FIREBASE_PRIVATE_KEY);
-require("dotenv").config();
+require("dotenv").config({path:path.resolve(__dirname, '../.env')});
 
 const db = admin.initializeApp({
   credential: admin.credential.cert({
