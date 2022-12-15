@@ -75,3 +75,11 @@
   .errorValidation {
     color: #dc4747;
   }
+
+  .spinner { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }

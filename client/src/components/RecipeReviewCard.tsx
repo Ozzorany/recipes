@@ -171,7 +171,7 @@ export default function RecipeReviewCard({ recipe }: any) {
           <Typography paragraph sx={{ direction: "rtl" }}>
             :אופן ההכנה
           </Typography>
-          <Typography paragraph sx={{ wordWrap: "break-word" }}>
+          <Typography paragraph sx={{ wordWrap: "break-word", whiteSpace: "break-spaces", textAlign:"left" }}>
             {recipe.method}
           </Typography>
         </CardContent>
