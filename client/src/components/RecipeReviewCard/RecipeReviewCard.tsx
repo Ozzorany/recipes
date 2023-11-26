@@ -1,5 +1,7 @@
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Checkbox,
@@ -21,18 +23,18 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import Collapse from "@mui/material/Collapse";
-import { red } from "@mui/material/colors";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import { red } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
+import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import * as React from "react";
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { useAppDispatch } from "../hooks/storeHooks";
-import { deleteRecipe } from "../state/recipesSlice";
 import { useNavigate } from "react-router";
-import noImagePath from '../assets/images/recipe-book.jpg';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { WhatsappIcon, WhatsappShareButton } from "react-share";
+import { useAppDispatch } from "../../hooks/storeHooks";
+import { deleteRecipe } from "../../state/recipesSlice";
+import noImagePath from "../../assets/images/recipe-book.jpg";
+import styles from "./RecipeReviewCard.module.css"; // Import css modules stylesheet as styles
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -65,8 +67,8 @@ export default function RecipeReviewCard({ recipe }: any) {
 
   const handleEditRecipe = (popupState: any) => {
     popupState.close();
-    navigate('/edit-recipe', { state: { isEdit: true, recipe: recipe } });
-  }
+    navigate("/edit-recipe", { state: { isEdit: true, recipe: recipe } });
+  };
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -84,17 +86,34 @@ export default function RecipeReviewCard({ recipe }: any) {
                   <MoreVertIcon />
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>
-                  <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
+                  <MenuItem
+                    onClick={() => handleEditRecipe(popupState)}
+                    className={styles.item}
+                  >
                     <ListItemIcon>
-                      <DeleteOutlineOutlinedIcon/>
-                    </ListItemIcon>
-                    <ListItemText>מחיקה</ListItemText>
-                  </MenuItem>
-                  <MenuItem onClick={() => handleEditRecipe(popupState)}>
-                  <ListItemIcon>
-                      <ModeEditOutlineOutlinedIcon/>
+                      <ModeEditOutlineOutlinedIcon />
                     </ListItemIcon>
                     <ListItemText>עריכה</ListItemText>
+                  </MenuItem>
+                  <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
+                    <ListItemIcon>
+                      <DeleteOutlineOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography>מחיקה</Typography>
+                    </ListItemText>
+                  </MenuItem>
+                  <MenuItem>
+                    <ListItemIcon>
+                      <WhatsappShareButton
+                        url="https://recipes-e6692.web.app/all-recipes"
+                        title={recipe.description + recipe.method}
+                        separator=":: "
+                      >
+                        <WhatsappIcon size={32} round />
+                      </WhatsappShareButton>
+                    </ListItemIcon>
+                    <ListItemText>שיתוף מתכון</ListItemText>
                   </MenuItem>
                 </Menu>
               </React.Fragment>
@@ -105,11 +124,11 @@ export default function RecipeReviewCard({ recipe }: any) {
         //subheader="September 14, 2016"
       />
       <CardMedia
-      style={{
-        width: 'auto',
-        height: '31vh',
-        margin: 'auto'
-      }}
+        style={{
+          width: "auto",
+          height: "31vh",
+          margin: "auto",
+        }}
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}
         alt={recipe.description}
@@ -171,7 +190,14 @@ export default function RecipeReviewCard({ recipe }: any) {
           <Typography paragraph sx={{ direction: "rtl" }}>
             :אופן ההכנה
           </Typography>
-          <Typography paragraph sx={{ wordWrap: "break-word", whiteSpace: "break-spaces", textAlign:"left" }}>
+          <Typography
+            paragraph
+            sx={{
+              wordWrap: "break-word",
+              whiteSpace: "break-spaces",
+              textAlign: "left",
+            }}
+          >
             {recipe.method}
           </Typography>
         </CardContent>

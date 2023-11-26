@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { useMemo, useState } from "react";
 import MultiSelectFilter from "../components/MultiSelectFilter";
-import RecipeReviewCard from "../components/RecipeReviewCard";
+import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../models/recipe.model";
 import { useAllRecipes } from "../queries/useAllRecipes";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
