@@ -3,9 +3,9 @@ import { Recipe } from "../models/recipe.model";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
-async function httpGetAllRecipes() {  
-  const response = await fetch(`${serverUrl}/recipes`);
-  return await response.json();
+async function httpGetAllRecipes(): Promise<any> {  
+  return axios.get(`${serverUrl}/recipes`);
+    
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {

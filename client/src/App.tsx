@@ -11,6 +11,7 @@ import CreateRecipe from "./pages/CreateRecipe";
 import MyRecepis from "./pages/MyRecipes";
 import { cacheRtl, theme } from "./settings";
 import { fetchRecipes } from "./state/recipesSlice";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const navigate = useNavigate();
@@ -32,28 +33,32 @@ function App() {
     navigate("/all-recipes", { replace: true });
   };
 
+  const queryClient = new QueryClient();
+
   return (
     <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="App">
-          <NavigationBar></NavigationBar>
-          <Routes>
-            <Route path="/" element={<Navigate to="/all-recipes" />} />
-            <Route path="/all-recipes" element={<AllRecepis />} />
-            <Route path="/my-recipes" element={<MyRecepis />} />
-            <Route
-              key="create-recipe"
-              path="/create-recipe"
-              element={<CreateRecipe/>}
-            />
-            <Route
-              key="edit-recipe"
-              path="/edit-recipe"
-              element={<CreateRecipe/>}
-            />
-          </Routes>
-        </div>
+        <QueryClientProvider client={queryClient}>
+          <div className="App">
+            <NavigationBar></NavigationBar>
+            <Routes>
+              <Route path="/" element={<Navigate to="/all-recipes" />} />
+              <Route path="/all-recipes" element={<AllRecepis />} />
+              <Route path="/my-recipes" element={<MyRecepis />} />
+              <Route
+                key="create-recipe"
+                path="/create-recipe"
+                element={<CreateRecipe />}
+              />
+              <Route
+                key="edit-recipe"
+                path="/edit-recipe"
+                element={<CreateRecipe />}
+              />
+            </Routes>
+          </div>
+        </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>
   );

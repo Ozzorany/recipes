@@ -7,7 +7,7 @@ export const useRecipes = () => {
 
     const getRecipes = useCallback(async () => {        
         const fetchedRecipes = await httpGetAllRecipes();
-        setRecipes(fetchedRecipes);
+        // setRecipes(fetchedRecipes);
     }, []);
 
     const deleteRecipe = useCallback(async (id: string) => {

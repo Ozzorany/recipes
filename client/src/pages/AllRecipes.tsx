@@ -9,12 +9,13 @@ import Grid from "@mui/material/Grid";
 import { useMemo, useState } from "react";
 import MultiSelectFilter from "../components/MultiSelectFilter";
 import RecipeReviewCard from "../components/RecipeReviewCard";
-import { useAppSelector } from "../hooks/storeHooks";
 import { Recipe } from "../models/recipe.model";
+import { useAllRecipes } from "../queries/useAllRecipes";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
 
 function AllRecepis() {
-  const { recipes } = useAppSelector((state) => state.recipes);
+  const { data } = useAllRecipes();
+
   const [value, setValue] = useState("");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const matches = useMediaQuery("(min-width:600px)");
@@ -75,12 +76,12 @@ function AllRecepis() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
         >
-          {!recipes?.length ? (
+          {!data?.length ? (
             <Grid item xs={12} sm={12} md={12} className={styles.spinner}>
               <CircularProgress />
             </Grid>
           ) : (
-            recipes
+            data
               .filter(
                 (recipe: Recipe) =>
                   recipe.description.includes(value) &&
