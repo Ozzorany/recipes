@@ -12,6 +12,7 @@ import MyRecepis from "./pages/MyRecipes";
 import { cacheRtl, theme } from "./settings";
 import { fetchRecipes } from "./state/recipesSlice";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import RecipePage from "./pages/RecipePage/RecipePage";
 
 function App() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/all-recipes" />} />
               <Route path="/all-recipes" element={<AllRecepis />} />
+              <Route path="/recipe/:id" element={<RecipePage />} />
               <Route path="/my-recipes" element={<MyRecepis />} />
               <Route
                 key="create-recipe"

@@ -4,8 +4,11 @@ import { Recipe } from "../models/recipe.model";
 const serverUrl = process.env.REACT_APP_SERVER;
 
 async function httpGetAllRecipes(): Promise<any> {  
-  return axios.get(`${serverUrl}/recipes`);
-    
+  return axios.get(`${serverUrl}/recipes`); 
+}
+
+async function httpGetRecipesById(recipeId: string): Promise<any> {  
+  return axios.get(`${serverUrl}/recipes/${recipeId}`); 
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
@@ -57,5 +60,6 @@ export {
   httpDeleteRecipe,
   httpUploadImage,
   httpUpdateRecipe,
+  httpGetRecipesById
 };
 

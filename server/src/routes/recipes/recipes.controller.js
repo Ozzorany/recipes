@@ -5,10 +5,15 @@ const {
   deleteRecipe,
   createRecipe,
   uploadImage,
+  fetchRecipeById
 } = require("../../models/recipe.model");
 
 async function httpGetAllRecipes(req, res) {
   res.status(200).json(await fetchRecipes());
+}
+
+async function httpGetRecipeById(req, res) {
+  res.status(200).json(await fetchRecipeById(req?.params?.id));
 }
 
 async function httpUpdateRecipe(req, res) {
@@ -37,4 +42,5 @@ module.exports = {
   httpDeleteRecipe,
   httpCreateRecipe,
   httpUploadImage,
+  httpGetRecipeById
 };

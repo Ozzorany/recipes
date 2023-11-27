@@ -1,0 +1,19 @@
+.container {
+    width: 97%;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: right;
+}
+
+.title {
+    color: white
+}
+
+.checkBox {
+    color: white
+}
+
+.method {
+    white-space: break-spaces;
+    color: white
+}

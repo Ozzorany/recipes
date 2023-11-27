@@ -70,6 +70,10 @@ export default function RecipeReviewCard({ recipe }: any) {
     navigate("/edit-recipe", { state: { isEdit: true, recipe: recipe } });
   };
 
+  const navigateToRecipePage = () => {
+    navigate(`/recipe/${recipe.id}`);
+  }
+
   return (
     <Card sx={{ width: "100%" }}>
       <CardHeader
@@ -106,8 +110,8 @@ export default function RecipeReviewCard({ recipe }: any) {
                   <MenuItem>
                     <ListItemIcon>
                       <WhatsappShareButton
-                        url="https://recipes-e6692.web.app/all-recipes"
-                        title={recipe.description + recipe.method}
+                        url={`https://recipes-e6692.web.app/recipe/${recipe.id}`}
+                        title={recipe.description}
                         separator=":: "
                       >
                         <WhatsappIcon size={32} round />
@@ -132,6 +136,7 @@ export default function RecipeReviewCard({ recipe }: any) {
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}
         alt={recipe.description}
+        onClick={navigateToRecipePage}
       />
 
       {!!recipe.ingredients.length && (

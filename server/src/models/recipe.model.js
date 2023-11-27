@@ -12,6 +12,11 @@ async function fetchRecipes() {
   return (await recipesRef).docs.map((doc) => doc.data());
 }
 
+async function fetchRecipeById(recipeId) {
+  const recipeRef = await firestore.collection(COLLECTION).doc(recipeId).get();
+  return recipeRef.data();
+}
+
 async function updateRecipe(recipe) {
   const cityRef = firestore.collection(COLLECTION).doc(recipe.id);
   const res = await cityRef.update(recipe);
@@ -58,7 +63,9 @@ async function uploadImage(file) {
       await fileToUpload.makePublic();
       file.firebaseUrl = `https://storage.googleapis.com/${BUCKET}/recipes`;
 
-      resolve(`https://firebasestorage.googleapis.com/v0/b/${BUCKET_NAME}/o/${uid}?alt=media&token=${uid}`);
+      resolve(
+        `https://firebasestorage.googleapis.com/v0/b/${BUCKET_NAME}/o/${uid}?alt=media&token=${uid}`
+      );
     });
 
     const ref = stream.end(file.buffer);
@@ -71,4 +78,5 @@ module.exports = {
   deleteRecipe,
   createRecipe,
   uploadImage,
+  fetchRecipeById,
 };
