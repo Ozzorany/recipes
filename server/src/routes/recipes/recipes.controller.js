@@ -17,12 +17,13 @@ const logger = winston.createLogger({
 },);
 
 async function httpGetAllRecipes(req, res) {
+  logger.info('httpGetAllRecipes | GET');
+  console.log('httpGetAllRecipes | GET')
   res.status(200).json(await fetchRecipes());
 }
 
 async function httpGetRecipeById(req, res) {
   logger.info('httpGetRecipeById | GET');
-
   try {
     const recipe = await fetchRecipeById(req?.params?.id)
     res.status(200).json(recipe);
