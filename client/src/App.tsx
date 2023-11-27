@@ -19,16 +19,16 @@ function App() {
   const dispatch = useAppDispatch();
   const isMounted = useRef(true);
 
-  const initApp = useCallback(async () => {
-    await dispatch(fetchRecipes());
-  }, [dispatch]);
+  // const initApp = useCallback(async () => {
+  //   await dispatch(fetchRecipes());
+  // }, [dispatch]);
 
-  useEffect(() => {
-    if (isMounted.current) {
-      isMounted.current = false;
-      initApp();
-    }
-  }, [initApp]);
+  // useEffect(() => {
+  //   if (isMounted.current) {
+  //     isMounted.current = false;
+  //     initApp();
+  //   }
+  // }, [initApp]);
 
   const navigateToHome = () => {
     navigate("/all-recipes", { replace: true });

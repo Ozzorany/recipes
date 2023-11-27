@@ -8,12 +8,29 @@ const {
   fetchRecipeById
 } = require("../../models/recipe.model");
 
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [new winston.transports.Console()],
+},);
+
 async function httpGetAllRecipes(req, res) {
   res.status(200).json(await fetchRecipes());
 }
 
 async function httpGetRecipeById(req, res) {
-  res.status(200).json(await fetchRecipeById(req?.params?.id));
+  logger.info('httpGetRecipeById | GET');
+
+  try {
+    const recipe = await fetchRecipeById(req?.params?.id)
+    res.status(200).json(recipe);
+  } catch(error){
+    logger.error('httpGetRecipeById | ERROR', error);
+    res.status(400)
+  }
+  
 }
 
 async function httpUpdateRecipe(req, res) {
