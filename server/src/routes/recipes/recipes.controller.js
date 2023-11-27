@@ -28,7 +28,7 @@ async function httpGetRecipeById(req, res) {
     const recipe = await fetchRecipeById(req?.params?.id)
     res.status(200).json(recipe);
   } catch(error){
-    logger.error('httpGetRecipeById | ERROR', error);
+    logger.error('httpGetRecipeById  | ERROR', error);
     res.status(400)
   }
   
