@@ -4,47 +4,59 @@ import { useRecipeById } from "../../queries/useRecipeById";
 import {
   Box,
   Checkbox,
+  Chip,
   FormControlLabel,
   FormGroup,
+  Stack,
   Typography,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
-
 
 function RecipePage() {
   const params = useParams();
   const { id } = params || {};
   const { data: recipe } = useRecipeById(id!);
-  const { ingredients, method, image } = recipe || {};
+  const { ingredients, method, image, tags } = recipe || {};
 
   return (
     <div className={styles.container}>
       <Typography variant="h3" className={styles.title}>
         {recipe?.description}
       </Typography>
-      <Typography variant="h5" className={styles.title}>
+      {tags?.map((tag: any) => {
+        return (
+          <Stack direction="row" key={tag} spacing={1} mt={2}>
+            <Chip label={tag} sx={{color: 'white', backgroundColor: '#3d74eb'}}/>
+          </Stack>
+        );
+      })}
+      <Typography variant="h5" mt={2} className={styles.ingredientsTitle}>
         מרכיבים
       </Typography>
       <FormGroup>
         {ingredients?.map((ingredient: string) => {
           return (
             <FormControlLabel
-              control={<Checkbox />}
+              control={<Checkbox sx={{ color: "white" }} />}
               label={ingredient}
               className={styles.checkBox}
             />
           );
         })}
       </FormGroup>
-      <Typography variant="h5" className={styles.title}>
+      <Typography variant="h5" mt={2} className={styles.title}>
         אופן הכנה:
       </Typography>
-      <Typography className={styles.method}>{method}</Typography>
+      <Typography className={styles.method} mt={2}>
+        {method}
+      </Typography>
       <Box
+        mt={2}
         component="img"
         sx={{
           height: 350,
-          width: 'auto',
+          width: 300,
+          objectFit: "contain",
         }}
         alt="The house from the offer."
         src={!!image ? image : noImagePath}

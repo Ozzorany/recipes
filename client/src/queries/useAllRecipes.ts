@@ -8,5 +8,6 @@ export const useAllRecipes = () => {
       const response = await httpGetAllRecipes();
       return response?.data;
     },
+    staleTime: Infinity 
   });
 };

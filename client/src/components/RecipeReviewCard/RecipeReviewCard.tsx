@@ -72,7 +72,7 @@ export default function RecipeReviewCard({ recipe }: any) {
 
   const navigateToRecipePage = () => {
     navigate(`/recipe/${recipe.id}`);
-  }
+  };
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -97,7 +97,9 @@ export default function RecipeReviewCard({ recipe }: any) {
                     <ListItemIcon>
                       <ModeEditOutlineOutlinedIcon />
                     </ListItemIcon>
-                    <ListItemText>עריכה</ListItemText>
+                    <ListItemText>
+                      <Typography>עריכה</Typography>
+                    </ListItemText>
                   </MenuItem>
                   <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
                     <ListItemIcon>
@@ -117,7 +119,7 @@ export default function RecipeReviewCard({ recipe }: any) {
                         <WhatsappIcon size={32} round />
                       </WhatsappShareButton>
                     </ListItemIcon>
-                    <ListItemText>שיתוף מתכון</ListItemText>
+                    <ListItemText sx={{marginLeft:'2px'}}><Typography>שיתוף מתכון</Typography></ListItemText>
                   </MenuItem>
                 </Menu>
               </React.Fragment>
@@ -125,13 +127,13 @@ export default function RecipeReviewCard({ recipe }: any) {
           </PopupState>
         }
         title={recipe.description}
-        //subheader="September 14, 2016"
       />
       <CardMedia
         style={{
           width: "auto",
           height: "31vh",
           margin: "auto",
+          cursor: "pointer",
         }}
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}

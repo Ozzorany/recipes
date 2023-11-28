@@ -70,6 +70,7 @@ const NavigationBar = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer'
             }}
             onClick={navigateToAllRecepis}
           >
@@ -130,6 +131,7 @@ const NavigationBar = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer'
             }}
             onClick={navigateToAllRecepis}
           >

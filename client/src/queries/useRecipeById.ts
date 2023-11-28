@@ -8,5 +8,6 @@ export const useRecipeById = (recipeId: string) => {
       const response = await httpGetRecipesById(recipeId);
       return response?.data;
     },
+     staleTime: Infinity 
   });
 };
