@@ -61,7 +61,8 @@ function CreateRecipe() {
       method: methodRef.current.value,
       tags: tags,
       image: getNewImage(),
-      creatorId: user?.uid || ""
+      creatorId: user?.uid || "",
+      sharedGroups: []
     };
 
     if (methodRef.current.value.trim() !== "" && descriptionRef.current.value.trim() !== "") {

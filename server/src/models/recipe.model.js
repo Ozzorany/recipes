@@ -2,14 +2,33 @@
 const firebase = require("../firebase/db");
 const firestore = firebase.firestore();
 const { v4: uuidv4 } = require("uuid");
+const { fetchUserById } = require("./users.model");
 const COLLECTION = "recipes";
-const { storage } = require("../firebase/db");
-const db = require("../firebase/db");
+const _ = require("lodash");
+
 require("dotenv").config();
 
-async function fetchRecipes() {
-  const recipesRef = firestore.collection(COLLECTION).get();
-  return (await recipesRef).docs.map((doc) => doc.data());
+async function fetchRecipes(userId) {
+  const user = await fetchUserById(userId);
+  const { sharedGroups } = user;
+
+  const userRecipes = (
+    await firestore
+      .collection(COLLECTION)
+      .where("creatorId", "==", userId)
+      .get()
+  ).docs.map((doc) => doc.data());
+
+  const sharedGroupsRecipes = (
+    await firestore
+      .collection(COLLECTION)
+      .where("sharedGroups", "array-contains-any", sharedGroups)
+      .get()
+  ).docs.map((doc) => doc.data());
+
+  const unifiedRecipes = [...userRecipes, ...sharedGroupsRecipes];
+
+  return _.uniqBy(unifiedRecipes, "id");
 }
 
 async function fetchRecipeById(recipeId) {

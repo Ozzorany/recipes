@@ -19,7 +19,7 @@ const logger = winston.createLogger({
 async function httpGetAllRecipes(req, res) {
   logger.info("httpGetAllRecipes | GET");
   console.log("httpGetAllRecipes | GET");
-  res.status(200).json(await fetchRecipes());
+  res.status(200).json(await fetchRecipes(req?.params?.id));
 }
 
 async function httpGetRecipeById(req, res) {

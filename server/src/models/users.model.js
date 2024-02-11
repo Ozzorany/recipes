@@ -12,8 +12,8 @@ async function createUser(user) {
 }
 
 async function fetchUserById(userId) {
-  const recipeRef = await firestore.collection(COLLECTION).doc(userId).get();
-  return recipeRef.data();
+  const userRef = await firestore.collection(COLLECTION).doc(userId).get();
+  return userRef.data();
 }
 
 

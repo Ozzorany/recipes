@@ -57,7 +57,7 @@ export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: user } = useUserById(recipe?.creatorId, recipe.id);
+  const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
 
   const handleExpandClick = () => {
