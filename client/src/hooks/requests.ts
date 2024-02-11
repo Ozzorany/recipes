@@ -4,8 +4,8 @@ import { User } from "../models/user.model";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
-async function httpGetAllRecipes(): Promise<any> {  
-  return axios.get(`${serverUrl}/recipes`); 
+async function httpGetAllRecipes(userId: string): Promise<any> {  
+  return axios.get(`${serverUrl}/recipes/${userId}`); 
 }
 
 async function httpGetRecipesById(recipeId: string): Promise<any> {  

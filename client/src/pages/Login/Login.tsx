@@ -6,13 +6,12 @@ import {
 } from "../../utils/firebase.utils";
 import { Button } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "../../queries/useCreateUser";
 
 function Login() {
   const navigate = useNavigate();
-  const useCreateUserMutation = useCreateUser()
+  const useCreateUserMutation = useCreateUser();
 
   const logGoogleUser = async () => {
     const response = await signInWithGooglePopup();
@@ -23,7 +22,9 @@ function Login() {
         id: user?.uid!,
         displayName: user?.displayName!,
         email: user?.email!,
-        logo: user?.photoURL!
+        logo: user?.photoURL!,
+        managedGroups: [],
+        sharedGroups: [],
       });
     } else {
       console.log("existing");

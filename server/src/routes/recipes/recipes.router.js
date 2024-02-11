@@ -13,7 +13,7 @@ const {
 
 const recipesRouter = express.Router();
 
-recipesRouter.get("/", httpGetAllRecipes);
+recipesRouter.get("/:id", httpGetAllRecipes);
 recipesRouter.get("/:id", httpGetRecipeById);
 recipesRouter.post("/update", httpUpdateRecipe);
 recipesRouter.post("/create", httpCreateRecipe);

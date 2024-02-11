@@ -5,19 +5,10 @@ import { httpDeleteRecipe, httpGetAllRecipes, httpSubmitRecipe } from "./request
 export const useRecipes = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([])
 
-    const getRecipes = useCallback(async () => {        
-        const fetchedRecipes = await httpGetAllRecipes();
-        // setRecipes(fetchedRecipes);
-    }, []);
-
     const deleteRecipe = useCallback(async (id: string) => {
-        const response = await httpDeleteRecipe(id);
+        await httpDeleteRecipe(id);
 
-        if (response) {
-            getRecipes();
-        }
-
-    }, [getRecipes]);
+    }, []);
 
     const submitRecipe = useCallback(async (recipe: Recipe) => {
         const response: Recipe = (await httpSubmitRecipe(recipe)).data;
