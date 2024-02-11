@@ -19,12 +19,12 @@ async function fetchRecipes(userId) {
       .get()
   ).docs.map((doc) => doc.data());
 
-  const sharedGroupsRecipes = (
+  const sharedGroupsRecipes = sharedGroups?.length > 0 ?(
     await firestore
       .collection(COLLECTION)
       .where("sharedGroups", "array-contains-any", sharedGroups)
       .get()
-  ).docs.map((doc) => doc.data());
+  ).docs.map((doc) => doc.data()) : [];
 
   const unifiedRecipes = [...userRecipes, ...sharedGroupsRecipes];
 
