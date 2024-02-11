@@ -86,6 +86,7 @@ export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
             sx={{ bgcolor: red[500] }}
             aria-label="recipe"
             src={userLogoUrl}
+            imgProps={{ referrerPolicy: "no-referrer" }} 
           />
         }
         action={

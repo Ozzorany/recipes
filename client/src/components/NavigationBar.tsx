@@ -167,7 +167,7 @@ const NavigationBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={photoURL} />
+                <Avatar alt="Remy Sharp" src={photoURL}  imgProps={{ referrerPolicy: "no-referrer" }} />
               </IconButton>
             </Tooltip>
             <Menu

@@ -13,8 +13,8 @@ const {
 
 const recipesRouter = express.Router();
 
-recipesRouter.get("/:id", httpGetAllRecipes);
 recipesRouter.get("/:id", httpGetRecipeById);
+recipesRouter.get("/all/:userId", httpGetAllRecipes);
 recipesRouter.post("/update", httpUpdateRecipe);
 recipesRouter.post("/create", httpCreateRecipe);
 recipesRouter.post("/upload-image", upload.single("image"), httpUploadImage);
