@@ -14,9 +14,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
+import { auth } from '../utils/firebase.utils';
 
 const pages = ['All Recipes', 'My Recipes'];
-const settings = ['Login', 'Logout'];
+const settings = ['להתנתק'];
 
 const NavigationBar = () => {
   const navigate = useNavigate()
@@ -51,6 +52,7 @@ const NavigationBar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    auth.signOut();
   };
 
   return (
