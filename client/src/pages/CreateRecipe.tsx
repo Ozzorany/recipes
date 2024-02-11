@@ -12,6 +12,7 @@ import { Recipe } from "../models/recipe.model";
 import { createRecipe, updateRecipe } from "../state/recipesSlice";
 import styles from "./CreateRecipe.module.css";
 import { v4 as uuidv4 } from "uuid";
+import { auth } from "../utils/firebase.utils";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -29,6 +30,7 @@ function CreateRecipe() {
   const { state }: { state: any } = useLocation();
   const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
   const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
+  const user = auth.currentUser;
 
   useEffect(() => {
     if (isEdit) {
@@ -59,6 +61,7 @@ function CreateRecipe() {
       method: methodRef.current.value,
       tags: tags,
       image: getNewImage(),
+      creatorId: user?.uid || ""
     };
 
     if (methodRef.current.value.trim() !== "" && descriptionRef.current.value.trim() !== "") {

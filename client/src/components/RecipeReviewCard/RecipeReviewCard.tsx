@@ -35,6 +35,8 @@ import { useAppDispatch } from "../../hooks/storeHooks";
 import { deleteRecipe } from "../../state/recipesSlice";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import styles from "./RecipeReviewCard.module.css"; // Import css modules stylesheet as styles
+import { useUserById } from "../../queries/useUserById";
+import { Recipe } from "../../models/recipe.model";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -51,10 +53,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard({ recipe }: any) {
+export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { data: user } = useUserById(recipe?.creatorId, recipe.id);
+  const userLogoUrl = user?.logo;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -78,9 +82,11 @@ export default function RecipeReviewCard({ recipe }: any) {
     <Card sx={{ width: "100%" }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
+          <Avatar
+            sx={{ bgcolor: red[500] }}
+            aria-label="recipe"
+            src={userLogoUrl}
+          />
         }
         action={
           <PopupState variant="popover" popupId="demo-popup-menu">
@@ -119,7 +125,9 @@ export default function RecipeReviewCard({ recipe }: any) {
                         <WhatsappIcon size={32} round />
                       </WhatsappShareButton>
                     </ListItemIcon>
-                    <ListItemText sx={{marginLeft:'2px'}}><Typography>שיתוף מתכון</Typography></ListItemText>
+                    <ListItemText sx={{ marginLeft: "2px" }}>
+                      <Typography>שיתוף מתכון</Typography>
+                    </ListItemText>
                   </MenuItem>
                 </Menu>
               </React.Fragment>
