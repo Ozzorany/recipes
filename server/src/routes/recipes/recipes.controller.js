@@ -5,33 +5,32 @@ const {
   deleteRecipe,
   createRecipe,
   uploadImage,
-  fetchRecipeById
+  fetchRecipeById,
 } = require("../../models/recipe.model");
 
-const winston = require('winston');
+const winston = require("winston");
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: "info",
   format: winston.format.json(),
   transports: [new winston.transports.Console()],
-},);
+});
 
 async function httpGetAllRecipes(req, res) {
-  logger.info('httpGetAllRecipes | GET');
-  console.log('httpGetAllRecipes | GET')
+  logger.info("httpGetAllRecipes | GET");
+  console.log("httpGetAllRecipes | GET");
   res.status(200).json(await fetchRecipes());
 }
 
 async function httpGetRecipeById(req, res) {
-  logger.info('httpGetRecipeById | GET');
+  logger.info("httpGetRecipeById | GET");
   try {
-    const recipe = await fetchRecipeById(req?.params?.id)
+    const recipe = await fetchRecipeById(req?.params?.id);
     res.status(200).json(recipe);
-  } catch(error){
-    logger.error('httpGetRecipeById  | ERROR', error);
-    res.status(400)
+  } catch (error) {
+    logger.error("httpGetRecipeById  | ERROR", error);
+    res.status(400);
   }
-  
 }
 
 async function httpUpdateRecipe(req, res) {
@@ -60,5 +59,5 @@ module.exports = {
   httpDeleteRecipe,
   httpCreateRecipe,
   httpUploadImage,
-  httpGetRecipeById
+  httpGetRecipeById,
 };

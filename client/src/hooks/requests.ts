@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Recipe } from "../models/recipe.model";
+import { User } from "../models/user.model";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
@@ -54,12 +55,28 @@ async function httpDeleteRecipe(id: string) {
   return response;
 }
 
+async function httpCreateUser(user: User): Promise<any> {
+  const response = await axios.post<User>(
+    `${serverUrl}/users/create`,
+    user
+  );
+
+  return response;
+}
+
+async function httpGetUserById(userId: string): Promise<any> {  
+  return axios.get(`${serverUrl}/users/${userId}`); 
+}
+
+
 export {
   httpGetAllRecipes,
   httpSubmitRecipe,
   httpDeleteRecipe,
   httpUploadImage,
   httpUpdateRecipe,
-  httpGetRecipesById
+  httpGetRecipesById,
+  httpCreateUser,
+  httpGetUserById
 };
 
