@@ -22,9 +22,11 @@ const MenuProps = {
 export default function MultiSelect({
   values,
   currentValues,
+  submitValuesChange,
 }: {
   values: any;
   currentValues: any;
+  submitValuesChange: (values: string[]) => void;
 }) {
   const [groupsName, setGroupsName] = React.useState<string[]>([]);
 
@@ -38,16 +40,20 @@ export default function MultiSelect({
     if (filteredNames?.length > 0) {
       setGroupsName(filteredNames);
     }
-  }, [values]);
+  }, [values, currentValues]);
 
   const handleChange = (event: SelectChangeEvent<typeof groupsName>) => {
     const {
       target: { value },
     } = event;
-    setGroupsName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    const groups = typeof value === "string" ? value.split(",") : value;
+    setGroupsName(groups);
+
+    // change to do with ID!
+    const groupsIds = values
+      ?.filter((value: { name: string }) => groups?.includes(value?.name))
+      ?.map((value: { id: any; }) => value.id);
+    submitValuesChange(groupsIds);
   };
 
   return (

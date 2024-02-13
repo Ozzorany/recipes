@@ -6,5 +6,5 @@ export interface Recipe {
     tags: string[],
     image: string,
     creatorId: string,
-    sharedGroups: []
+    sharedGroups: string[]
 }

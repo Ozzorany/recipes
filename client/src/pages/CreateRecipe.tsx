@@ -19,6 +19,7 @@ import { useGroups } from "../queries/useGroups";
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [groups, setGroups] = useState<string[]>([]);
   const [recipeDescriptionValid, setRecipeDescriptionValid] =
     useState<boolean>(true);
   const [methodValid, setMethodValid] = useState<boolean>(true);
@@ -46,9 +47,10 @@ function CreateRecipe() {
         })
       );
     } else {
-      descriptionRef.current.value = '';
-      methodRef.current.value = '';
+      descriptionRef.current.value = "";
+      methodRef.current.value = "";
       setTags(() => []);
+      setGroups(() => []);
       setIngredients(() => []);
     }
   }, [isEdit, editRecipe]);
@@ -65,11 +67,14 @@ function CreateRecipe() {
       tags: tags,
       image: getNewImage(),
       creatorId: user?.uid || "",
-      sharedGroups: []
+      sharedGroups: groups,
     };
 
-    if (methodRef.current.value.trim() !== "" && descriptionRef.current.value.trim() !== "") {
-      if(!!selectedImage) {
+    if (
+      methodRef.current.value.trim() !== "" &&
+      descriptionRef.current.value.trim() !== ""
+    ) {
+      if (!!selectedImage) {
         httpUploadImage(selectedImage).then((res: any) => {
           newRecipe.image = res.data.downloadUrl;
           executeSubmition(newRecipe);
@@ -77,7 +82,7 @@ function CreateRecipe() {
       } else {
         executeSubmition(newRecipe);
       }
-    
+
       navigate("/all-recipes", { replace: true });
     }
   };
@@ -95,12 +100,12 @@ function CreateRecipe() {
   };
 
   const executeSubmition = (recipe: Recipe): void => {
-    if(isEdit) {
+    if (isEdit) {
       dispatch(updateRecipe(recipe));
     } else {
       dispatch(createRecipe(recipe));
     }
-  }
+  };
 
   const setErrorValidations = () => {
     if (descriptionRef.current.value.trim() === "") {
@@ -120,6 +125,10 @@ function CreateRecipe() {
     setTags(() => tags);
   };
 
+  const handleGroupsChange = (groups: string[]) => {
+    setGroups(() => groups);
+  };
+
   const addIngredient = () => {
     const newId = uuidv4();
     if (!!ingredientRef.current && ingredientRef.current.value.trim() !== "") {
@@ -136,7 +145,7 @@ function CreateRecipe() {
 
   const handleSelectImage = (imageValue: any) => {
     setSelectedImage(imageValue);
-    if(!!imageValue) {
+    if (!!imageValue) {
       setIsImageRemoved(false);
     } else {
       setIsImageRemoved(true);
@@ -214,11 +223,18 @@ function CreateRecipe() {
       </div>
 
       <div>
-        <UploadImages onSelectedImage={handleSelectImage} currentImage={isEdit ? editRecipe.image : null} />
+        <UploadImages
+          onSelectedImage={handleSelectImage}
+          currentImage={isEdit ? editRecipe.image : null}
+        />
       </div>
 
-      <div style={{marginTop: '16px'}}>
-        <MultiSelect values={userGroups} currentValues={editRecipe?.sharedGroups}/>
+      <div style={{ marginTop: "16px" }}>
+        <MultiSelect
+          values={userGroups}
+          currentValues={editRecipe?.sharedGroups}
+          submitValuesChange={handleGroupsChange}
+        />
       </div>
       <div className={styles.actions}>
         <button
