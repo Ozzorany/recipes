@@ -111,7 +111,7 @@ function App() {
                 path="/edit-recipe"
                 element={
                   <PrivateRoute isAuthenticated={authentication.authenticated}>
-                    <CreateRecipe />{" "}
+                    <CreateRecipe />
                   </PrivateRoute>
                 }
               />

@@ -37,6 +37,7 @@ import noImagePath from "../../assets/images/recipe-book.jpg";
 import styles from "./RecipeReviewCard.module.css"; // Import css modules stylesheet as styles
 import { useUserById } from "../../queries/useUserById";
 import { Recipe } from "../../models/recipe.model";
+import { auth } from "../../utils/firebase.utils";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -53,12 +54,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
+export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
+  const currentLogedInUser = auth.currentUser;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -86,7 +88,7 @@ export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
             sx={{ bgcolor: red[500] }}
             aria-label="recipe"
             src={userLogoUrl}
-            imgProps={{ referrerPolicy: "no-referrer" }} 
+            imgProps={{ referrerPolicy: "no-referrer" }}
           />
         }
         action={
@@ -97,25 +99,30 @@ export default function RecipeReviewCard({recipe}: {recipe: Recipe}) {
                   <MoreVertIcon />
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>
-                  <MenuItem
-                    onClick={() => handleEditRecipe(popupState)}
-                    className={styles.item}
-                  >
-                    <ListItemIcon>
-                      <ModeEditOutlineOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography>עריכה</Typography>
-                    </ListItemText>
-                  </MenuItem>
-                  <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
-                    <ListItemIcon>
-                      <DeleteOutlineOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography>מחיקה</Typography>
-                    </ListItemText>
-                  </MenuItem>
+                  {currentLogedInUser?.uid === recipe?.creatorId && (
+                    <MenuItem
+                      onClick={() => handleEditRecipe(popupState)}
+                      className={styles.item}
+                    >
+                      <ListItemIcon>
+                        <ModeEditOutlineOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText>
+                        <Typography>עריכה</Typography>
+                      </ListItemText>
+                    </MenuItem>
+                  )}
+
+                  {currentLogedInUser?.uid === recipe?.creatorId && (
+                    <MenuItem onClick={() => handleDeleteRecipe(popupState)}>
+                      <ListItemIcon>
+                        <DeleteOutlineOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText>
+                        <Typography>מחיקה</Typography>
+                      </ListItemText>
+                    </MenuItem>
+                  )}
                   <MenuItem>
                     <ListItemIcon>
                       <WhatsappShareButton

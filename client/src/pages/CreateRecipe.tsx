@@ -237,13 +237,14 @@ function CreateRecipe() {
         />
       </div>
       <div className={styles.actions}>
-        <button
+        <Button
           type="button"
           className={styles.submit}
           onClick={confirmHandler}
+          disabled={isEdit && editRecipe?.creatorId !== user?.uid}
         >
           {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
-        </button>
+        </Button>
       </div>
     </form>
   );
