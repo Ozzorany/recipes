@@ -12,12 +12,11 @@ import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../models/recipe.model";
 import { useAllRecipes } from "../queries/useAllRecipes";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
-import { useUserById } from "../queries/useUserById";
 import { auth } from "../utils/firebase.utils";
 
 function AllRecepis() {
   const user = auth.currentUser;
-  const { data } = useAllRecipes(user?.uid || "");
+  const { data } = useAllRecipes();
   const [value, setValue] = useState("");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const matches = useMediaQuery("(min-width:600px)");

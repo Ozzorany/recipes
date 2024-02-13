@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const { fetchUserById } = require("./users.model");
 const COLLECTION = "recipes";
 const _ = require("lodash");
+const {  fetchGroupsByIds } = require("./groups.model");
 
 require("dotenv").config();
 
@@ -32,8 +33,10 @@ async function fetchRecipes(userId) {
 }
 
 async function fetchRecipeById(recipeId) {
-  const recipeRef = await firestore.collection(COLLECTION).doc(recipeId).get();
-  return recipeRef.data();
+  const recipe = (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
+  const recipeGroups = await fetchGroupsByIds(recipe?.sharedGroups || [])
+  recipe.sharedGroups = recipeGroups;
+  return recipe;
 }
 
 async function updateRecipe(recipe) {

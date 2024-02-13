@@ -14,12 +14,19 @@ import RecipePage from "./pages/RecipePage/RecipePage";
 import Login from "./pages/Login/Login";
 import { auth } from "./utils/firebase.utils";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import { User } from "firebase/auth";
+import { httpVlidateUser } from "./hooks/requests";
 
 function App() {
   const [authentication, setAuthState] = useState({
     authenticated: false,
     initializing: true,
   });
+
+  async function validateUser(user: User) {
+    const token = await user.getIdToken();
+    httpVlidateUser(token);
+  }
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -28,6 +35,7 @@ function App() {
           authenticated: true,
           initializing: false,
         });
+        // validateUser(user);
       } else {
         setAuthState({
           authenticated: false,

@@ -13,6 +13,8 @@ import { createRecipe, updateRecipe } from "../state/recipesSlice";
 import styles from "./CreateRecipe.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "../utils/firebase.utils";
+import MultiSelect from "../components/MultiSelect/MultiSelect";
+import { useGroups } from "../queries/useGroups";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -22,6 +24,7 @@ function CreateRecipe() {
   const [methodValid, setMethodValid] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isImageRemoved, setIsImageRemoved] = useState<boolean>(false);
+  const { data: userGroups } = useGroups();
   const ingredientRef = useRef<any>();
   const methodRef = useRef<any>();
   const descriptionRef = useRef<any>();
@@ -214,6 +217,9 @@ function CreateRecipe() {
         <UploadImages onSelectedImage={handleSelectImage} currentImage={isEdit ? editRecipe.image : null} />
       </div>
 
+      <div style={{marginTop: '16px'}}>
+        <MultiSelect values={userGroups} currentValues={editRecipe?.sharedGroups}/>
+      </div>
       <div className={styles.actions}>
         <button
           type="button"

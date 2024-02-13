@@ -1,15 +1,24 @@
 import axios from "axios";
 import { Recipe } from "../models/recipe.model";
 import { User } from "../models/user.model";
+import { auth } from "../utils/firebase.utils";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
-async function httpGetAllRecipes(userId: string): Promise<any> {  
-  return axios.get(`${serverUrl}/recipes/all/${userId}`); 
+async function httpGetAllRecipes(): Promise<any> {
+  return axios.get(`${serverUrl}/recipes`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
 }
 
-async function httpGetRecipesById(recipeId: string): Promise<any> {  
-  return axios.get(`${serverUrl}/recipes/${recipeId}`); 
+async function httpGetRecipesById(recipeId: string): Promise<any> {
+  return axios.get(`${serverUrl}/recipes/${recipeId}`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
@@ -31,16 +40,16 @@ async function httpUpdateRecipe(recipe: Recipe): Promise<any> {
 }
 
 async function httpUploadImage(file: any): Promise<any> {
-  const  bodyFormData = new FormData();
-  bodyFormData.append('image', file); 
+  const bodyFormData = new FormData();
+  bodyFormData.append("image", file);
 
   const response = await axios.post<any>(
     `${serverUrl}/recipes/upload-image`,
-    bodyFormData, 
+    bodyFormData,
     {
       headers: {
-        'Content-Type': file.type
-      }
+        "Content-Type": file.type,
+      },
     }
   );
 
@@ -56,18 +65,30 @@ async function httpDeleteRecipe(id: string) {
 }
 
 async function httpCreateUser(user: User): Promise<any> {
-  const response = await axios.post<User>(
-    `${serverUrl}/users/create`,
-    user
-  );
+  const response = await axios.post<User>(`${serverUrl}/users/create`, user);
 
   return response;
 }
 
-async function httpGetUserById(userId: string): Promise<any> {  
-  return axios.get(`${serverUrl}/users/${userId}`); 
+async function httpGetUserById(userId: string): Promise<any> {
+  return axios.get(`${serverUrl}/users/${userId}`);
 }
 
+async function httpVlidateUser(token: string): Promise<any> {
+  return axios.get(`${serverUrl}/api/auth`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+async function httpGetUserGroups(): Promise<any> {
+  return axios.get(`${serverUrl}/groups`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+}
 
 export {
   httpGetAllRecipes,
@@ -77,6 +98,7 @@ export {
   httpUpdateRecipe,
   httpGetRecipesById,
   httpCreateUser,
-  httpGetUserById
+  httpGetUserById,
+  httpVlidateUser,
+  httpGetUserGroups
 };
-
