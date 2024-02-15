@@ -14,58 +14,79 @@ const MenuProps = {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
-      bgColor: 'white',
+      bgColor: "white",
     },
   },
 };
 
 const names = [
-  'איטלקי',
-  'קינוח',
-  'חלבי',
-  'בשרי'
+  "איטלקי",
+  "קינוח",
+  "חלבי",
+  "בשרי",
+  "מאפים",
+  "אסייתי",
+  "סלטים",
+  "מרקים",
+  "דגים",
+  "מקסיקני",
+  "הודי",
+  "ארוחת בוקר"
 ];
 
-function Tags({ currentTags, submitTagsChange }: { currentTags: string[], submitTagsChange: (tags: string[]) => void }) {
-    const [tags, setTags] = useState<string[]>([]);
+function Tags({
+  currentTags,
+  submitTagsChange,
+}: {
+  currentTags: string[];
+  submitTagsChange: (tags: string[]) => void;
+}) {
+  const [tags, setTags] = useState<string[]>([]);
 
-    const handleChange = (event: SelectChangeEvent<typeof tags>) => {
-      const {target: { value }} = event;
-      const newTags: string[] = typeof value === 'string' ? value.split(',') : value;
-      setTags(newTags);
-      submitTagsChange(newTags);
-    };
+  const handleChange = (event: SelectChangeEvent<typeof tags>) => {
+    const {
+      target: { value },
+    } = event;
+    const newTags: string[] =
+      typeof value === "string" ? value.split(",") : value;
+    setTags(newTags);
+    submitTagsChange(newTags);
+  };
 
-    useEffect(() => {
-      setTags(currentTags);
-    }, [currentTags])
-    
-    return (
-        <div>
-          <FormControl sx={{ m: 1, width: 300 }} style={{backgroundColor: 'white'}}>
-            <InputLabel id="demo-multiple-checkbox-label" dir="rtl">סגנונות</InputLabel>
-            <Select
-            dir="rtl"
-              labelId="demo-multiple-checkbox-label"
-              id="demo-multiple-checkbox"
-              multiple
-              value={tags}
-              onChange={handleChange}
-              input={<OutlinedInput label="Tag" />}
-              renderValue={(selected) => selected.join(', ')}
-              MenuProps={MenuProps}
-            >
-              {names.map((name) => (
-                <MenuItem key={name} value={name}>
-                  <Checkbox checked={tags.indexOf(name) > -1} />
-                  <ListItemText primary={name} sx={{textAlign: 'left'}} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-      );
+  useEffect(() => {
+    setTags(currentTags);
+  }, [currentTags]);
 
+  return (
+    <div>
+      <FormControl
+        sx={{ m: 1, width: 300 }}
+        style={{ backgroundColor: "white" }}
+      >
+        <InputLabel id="demo-multiple-checkbox-label" dir="rtl">
+          סגנונות
+        </InputLabel>
+        <Select
+          dir="rtl"
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={tags}
+          onChange={handleChange}
+          input={<OutlinedInput label="Tag" />}
+          renderValue={(selected) => selected.join(", ")}
+          MenuProps={MenuProps}
+        >
+          {names.map((name) => (
+            <MenuItem key={name} value={name}>
+              <Checkbox checked={tags.indexOf(name) > -1} />
+              <ListItemText primary={name} sx={{ textAlign: "left" }} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
 }
 
 export default Tags;

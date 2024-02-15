@@ -60,11 +60,11 @@ type HandleFavoritse = (recipeId: string) => void;
 export default function RecipeReviewCard({
   recipe,
   isFavorite,
-  handleFavoriteRecipesChange
+  handleFavoriteRecipesChange,
 }: {
   recipe: Recipe;
   isFavorite: boolean;
-  handleFavoriteRecipesChange: HandleFavoritse
+  handleFavoriteRecipesChange: HandleFavoritse;
 }) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
@@ -94,7 +94,7 @@ export default function RecipeReviewCard({
 
   const handleFavorite = () => {
     favoriteRecipesMutation.mutate(recipe.id);
-    handleFavoriteRecipesChange(recipe.id)
+    handleFavoriteRecipesChange(recipe.id);
   };
 
   return (
@@ -125,7 +125,7 @@ export default function RecipeReviewCard({
                         <ModeEditOutlineOutlinedIcon />
                       </ListItemIcon>
                       <ListItemText>
-                        <Typography>עריכה</Typography>
+                        <Typography textAlign="left">עריכה</Typography>
                       </ListItemText>
                     </MenuItem>
                   )}
@@ -136,7 +136,7 @@ export default function RecipeReviewCard({
                         <DeleteOutlineOutlinedIcon />
                       </ListItemIcon>
                       <ListItemText>
-                        <Typography>מחיקה</Typography>
+                        <Typography textAlign="left">מחיקה</Typography>
                       </ListItemText>
                     </MenuItem>
                   )}
@@ -151,7 +151,7 @@ export default function RecipeReviewCard({
                       </WhatsappShareButton>
                     </ListItemIcon>
                     <ListItemText sx={{ marginLeft: "2px" }}>
-                      <Typography>שיתוף מתכון</Typography>
+                      <Typography textAlign="left">שיתוף מתכון</Typography>
                     </ListItemText>
                   </MenuItem>
                 </Menu>

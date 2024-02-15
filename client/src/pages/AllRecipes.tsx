@@ -25,7 +25,20 @@ function AllRecepis() {
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
   const matches = useMediaQuery("(min-width:600px)");
-  const tags = ["איטלקי", "קינוח", "חלבי", "בשרי"];
+  const tags = [
+    "איטלקי",
+    "קינוח",
+    "חלבי",
+    "בשרי",
+    "מאפים",
+    "אסייתי",
+    "סלטים",
+    "מרקים",
+    "דגים",
+    "מקסיקני",
+    "הודי",
+    "ארוחת בוקר"
+  ];
   const { data: user } = useUserById(currentAuthUser.uid);
   const userFavoriteRecipes = user?.favoriteRecipes;
 
@@ -55,8 +68,8 @@ function AllRecepis() {
   };
 
   const toggleShowFavoritesOnly = () => {
-    setShowFavoritesOnly((prevState: boolean) => !prevState)
-   };
+    setShowFavoritesOnly((prevState: boolean) => !prevState);
+  };
 
   return (
     <div className={styles.container}>
@@ -105,7 +118,10 @@ function AllRecepis() {
               marginLeft: "16px",
             }}
           >
-            <IconButton aria-label="add to favorites" onClick={toggleShowFavoritesOnly}>
+            <IconButton
+              aria-label="add to favorites"
+              onClick={toggleShowFavoritesOnly}
+            >
               <FavoriteIcon
                 style={{ color: showFavoritesOnly ? "red" : "gray" }}
                 fontSize="large"
@@ -132,7 +148,7 @@ function AllRecepis() {
                   recipe.description.includes(value) &&
                   (filterTags.length === 0 ||
                     recipe.tags.some((tag) => filterTags.includes(tag))) &&
-                    (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
+                  (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
               )
               .map((recipe: Recipe) => {
                 return (

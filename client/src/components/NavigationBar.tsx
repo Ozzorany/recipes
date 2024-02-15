@@ -15,8 +15,6 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../utils/firebase.utils";
 
-const settings = ["להתנתק"];
-
 const NavigationBar = () => {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -56,8 +54,11 @@ const NavigationBar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-    auth.signOut();
   };
+
+  const signOut = () => {
+    auth.signOut();
+  }
 
   return (
     <AppBar position="static">
@@ -150,12 +151,12 @@ const NavigationBar = () => {
             >
               כל המתכונים
             </Button>
-            <Button
+            {/* <Button
               onClick={navigateToMyRecepis}
               sx={{ my: 2, color: "white", display: "block" }}
             >
               המתכונים שלי
-            </Button>
+            </Button> */}
             <Button
               onClick={navigateToCreateRecipe}
               sx={{ my: 2, color: "white", display: "block" }}
@@ -167,7 +168,11 @@ const NavigationBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={photoURL}  imgProps={{ referrerPolicy: "no-referrer" }} />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={photoURL}
+                  imgProps={{ referrerPolicy: "no-referrer" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -186,11 +191,9 @@ const NavigationBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key={"logout"} onClick={signOut}>
+                <Typography textAlign="center">התנתקות</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
