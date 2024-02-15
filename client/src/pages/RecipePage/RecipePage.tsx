@@ -23,6 +23,7 @@ function RecipePage() {
       <Typography variant="h3" className={styles.title}>
         {recipe?.description}
       </Typography>
+      <Box display="flex" justifyContent="start" gap={"8px"}>
       {tags?.map((tag: any) => {
         return (
           <Stack direction="row" key={tag} spacing={1} mt={2}>
@@ -30,6 +31,8 @@ function RecipePage() {
           </Stack>
         );
       })}
+      </Box>
+     
       <Typography variant="h5" mt={2} className={styles.ingredientsTitle}>
         מרכיבים
       </Typography>

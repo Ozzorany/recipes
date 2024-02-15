@@ -116,9 +116,9 @@ const NavigationBar = () => {
               <MenuItem onClick={navigateToAllRecepis}>
                 <Typography textAlign="center">כל המתכונים</Typography>
               </MenuItem>
-              <MenuItem onClick={navigateToMyRecepis}>
+              {/* <MenuItem onClick={navigateToMyRecepis}>
                 <Typography textAlign="center">המתכונים שלי</Typography>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={navigateToCreateRecipe}>
                 <Typography textAlign="center">יצירת מתכון</Typography>
               </MenuItem>
