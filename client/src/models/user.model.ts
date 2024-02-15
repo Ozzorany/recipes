@@ -4,6 +4,7 @@ export interface User {
     email: string,
     logo: string,
     managedGroups: string[],
-    sharedGroups: string[]
+    sharedGroups: string[],
+    favoriteRecipes: string[]
 
 }

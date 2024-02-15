@@ -16,8 +16,23 @@ async function fetchUserById(userId) {
   return userRef.data();
 }
 
+async function updateFavoriteRecipes(userId, { recipeId }) {
+  const user = (await fetchUserById(userId)) || {};
+  const favorites = user?.favoriteRecipes;
+
+  const index = favorites?.indexOf(recipeId);
+  if (index !== -1) {
+    favorites?.splice(index, 1);
+  } else {
+    favorites?.push(recipeId);
+  }
+
+  const userRef = firestore.collection(COLLECTION).doc(user?.id);
+  return await userRef.update(user);
+}
 
 module.exports = {
   createUser,
-  fetchUserById
+  fetchUserById,
+  updateFavoriteRecipes,
 };

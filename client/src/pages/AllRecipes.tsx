@@ -1,26 +1,37 @@
 import {
   CircularProgress,
   debounce,
+  IconButton,
   TextField,
   useMediaQuery,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MultiSelectFilter from "../components/MultiSelectFilter";
 import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../models/recipe.model";
 import { useAllRecipes } from "../queries/useAllRecipes";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
 import { auth } from "../utils/firebase.utils";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useUserById } from "../queries/useUserById";
 
 function AllRecepis() {
-  const user = auth.currentUser;
+  const currentAuthUser = auth.currentUser || { uid: "" };
   const { data } = useAllRecipes();
   const [value, setValue] = useState("");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [filterTags, setFilterTags] = useState<string[]>([]);
+  const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
   const matches = useMediaQuery("(min-width:600px)");
   const tags = ["איטלקי", "קינוח", "חלבי", "בשרי"];
+  const { data: user } = useUserById(currentAuthUser.uid);
+  const userFavoriteRecipes = user?.favoriteRecipes;
+
+  useEffect(() => {
+    setFavoriteRecipes(userFavoriteRecipes);
+  }, [userFavoriteRecipes]);
 
   const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -31,6 +42,21 @@ function AllRecepis() {
   const handleFilterTagsChanged = (tags: string[]) => {
     setFilterTags(tags);
   };
+
+  const handleFavoriteRecipesChange = (recipeId: string) => {
+    const index = favoriteRecipes.indexOf(recipeId);
+    if (index !== -1) {
+      const newFavoriteIds = [...favoriteRecipes];
+      newFavoriteIds.splice(index, 1);
+      setFavoriteRecipes(newFavoriteIds);
+    } else {
+      setFavoriteRecipes([...favoriteRecipes, recipeId]);
+    }
+  };
+
+  const toggleShowFavoritesOnly = () => {
+    setShowFavoritesOnly((prevState: boolean) => !prevState)
+   };
 
   return (
     <div className={styles.container}>
@@ -68,6 +94,24 @@ function AllRecepis() {
               valuesChanged={handleFilterTagsChanged}
             />
           </div>
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            sx={{
+              width: `${matches ? "15%" : "100%"}`,
+              alignItems: "center",
+              display: "flex",
+              marginLeft: "16px",
+            }}
+          >
+            <IconButton aria-label="add to favorites" onClick={toggleShowFavoritesOnly}>
+              <FavoriteIcon
+                style={{ color: showFavoritesOnly ? "red" : "gray" }}
+                fontSize="large"
+              />
+            </IconButton>
+          </Box>
         </Box>
       </div>
 
@@ -87,12 +131,17 @@ function AllRecepis() {
                 (recipe: Recipe) =>
                   recipe.description.includes(value) &&
                   (filterTags.length === 0 ||
-                    recipe.tags.some((tag) => filterTags.includes(tag)))
+                    recipe.tags.some((tag) => filterTags.includes(tag))) &&
+                    (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
               )
               .map((recipe: Recipe) => {
                 return (
                   <Grid item xs={2} sm={4} md={4} key={recipe.id}>
-                    <RecipeReviewCard recipe={recipe} />
+                    <RecipeReviewCard
+                      recipe={recipe}
+                      isFavorite={favoriteRecipes.includes(recipe.id)}
+                      handleFavoriteRecipesChange={handleFavoriteRecipesChange}
+                    />
                   </Grid>
                 );
               })

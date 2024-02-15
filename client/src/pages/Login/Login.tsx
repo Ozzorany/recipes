@@ -25,6 +25,7 @@ function Login() {
         logo: user?.photoURL!,
         managedGroups: [],
         sharedGroups: [],
+        favoriteRecipes: []
       });
     } else {
       console.log("existing");

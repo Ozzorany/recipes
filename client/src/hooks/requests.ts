@@ -90,6 +90,20 @@ async function httpGetUserGroups(): Promise<any> {
   });
 }
 
+async function httpUpdateFavoriteRecipes(recipeId: string): Promise<any> {
+  const response = await axios.post<string>(
+    `${serverUrl}/users/favorite-recipes`,
+    { recipeId },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response;
+}
+
 export {
   httpGetAllRecipes,
   httpSubmitRecipe,
@@ -100,5 +114,6 @@ export {
   httpCreateUser,
   httpGetUserById,
   httpVlidateUser,
-  httpGetUserGroups
+  httpGetUserGroups,
+  httpUpdateFavoriteRecipes,
 };

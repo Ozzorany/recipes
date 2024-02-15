@@ -1,5 +1,5 @@
 //@ts-check
-const { createUser, fetchUserById } = require("../../models/users.model");
+const { createUser, fetchUserById, updateFavoriteRecipes } = require("../../models/users.model");
 
 const winston = require("winston");
 
@@ -24,8 +24,14 @@ async function httpGetUserId(req, res) {
   }
 }
 
+async function httpUpdateFavoriteRecipes(req, res) {
+  res.status(200).json(await updateFavoriteRecipes(req?.user?.uid, req.body));
+}
+
 
 module.exports = {
   httpCreateUser,
-  httpGetUserId
+  httpGetUserId,
+  updateFavoriteRecipes,
+  httpUpdateFavoriteRecipes
 };

@@ -38,6 +38,7 @@ import styles from "./RecipeReviewCard.module.css"; // Import css modules styles
 import { useUserById } from "../../queries/useUserById";
 import { Recipe } from "../../models/recipe.model";
 import { auth } from "../../utils/firebase.utils";
+import { useFavoriteRecipesMutation } from "../../queries/mutations/useFavoriteRecipesMutation";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -54,10 +55,21 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
+type HandleFavoritse = (recipeId: string) => void;
+
+export default function RecipeReviewCard({
+  recipe,
+  isFavorite,
+  handleFavoriteRecipesChange
+}: {
+  recipe: Recipe;
+  isFavorite: boolean;
+  handleFavoriteRecipesChange: HandleFavoritse
+}) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const favoriteRecipesMutation = useFavoriteRecipesMutation();
   const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
   const currentLogedInUser = auth.currentUser;
@@ -78,6 +90,11 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
 
   const navigateToRecipePage = () => {
     navigate(`/recipe/${recipe.id}`);
+  };
+
+  const handleFavorite = () => {
+    favoriteRecipesMutation.mutate(recipe.id);
+    handleFavoriteRecipesChange(recipe.id)
   };
 
   return (
@@ -188,8 +205,8 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
       )}
 
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton aria-label="add to favorites" onClick={handleFavorite}>
+          <FavoriteIcon style={{ color: isFavorite ? "red" : "gray" }} />
         </IconButton>
         {recipe.tags.map((tag: any) => {
           return (
