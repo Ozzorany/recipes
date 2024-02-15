@@ -6,5 +6,6 @@ export interface Recipe {
     tags: string[],
     image: string,
     creatorId: string,
-    sharedGroups: string[]
+    sharedGroups: string[],
+    isDeleted: boolean
 }

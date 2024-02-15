@@ -56,9 +56,9 @@ async function httpUploadImage(file: any): Promise<any> {
   return response;
 }
 
-async function httpDeleteRecipe(id: string) {
-  const response = await axios.delete<string>(`${serverUrl}/recipes`, {
-    data: { id: id },
+async function httpDeleteRecipe(recipeId: string) {
+  const response = await axios.post<string>(`${serverUrl}/recipes/delete`, {
+    recipeId,
   });
 
   return response;

@@ -8,7 +8,7 @@ const {
   httpDeleteRecipe,
   httpCreateRecipe,
   httpUploadImage,
-  httpGetRecipeById
+  httpGetRecipeById,
 } = require("./recipes.controller");
 
 const recipesRouter = express.Router();
@@ -16,8 +16,8 @@ const recipesRouter = express.Router();
 recipesRouter.get("/", httpGetAllRecipes);
 recipesRouter.get("/:id", httpGetRecipeById);
 recipesRouter.post("/update", httpUpdateRecipe);
+recipesRouter.post("/delete", httpDeleteRecipe);
 recipesRouter.post("/create", httpCreateRecipe);
 recipesRouter.post("/upload-image", upload.single("image"), httpUploadImage);
-recipesRouter.delete("/", httpDeleteRecipe);
 
 module.exports = recipesRouter;

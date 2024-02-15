@@ -17,6 +17,7 @@ async function fetchRecipes(userId) {
     await firestore
       .collection(COLLECTION)
       .where("creatorId", "==", userId)
+      .where("isDeleted", "!=", true)
       .get()
   ).docs.map((doc) => doc.data());
 
@@ -24,6 +25,7 @@ async function fetchRecipes(userId) {
     await firestore
       .collection(COLLECTION)
       .where("sharedGroups", "array-contains-any", sharedGroups)
+      .where("isDeleted", "!=", true)
       .get()
   ).docs.map((doc) => doc.data()) : [];
 
@@ -55,7 +57,12 @@ async function createRecipe(recipe) {
 }
 
 async function deleteRecipe(recipeId) {
-  const res = await firestore.collection(COLLECTION).doc(recipeId).delete();
+  const recipe = (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
+  recipe.isDeleted = true;
+  
+  const recipeRef = firestore.collection(COLLECTION).doc(recipeId);
+  await recipeRef.update(recipe);
+  
   return true;
 }
 
