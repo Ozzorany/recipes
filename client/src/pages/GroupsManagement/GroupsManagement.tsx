@@ -129,7 +129,14 @@ export default function GroupsManagement() {
                 onClick={() => handleClick(group.id)}
               >
                 <ListItemIcon>
-                  <GroupIcon />
+                  <StyledBadge
+                    color="primary"
+                    badgeContent={group.users?.length}
+                    max={10}
+                    sx={{ width: "10px" }}
+                  >
+                    <GroupIcon />
+                  </StyledBadge>
                 </ListItemIcon>
                 <ListItemText primary={group.name} />
                 {open[group.id] ? <ExpandLess /> : <ExpandMore />}
@@ -142,12 +149,7 @@ export default function GroupsManagement() {
                       key={`${user.id}-${group.id}`}
                     >
                       <ListItemIcon>
-                        <Avatar
-                          alt="Remy Sharp"
-                          src={user.logo}
-                          imgProps={{ referrerPolicy: "no-referrer" }}
-                          sx={{ width: 30, height: 30 }}
-                        />
+                        <PersonIcon />
                       </ListItemIcon>
                       <ListItemText primary={user.displayName} />
                     </ListItemButton>

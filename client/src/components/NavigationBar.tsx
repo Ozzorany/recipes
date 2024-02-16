@@ -53,8 +53,8 @@ const NavigationBar = () => {
   };
 
   const navigateToGroupsManagement = () => {
+    handleCloseUserMenu();
     navigate("/groups-management", { replace: true });
-    handleCloseNavMenu();
   };
 
   const handleCloseUserMenu = () => {
@@ -63,6 +63,7 @@ const NavigationBar = () => {
 
   const signOut = () => {
     auth.signOut();
+    handleCloseUserMenu();
   };
 
   return (
