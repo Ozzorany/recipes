@@ -16,6 +16,7 @@ import { auth } from "./utils/firebase.utils";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import { User } from "firebase/auth";
 import { httpVlidateUser } from "./hooks/requests";
+import GroupsManagement from "./pages/GroupsManagement/GroupsManagement";
 
 function App() {
   const [authentication, setAuthState] = useState({
@@ -73,6 +74,14 @@ function App() {
                 }
               />
               <Route path="/login" element={<Login />} />
+              <Route
+                path="/groups-management"
+                element={
+                  <PrivateRoute isAuthenticated={authentication.authenticated}>
+                    <GroupsManagement />
+                  </PrivateRoute>
+                }
+              />
               <Route
                 path="/all-recipes"
                 element={

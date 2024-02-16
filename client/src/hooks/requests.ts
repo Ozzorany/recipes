@@ -90,6 +90,14 @@ async function httpGetUserGroups(): Promise<any> {
   });
 }
 
+async function httpGetUserManagementGroups(): Promise<any> {
+  return axios.get(`${serverUrl}/groups/management`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+}
+
 async function httpUpdateFavoriteRecipes(recipeId: string): Promise<any> {
   const response = await axios.post<string>(
     `${serverUrl}/users/favorite-recipes`,
@@ -116,4 +124,5 @@ export {
   httpVlidateUser,
   httpGetUserGroups,
   httpUpdateFavoriteRecipes,
+  httpGetUserManagementGroups
 };

@@ -52,13 +52,18 @@ const NavigationBar = () => {
     handleCloseNavMenu();
   };
 
+  const navigateToGroupsManagement = () => {
+    navigate("/groups-management", { replace: true });
+    handleCloseNavMenu();
+  };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
   const signOut = () => {
     auth.signOut();
-  }
+  };
 
   return (
     <AppBar position="static">
@@ -166,15 +171,13 @@ const NavigationBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src={photoURL}
-                  imgProps={{ referrerPolicy: "no-referrer" }}
-                />
-              </IconButton>
-            </Tooltip>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <Avatar
+                alt="Remy Sharp"
+                src={photoURL}
+                imgProps={{ referrerPolicy: "no-referrer" }}
+              />
+            </IconButton>
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -191,6 +194,9 @@ const NavigationBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <MenuItem key={"groups-management"} onClick={navigateToGroupsManagement}>
+                <Typography textAlign="center">ניהול קבוצות</Typography>
+              </MenuItem>
               <MenuItem key={"logout"} onClick={signOut}>
                 <Typography textAlign="center">התנתקות</Typography>
               </MenuItem>
