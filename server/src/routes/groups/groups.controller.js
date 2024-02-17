@@ -57,7 +57,7 @@ async function httpGenerateInvitation(req, res) {
     res
       .status(200)
       .json(
-        `https://recipes-e6692.web.app/groups-management/join?groupName=${group?.name}&token=${token}`
+        encodeURI(`https://recipes-e6692.web.app/groups-management/join?groupName=${group?.name}&token=${token}`)
       );
   } catch (error) {
     logger.error("httpGenerateInvitation  | ERROR", error);
@@ -78,7 +78,7 @@ async function httpJoinGroup(req, res) {
     } else {
       const { groupId } = decoded;
       await addUserToGroup(groupId, userId);
-
+      
       res.status(200).send({ success: true });
     }
   });
