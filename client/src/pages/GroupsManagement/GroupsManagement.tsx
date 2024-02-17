@@ -16,7 +16,9 @@ import { useGroupsManagement } from "../../queries/useGroupsManagement";
 import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
 import AddIcon from "@mui/icons-material/Add";
 import { useGenerateInvitationGroupLink } from "../../queries/mutations/useGenerateInvitationGroupLink";
-import { isCallChain } from "typescript";
+import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
+import { useCreateNewGroup } from "../../queries/mutations/useCreateNewGroup";
+import AddLinkIcon from '@mui/icons-material/AddLink';
 
 interface GroupState {
   [key: string]: boolean;
@@ -24,8 +26,12 @@ interface GroupState {
 
 export default function GroupsManagement() {
   const [open, setOpen] = React.useState<GroupState>({});
+  const [openCreateGroupDialog, setOpenCreateGroupDialog] =
+    React.useState<boolean>(false);
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
-  const { data: userGroups } = useGroupsManagement();
+  const { data: userGroups, refetch } = useGroupsManagement();
+  const { mutate: createNewGroupMutation, isSuccess: createGroupSuccess } =
+    useCreateNewGroup();
   const managedGroups = userGroups?.managedGroups || [];
   const sharedGroups = userGroups?.sharedGroups || [];
   const {
@@ -53,6 +59,17 @@ export default function GroupsManagement() {
     }));
   };
 
+  const createNewGroup = (groupName: string) => {
+    createNewGroupMutation(groupName);
+  };
+
+  React.useEffect(() => {
+    if (createGroupSuccess) {
+      console.log("refetching")
+      refetch();
+    }
+  }, [createGroupSuccess]);
+
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     "& .MuiBadge-badge": {
       right: 6,
@@ -64,6 +81,11 @@ export default function GroupsManagement() {
 
   return (
     <>
+      <CreateNewGroupDialog
+        open={openCreateGroupDialog}
+        setOpen={setOpenCreateGroupDialog}
+        mainAction={createNewGroup}
+      />
       <Snackbar
         open={openSnackBar}
         onClose={() => setOpenSnackBar(false)}
@@ -127,7 +149,7 @@ export default function GroupsManagement() {
                       onClick={() => handleCopyInvitationLink(group.id)}
                     >
                       <ListItemIcon>
-                        <AddIcon />
+                        <AddLinkIcon />
                       </ListItemIcon>
                       <ListItemText primary="הזמנה לקבוצה" />
                     </ListItemButton>
@@ -135,6 +157,12 @@ export default function GroupsManagement() {
                 </Collapse>
               </>
             ))}
+            <ListItemButton onClick={() => setOpenCreateGroupDialog(true)}>
+              <ListItemIcon>
+                <AddIcon />
+              </ListItemIcon>
+              <ListItemText primary="יצירת קבוצה חדשה" />
+            </ListItemButton>
           </List>
         )}
 

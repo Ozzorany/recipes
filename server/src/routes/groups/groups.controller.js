@@ -4,11 +4,11 @@ const {
   fetchUserManagementGroups,
   fetchGroupById,
   addUserToGroup,
+  createNewGroup,
 } = require("../../models/groups.model");
 const jwt = require("jsonwebtoken");
 
 const winston = require("winston");
-const { fetchUserById } = require("../../models/users.model");
 
 const logger = winston.createLogger({
   level: "info",
@@ -84,9 +84,15 @@ async function httpJoinGroup(req, res) {
   });
 }
 
+async function httpCreateGroup(req, res) {
+  res.status(200).json(await createNewGroup(req.body, req?.user?.uid));
+}
+
+
 module.exports = {
   httpGetUserGroups,
   httpGetUserManagementGroups,
   httpGenerateInvitation,
   httpJoinGroup,
+  httpCreateGroup
 };
