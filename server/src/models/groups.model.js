@@ -1,17 +1,17 @@
 //@ts-check
 const firebase = require("../firebase/db");
-const { fetchUserById } = require("./users.model");
+const { fetchUserById, addSharedGroup } = require("./users.model");
 const firestore = firebase.firestore();
 const COLLECTION = "groups";
 require("dotenv").config();
 
 async function fetchGroupById(groupId) {
-  const recipeRef = await firestore.collection(COLLECTION).doc(groupId).get();
-  return recipeRef.data();
+  const groupRef = await firestore.collection(COLLECTION).doc(groupId).get();
+  return groupRef.data();
 }
 
 async function fetchGroupsByIds(groupIds) {
-  const recipeRef =
+  const groupRef =
     (await groupIds?.length) > 0
       ? (
           await firestore
@@ -23,7 +23,7 @@ async function fetchGroupsByIds(groupIds) {
         ).docs.map((doc) => doc.data())
       : [];
 
-  return recipeRef;
+  return groupRef;
 }
 
 async function fetchUserGroups(userId) {
@@ -75,7 +75,7 @@ async function fetchUserManagementGroups(userId) {
             displayName: userData.displayName,
             email: userData.email,
             id: userData.id,
-            logo: userData.logo
+            logo: userData.logo,
           };
         } else {
           return null;
@@ -98,9 +98,24 @@ async function fetchUserManagementGroups(userId) {
   return { managedGroups: managedByUser, sharedGroups: sharedWithUser };
 }
 
+async function addUserToGroup(groupId, userId) {
+  const group = (await fetchGroupById(groupId)) || {};
+  const groupUsersIds = group?.users?.map((user) => user.userId);
+
+  if (!groupUsersIds?.includes(userId)) {
+    group.users.push({ userId });
+  }
+
+  await addSharedGroup(userId, groupId);
+
+  const groupRef = firestore.collection(COLLECTION).doc(groupId);
+  return await groupRef.update(group);
+}
+
 module.exports = {
   fetchGroupById,
   fetchUserGroups,
   fetchGroupsByIds,
   fetchUserManagementGroups,
+  addUserToGroup,
 };

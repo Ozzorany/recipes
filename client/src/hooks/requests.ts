@@ -90,6 +90,18 @@ async function httpGetUserGroups(): Promise<any> {
   });
 }
 
+async function httpGenerateGroupInvitationLink(groupId: string): Promise<any> {
+  return axios.post(
+    `${serverUrl}/groups/generate-invitation`,
+    { groupId },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+}
+
 async function httpGetUserManagementGroups(): Promise<any> {
   return axios.get(`${serverUrl}/groups/management`, {
     headers: {
@@ -112,6 +124,20 @@ async function httpUpdateFavoriteRecipes(recipeId: string): Promise<any> {
   return response;
 }
 
+async function httpJoinGroup(token: string): Promise<any> {
+  const response = await axios.post<string>(
+    `${serverUrl}/groups/join`,
+    { token },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response;
+}
+
 export {
   httpGetAllRecipes,
   httpSubmitRecipe,
@@ -124,5 +150,7 @@ export {
   httpVlidateUser,
   httpGetUserGroups,
   httpUpdateFavoriteRecipes,
-  httpGetUserManagementGroups
+  httpGetUserManagementGroups,
+  httpJoinGroup,
+  httpGenerateGroupInvitationLink
 };

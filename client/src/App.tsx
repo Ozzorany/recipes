@@ -17,6 +17,7 @@ import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import { User } from "firebase/auth";
 import { httpVlidateUser } from "./hooks/requests";
 import GroupsManagement from "./pages/GroupsManagement/GroupsManagement";
+import JoinGroup from "./pages/GroupsManagement/JoinGroup/JoinGroup";
 
 function App() {
   const [authentication, setAuthState] = useState({
@@ -82,6 +83,15 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="/groups-management/join"
+                element={
+                  <PrivateRoute isAuthenticated={authentication.authenticated}>
+                    <JoinGroup />
+                  </PrivateRoute>
+                }
+              />
+
               <Route
                 path="/all-recipes"
                 element={

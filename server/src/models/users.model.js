@@ -31,8 +31,21 @@ async function updateFavoriteRecipes(userId, { recipeId }) {
   return await userRef.update(user);
 }
 
+async function addSharedGroup(userId, groupId) {
+  const user = (await fetchUserById(userId)) || {};
+  const sharedGroups = user?.sharedGroups;
+
+  if (!sharedGroups?.includes(groupId)) {
+    sharedGroups.push(groupId);
+  }
+
+  const userRef = firestore.collection(COLLECTION).doc(user?.id);
+  return await userRef.update(user);
+}
+
 module.exports = {
   createUser,
   fetchUserById,
   updateFavoriteRecipes,
+  addSharedGroup
 };
