@@ -54,16 +54,10 @@ async function httpGenerateInvitation(req, res) {
 
   logger.info("httpGenerateInvitation | GET");
   try {
-    // res
-    //   .status(200)
-    //   .json(
-    //     `https://recipes-e6692.web.app/groups-management/join?token=${token}`
-    //   );
-
     res
       .status(200)
       .json(
-        `http://localhost:3000/groups-management/join?groupName=${group.name}&token=${token}`
+        `https://recipes-e6692.web.app/groups-management/join?groupName=${group?.name}&token=${token}`
       );
   } catch (error) {
     logger.error("httpGenerateInvitation  | ERROR", error);
@@ -84,7 +78,7 @@ async function httpJoinGroup(req, res) {
     } else {
       const { groupId } = decoded;
       await addUserToGroup(groupId, userId);
-      
+
       res.status(200).send({ success: true });
     }
   });
