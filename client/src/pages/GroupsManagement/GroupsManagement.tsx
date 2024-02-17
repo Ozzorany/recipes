@@ -18,7 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useGenerateInvitationGroupLink } from "../../queries/mutations/useGenerateInvitationGroupLink";
 import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
 import { useCreateNewGroup } from "../../queries/mutations/useCreateNewGroup";
-import AddLinkIcon from '@mui/icons-material/AddLink';
+import AddLinkIcon from "@mui/icons-material/AddLink";
 
 interface GroupState {
   [key: string]: boolean;
@@ -65,7 +65,7 @@ export default function GroupsManagement() {
 
   React.useEffect(() => {
     if (createGroupSuccess) {
-      console.log("refetching")
+      console.log("refetching");
       refetch();
     }
   }, [createGroupSuccess]);
@@ -94,77 +94,75 @@ export default function GroupsManagement() {
       />
 
       <div className={styles.wrapper}>
-        {managedGroups?.length > 0 && (
-          <List
-            sx={{
-              width: "100%",
-              maxWidth: 310,
-              bgcolor: "background.paper",
-              marginTop: "24px",
-              marginLeft: "24px",
-            }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
-                קבוצות בניהולי
-              </ListSubheader>
-            }
-          >
-            {managedGroups?.map((group: any) => (
-              <>
-                <ListItemButton
-                  key={group.id}
-                  onClick={() => handleClick(group.id)}
-                >
-                  <ListItemIcon>
-                    <StyledBadge
-                      color="primary"
-                      badgeContent={group.users?.length}
-                      max={10}
-                      sx={{ width: "10px" }}
-                    >
-                      <GroupIcon />
-                    </StyledBadge>
-                  </ListItemIcon>
-                  <ListItemText primary={group.name} />
-                  {open[group.id] ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {group?.users?.map((user: any) => (
-                      <ListItemButton
-                        sx={{ pl: 4 }}
-                        key={`${user.id}-${group.id}`}
-                      >
-                        <ListItemIcon>
-                          <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={user.displayName} />
-                      </ListItemButton>
-                    ))}
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: 310,
+            bgcolor: "background.paper",
+            marginTop: "24px",
+            marginLeft: "24px",
+          }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              קבוצות בניהולי
+            </ListSubheader>
+          }
+        >
+          {managedGroups?.map((group: any) => (
+            <>
+              <ListItemButton
+                key={group.id}
+                onClick={() => handleClick(group.id)}
+              >
+                <ListItemIcon>
+                  <StyledBadge
+                    color="primary"
+                    badgeContent={group.users?.length}
+                    max={10}
+                    sx={{ width: "10px" }}
+                  >
+                    <GroupIcon />
+                  </StyledBadge>
+                </ListItemIcon>
+                <ListItemText primary={group.name} />
+                {open[group.id] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {group?.users?.map((user: any) => (
                     <ListItemButton
                       sx={{ pl: 4 }}
-                      key={`generate-${group.id}`}
-                      onClick={() => handleCopyInvitationLink(group.id)}
+                      key={`${user.id}-${group.id}`}
                     >
                       <ListItemIcon>
-                        <AddLinkIcon />
+                        <PersonIcon />
                       </ListItemIcon>
-                      <ListItemText primary="הזמנה לקבוצה" />
+                      <ListItemText primary={user.displayName} />
                     </ListItemButton>
-                  </List>
-                </Collapse>
-              </>
-            ))}
-            <ListItemButton onClick={() => setOpenCreateGroupDialog(true)}>
-              <ListItemIcon>
-                <AddIcon />
-              </ListItemIcon>
-              <ListItemText primary="יצירת קבוצה חדשה" />
-            </ListItemButton>
-          </List>
-        )}
+                  ))}
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    key={`generate-${group.id}`}
+                    onClick={() => handleCopyInvitationLink(group.id)}
+                  >
+                    <ListItemIcon>
+                      <AddLinkIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="הזמנה לקבוצה" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
+            </>
+          ))}
+          <ListItemButton onClick={() => setOpenCreateGroupDialog(true)}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="יצירת קבוצה חדשה" />
+          </ListItemButton>
+        </List>
 
         {sharedGroups?.length > 0 && (
           <List
