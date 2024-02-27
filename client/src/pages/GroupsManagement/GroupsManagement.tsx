@@ -22,6 +22,7 @@ import { useGroupsManagement } from "../../queries/useGroupsManagement";
 import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
 import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
 import { useDeleteGroup } from "../../queries/mutations/useDeleteGroup";
+import ApprovalDialog from "../../components/ApprovalDialog/ApprovalDialog";
 
 interface GroupState {
   [key: string]: boolean;
@@ -29,6 +30,9 @@ interface GroupState {
 
 export default function GroupsManagement() {
   const [open, setOpen] = React.useState<GroupState>({});
+  const [approvalDialogOpen, setApprovalDialogOpen] =
+    React.useState<boolean>(false);
+  const [selectedGroupId, setSelectedGroupId] = React.useState("");
   const [editMode, setEditMode] = React.useState(false);
   const [existingGroupName, setExistingGroupName] = React.useState("");
   const [existingGroupId, setExistingGroupId] = React.useState("");
@@ -71,9 +75,15 @@ export default function GroupsManagement() {
     createNewGroupMutation({ groupName, groupId: existingGroupId });
   };
 
-  const handleDeleteGroup = (event: any, groupId: string) => {
-    event.stopPropagation();
+  const handleDeleteGroup = (groupId: string) => {
+    setApprovalDialogOpen(false);
     deleteGroupMutation({ groupId });
+  };
+
+  const handleOpenDeleteApprovalDialog = (event: any, groupId: string) => {
+    event.stopPropagation();
+    setSelectedGroupId(groupId);
+    setApprovalDialogOpen(true);
   };
 
   React.useEffect(() => {
@@ -112,6 +122,15 @@ export default function GroupsManagement() {
 
   return (
     <>
+      <ApprovalDialog
+        title="האם אתם בטוחים?"
+        content="אתם עומדים למחוק את הקבוצה. היא תימחק גם עבור המשתמשים שהוזמנו להיות חלק ממנה."
+        open={approvalDialogOpen}
+        setOpen={setApprovalDialogOpen}
+        mainAction={handleDeleteGroup}
+        params={selectedGroupId}
+      />
+
       <CreateNewGroupDialog
         open={openCreateGroupDialog}
         setOpen={setOpenCreateGroupDialog}
@@ -179,7 +198,9 @@ export default function GroupsManagement() {
                     <EditIcon fontSize="small" />
                   </IconButton>
                   <IconButton
-                    onClick={(event) => handleDeleteGroup(event, group.id)}
+                    onClick={(event) =>
+                      handleOpenDeleteApprovalDialog(event, group.id)
+                    }
                   >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
