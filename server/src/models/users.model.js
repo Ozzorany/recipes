@@ -43,9 +43,37 @@ async function addSharedGroup(userId, groupId) {
   return await userRef.update(user);
 }
 
+async function deleteGroupFromUsers(groupId) {
+  try {
+    const usersSnapshot = await firestore
+      .collection(COLLECTION)
+      .where("sharedGroups", "array-contains", groupId)
+      .get();
+
+    // Update each user document
+    const batch = firestore.batch();
+    usersSnapshot.forEach((userDoc) => {
+      const userData = userDoc.data();
+      const updatedSharedGroups = userData.sharedGroups.filter(
+        (id) => id !== groupId
+      );
+      const userRef = firestore.collection(COLLECTION).doc(userDoc.id);
+      batch.update(userRef, { sharedGroups: updatedSharedGroups });
+    });
+
+    // Commit the batch update
+    await batch.commit();
+
+    console.log(`Group ID ${groupId} deleted from users' sharedGroups.`);
+  } catch (error) {
+    console.error("Error deleting group ID from users:", error);
+  }
+}
+
 module.exports = {
   createUser,
   fetchUserById,
   updateFavoriteRecipes,
-  addSharedGroup
+  addSharedGroup,
+  deleteGroupFromUsers,
 };

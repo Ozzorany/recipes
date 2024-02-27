@@ -1,5 +1,10 @@
 //@ts-check
-const { createUser, fetchUserById, updateFavoriteRecipes } = require("../../models/users.model");
+const { deleteGroup } = require("../../models/groups.model");
+const {
+  createUser,
+  fetchUserById,
+  updateFavoriteRecipes,
+} = require("../../models/users.model");
 
 const winston = require("winston");
 
@@ -28,10 +33,9 @@ async function httpUpdateFavoriteRecipes(req, res) {
   res.status(200).json(await updateFavoriteRecipes(req?.user?.uid, req.body));
 }
 
-
 module.exports = {
   httpCreateUser,
   httpGetUserId,
   updateFavoriteRecipes,
-  httpUpdateFavoriteRecipes
+  httpUpdateFavoriteRecipes,
 };

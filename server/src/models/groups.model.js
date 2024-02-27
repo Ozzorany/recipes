@@ -132,6 +132,12 @@ async function createNewGroup(body, userId) {
   return { success: true };
 }
 
+async function deleteGroup(groupId) {
+  await firestore.collection(COLLECTION).doc(groupId).delete();
+
+  return { ok: true };
+}
+
 module.exports = {
   fetchGroupById,
   fetchUserGroups,
@@ -139,4 +145,5 @@ module.exports = {
   fetchUserManagementGroups,
   addUserToGroup,
   createNewGroup,
+  deleteGroup,
 };

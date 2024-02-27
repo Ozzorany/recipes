@@ -48,7 +48,7 @@ export default function CreateNewGroupDialog({
   return (
     <React.Fragment>
       <Dialog open={open} onClose={handleClose} sx={{ textAlign: "start" }}>
-        <DialogTitle>יצירת קבוצה חדשה</DialogTitle>
+        <DialogTitle>{isEditMode ? 'עריכת קבוצה קיימת' : 'יצירת קבוצה חדשה'}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {isEditMode

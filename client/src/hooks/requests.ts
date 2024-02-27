@@ -150,6 +150,20 @@ async function httpCreateNewGroup(name: string, groupId: string): Promise<any> {
   );
 }
 
+async function httpDeleteGroup(groupId: string): Promise<any> {
+  const response = await axios.post<string>(
+    `${serverUrl}/groups/delete-group`,
+    { groupId },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response;
+}
+
 export {
   httpGetAllRecipes,
   httpSubmitRecipe,
@@ -166,4 +180,5 @@ export {
   httpJoinGroup,
   httpGenerateGroupInvitationLink,
   httpCreateNewGroup,
+  httpDeleteGroup
 };

@@ -21,6 +21,7 @@ import { useGenerateInvitationGroupLink } from "../../queries/mutations/useGener
 import { useGroupsManagement } from "../../queries/useGroupsManagement";
 import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
 import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
+import { useDeleteGroup } from "../../queries/mutations/useDeleteGroup";
 
 interface GroupState {
   [key: string]: boolean;
@@ -37,6 +38,8 @@ export default function GroupsManagement() {
   const { data: userGroups, refetch } = useGroupsManagement();
   const { mutate: createNewGroupMutation, isSuccess: createGroupSuccess } =
     useCreateNewGroup();
+  const { mutate: deleteGroupMutation, isSuccess: deleteGroupSuccess } =
+    useDeleteGroup();
   const managedGroups = userGroups?.managedGroups || [];
   const sharedGroups = userGroups?.sharedGroups || [];
   const {
@@ -68,11 +71,16 @@ export default function GroupsManagement() {
     createNewGroupMutation({ groupName, groupId: existingGroupId });
   };
 
+  const handleDeleteGroup = (event: any, groupId: string) => {
+    event.stopPropagation();
+    deleteGroupMutation({ groupId });
+  };
+
   React.useEffect(() => {
-    if (createGroupSuccess) {
+    if (createGroupSuccess || deleteGroupSuccess) {
       refetch();
     }
-  }, [createGroupSuccess]);
+  }, [createGroupSuccess, deleteGroupSuccess]);
 
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -170,7 +178,9 @@ export default function GroupsManagement() {
                   >
                     <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    onClick={(event) => handleDeleteGroup(event, group.id)}
+                  >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </div>

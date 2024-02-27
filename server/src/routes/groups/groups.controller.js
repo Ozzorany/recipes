@@ -5,10 +5,12 @@ const {
   fetchGroupById,
   addUserToGroup,
   createNewGroup,
+  deleteGroup,
 } = require("../../models/groups.model");
 const jwt = require("jsonwebtoken");
 
 const winston = require("winston");
+const { deleteGroupFromUsers } = require("../../models/users.model");
 
 const logger = winston.createLogger({
   level: "info",
@@ -57,7 +59,9 @@ async function httpGenerateInvitation(req, res) {
     res
       .status(200)
       .json(
-        encodeURI(`https://recipes-e6692.web.app/groups-management/join?groupName=${group?.name}&token=${token}`)
+        encodeURI(
+          `https://recipes-e6692.web.app/groups-management/join?groupName=${group?.name}&token=${token}`
+        )
       );
   } catch (error) {
     logger.error("httpGenerateInvitation  | ERROR", error);
@@ -78,7 +82,7 @@ async function httpJoinGroup(req, res) {
     } else {
       const { groupId } = decoded;
       await addUserToGroup(groupId, userId);
-      
+
       res.status(200).send({ success: true });
     }
   });
@@ -88,11 +92,18 @@ async function httpCreateGroup(req, res) {
   res.status(200).json(await createNewGroup(req.body, req?.user?.uid));
 }
 
+async function httpDeleteGroup(req, res) {
+  const { groupId } = req.body || {};
+  await Promise.all([deleteGroup(groupId), deleteGroupFromUsers(groupId)]);
+
+  res.status(200).json({ ok: true });
+}
 
 module.exports = {
   httpGetUserGroups,
   httpGetUserManagementGroups,
   httpGenerateInvitation,
   httpJoinGroup,
-  httpCreateGroup
+  httpCreateGroup,
+  httpDeleteGroup,
 };
