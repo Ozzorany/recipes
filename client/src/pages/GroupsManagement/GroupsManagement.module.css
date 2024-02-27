@@ -4,3 +4,15 @@
     width: 100%;
 }
 
+.groupName {
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.groupMember {
+    font-size: 15px;
+}
+
+.moreActions{
+    margin-left: 8px;
+}

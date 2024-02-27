@@ -5,6 +5,7 @@ import {
   Box,
   Checkbox,
   Chip,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   Stack,
@@ -15,8 +16,16 @@ import noImagePath from "../../assets/images/recipe-book.jpg";
 function RecipePage() {
   const params = useParams();
   const { id } = params || {};
-  const { data: recipe } = useRecipeById(id!);
+  const { data: recipe, isLoading } = useRecipeById(id!);
   const { ingredients, method, image, tags } = recipe || {};
+
+  if (isLoading) {
+    return (
+      <div className={styles.spinner}>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -24,15 +33,18 @@ function RecipePage() {
         {recipe?.description}
       </Typography>
       <Box display="flex" justifyContent="start" gap={"8px"}>
-      {tags?.map((tag: any) => {
-        return (
-          <Stack direction="row" key={tag} spacing={1} mt={2}>
-            <Chip label={tag} sx={{color: 'white', backgroundColor: '#3d74eb'}}/>
-          </Stack>
-        );
-      })}
+        {tags?.map((tag: any) => {
+          return (
+            <Stack direction="row" key={tag} spacing={1} mt={2}>
+              <Chip
+                label={tag}
+                sx={{ color: "white", backgroundColor: "#3d74eb" }}
+              />
+            </Stack>
+          );
+        })}
       </Box>
-     
+
       <Typography variant="h5" mt={2} className={styles.ingredientsTitle}>
         מרכיבים
       </Typography>

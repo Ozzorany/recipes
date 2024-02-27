@@ -1,8 +1,14 @@
+import AddIcon from "@mui/icons-material/Add";
+import AddLinkIcon from "@mui/icons-material/AddLink";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import GroupIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
-import { Badge, Snackbar } from "@mui/material";
+import {
+  Badge,
+  Snackbar,
+  Typography
+} from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -12,13 +18,11 @@ import ListSubheader from "@mui/material/ListSubheader";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { BadgeProps } from "react-bootstrap";
-import { useGroupsManagement } from "../../queries/useGroupsManagement";
-import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
-import AddIcon from "@mui/icons-material/Add";
-import { useGenerateInvitationGroupLink } from "../../queries/mutations/useGenerateInvitationGroupLink";
-import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
 import { useCreateNewGroup } from "../../queries/mutations/useCreateNewGroup";
-import AddLinkIcon from "@mui/icons-material/AddLink";
+import { useGenerateInvitationGroupLink } from "../../queries/mutations/useGenerateInvitationGroupLink";
+import { useGroupsManagement } from "../../queries/useGroupsManagement";
+import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
+import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
 
 interface GroupState {
   [key: string]: boolean;
@@ -65,7 +69,6 @@ export default function GroupsManagement() {
 
   React.useEffect(() => {
     if (createGroupSuccess) {
-      console.log("refetching");
       refetch();
     }
   }, [createGroupSuccess]);
@@ -111,7 +114,7 @@ export default function GroupsManagement() {
           }
         >
           {managedGroups?.map((group: any) => (
-            <>
+            <div>
               <ListItemButton
                 key={group.id}
                 onClick={() => handleClick(group.id)}
@@ -126,7 +129,13 @@ export default function GroupsManagement() {
                     <GroupIcon />
                   </StyledBadge>
                 </ListItemIcon>
-                <ListItemText primary={group.name} />
+                <ListItemText
+                  primary={
+                    <Typography className={styles.groupName}>
+                      {group.name}
+                    </Typography>
+                  }
+                />
                 {open[group.id] ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
@@ -139,7 +148,13 @@ export default function GroupsManagement() {
                       <ListItemIcon>
                         <PersonIcon />
                       </ListItemIcon>
-                      <ListItemText primary={user.displayName} />
+                      <ListItemText
+                        primary={
+                          <Typography className={styles.groupMember}>
+                            {user.displayName}
+                          </Typography>
+                        }
+                      />
                     </ListItemButton>
                   ))}
                   <ListItemButton
@@ -154,7 +169,7 @@ export default function GroupsManagement() {
                   </ListItemButton>
                 </List>
               </Collapse>
-            </>
+            </div>
           ))}
           <ListItemButton onClick={() => setOpenCreateGroupDialog(true)}>
             <ListItemIcon>
@@ -171,7 +186,7 @@ export default function GroupsManagement() {
               maxWidth: 310,
               bgcolor: "background.paper",
               marginTop: "24px",
-              marginLeft: "16px",
+              marginLeft: "24px",
             }}
             component="nav"
             aria-labelledby="nested-list-subheader"
@@ -197,7 +212,13 @@ export default function GroupsManagement() {
                       <GroupIcon />
                     </StyledBadge>
                   </ListItemIcon>
-                  <ListItemText primary={group.name} />
+                  <ListItemText
+                    primary={
+                      <Typography className={styles.groupName}>
+                        {group.name}
+                      </Typography>
+                    }
+                  />
                   {open[group.id] ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
@@ -210,7 +231,13 @@ export default function GroupsManagement() {
                         <ListItemIcon>
                           <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText primary={user.displayName} />
+                        <ListItemText
+                          primary={
+                            <Typography className={styles.groupMember}>
+                              {user.displayName}
+                            </Typography>
+                          }
+                        />
                       </ListItemButton>
                     ))}
                   </List>
