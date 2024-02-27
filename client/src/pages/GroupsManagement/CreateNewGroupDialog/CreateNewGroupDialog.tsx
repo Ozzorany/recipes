@@ -12,12 +12,18 @@ export default function CreateNewGroupDialog({
   open,
   setOpen,
   mainAction,
+  isEditMode = false,
+  existingGroupName = "",
+  existingGroupId = "",
 }: {
   open: boolean;
+  isEditMode: boolean;
   setOpen: (isOpen: boolean) => void;
   mainAction: (groupName: string) => void;
+  existingGroupName?: string;
+  existingGroupId?: string;
 }) {
-  const [text, setText] = React.useState("");
+  const [text, setText] = React.useState(isEditMode ? existingGroupName : "");
 
   const handleClose = () => {
     setOpen(false);
@@ -35,13 +41,19 @@ export default function CreateNewGroupDialog({
     setText(event.target.value);
   };
 
+  React.useEffect(() => {
+    setText(existingGroupName);
+  }, [isEditMode, existingGroupName, existingGroupId]);
+
   return (
     <React.Fragment>
       <Dialog open={open} onClose={handleClose} sx={{ textAlign: "start" }}>
         <DialogTitle>יצירת קבוצה חדשה</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            תנו שם לקבוצה החדשה שתרצו לפתוח. לאחר מכן תוכלו להזמין אנשים להצטרף
+            {isEditMode
+              ? "שנו את שם הקבוצה"
+              : "תנו שם לקבוצה החדשה שתרצו לפתוח. לאחר מכן תוכלו להזמין אנשים להצטרף"}
           </DialogContentText>
           <Box
             component="form"
@@ -61,6 +73,7 @@ export default function CreateNewGroupDialog({
               type="email"
               fullWidth
               variant="standard"
+              value={text}
               onChange={handleTextChanged}
             />
           </Box>
@@ -72,7 +85,7 @@ export default function CreateNewGroupDialog({
             onClick={handleCreateGroup}
             disabled={text.trim().length === 0}
           >
-            יצירה
+            {isEditMode ? "שמירת שינויים" : "יצירה"}
           </Button>
         </DialogActions>
       </Dialog>

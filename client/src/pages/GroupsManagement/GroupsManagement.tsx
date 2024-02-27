@@ -4,11 +4,9 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import GroupIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
-import {
-  Badge,
-  Snackbar,
-  Typography
-} from "@mui/material";
+import { Badge, IconButton, Snackbar, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -30,6 +28,9 @@ interface GroupState {
 
 export default function GroupsManagement() {
   const [open, setOpen] = React.useState<GroupState>({});
+  const [editMode, setEditMode] = React.useState(false);
+  const [existingGroupName, setExistingGroupName] = React.useState("");
+  const [existingGroupId, setExistingGroupId] = React.useState("");
   const [openCreateGroupDialog, setOpenCreateGroupDialog] =
     React.useState<boolean>(false);
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
@@ -64,7 +65,7 @@ export default function GroupsManagement() {
   };
 
   const createNewGroup = (groupName: string) => {
-    createNewGroupMutation(groupName);
+    createNewGroupMutation({ groupName, groupId: existingGroupId });
   };
 
   React.useEffect(() => {
@@ -82,12 +83,34 @@ export default function GroupsManagement() {
     },
   }));
 
+  const handleEditGroupName = (
+    event: any,
+    groupId: string,
+    groupName: string
+  ) => {
+    event.stopPropagation();
+    setEditMode(true);
+    setExistingGroupName(groupName);
+    setOpenCreateGroupDialog(true);
+    setExistingGroupId(groupId);
+  };
+
+  const handleCreateNewGroup = () => {
+    setEditMode(false);
+    setExistingGroupName("");
+    setExistingGroupId("");
+    setOpenCreateGroupDialog(true);
+  };
+
   return (
     <>
       <CreateNewGroupDialog
         open={openCreateGroupDialog}
         setOpen={setOpenCreateGroupDialog}
         mainAction={createNewGroup}
+        isEditMode={editMode}
+        existingGroupName={existingGroupName}
+        existingGroupId={existingGroupId}
       />
       <Snackbar
         open={openSnackBar}
@@ -131,12 +154,26 @@ export default function GroupsManagement() {
                 </ListItemIcon>
                 <ListItemText
                   primary={
-                    <Typography className={styles.groupName}>
-                      {group.name}
-                    </Typography>
+                    <div className={styles.groupNameWrapper}>
+                      <Typography className={styles.groupName}>
+                        {group.name}
+                      </Typography>
+                      {open[group.id] ? <ExpandLess /> : <ExpandMore />}
+                    </div>
                   }
                 />
-                {open[group.id] ? <ExpandLess /> : <ExpandMore />}
+                <div className={styles.actions}>
+                  <IconButton
+                    onClick={(event) =>
+                      handleEditGroupName(event, group.id, group.name)
+                    }
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </div>
               </ListItemButton>
               <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
@@ -171,7 +208,7 @@ export default function GroupsManagement() {
               </Collapse>
             </div>
           ))}
-          <ListItemButton onClick={() => setOpenCreateGroupDialog(true)}>
+          <ListItemButton onClick={handleCreateNewGroup}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>

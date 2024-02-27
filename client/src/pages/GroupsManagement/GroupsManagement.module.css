@@ -16,3 +16,11 @@
 .moreActions{
     margin-left: 8px;
 }
+
+.groupNameWrapper {
+    display: flex;
+}
+
+.actions{
+    display: flex;
+}

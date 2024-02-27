@@ -113,18 +113,23 @@ async function addUserToGroup(groupId, userId) {
 }
 
 async function createNewGroup(body, userId) {
-  const { name } = body || {};
+  const { name, groupId } = body || {};
   const ref = await firestore.collection(COLLECTION);
-  const newGroup = await ref.add({
-    name,
-    managerId: userId,
-    users: [{ userId: userId }],
-  });
-  ref.doc(newGroup.id).update({ id: newGroup.id });
 
-  await addSharedGroup(userId, newGroup.id);
-  
-  return {success: true};
+  if (groupId === "") {
+    const newGroup = await ref.add({
+      name,
+      managerId: userId,
+      users: [{ userId: userId }],
+    });
+    ref.doc(newGroup.id).update({ id: newGroup.id });
+
+    await addSharedGroup(userId, newGroup.id);
+  } else {
+    ref.doc(groupId).update({ name });
+  }
+
+  return { success: true };
 }
 
 module.exports = {

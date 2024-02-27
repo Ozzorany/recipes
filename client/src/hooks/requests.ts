@@ -138,10 +138,10 @@ async function httpJoinGroup(token: string): Promise<any> {
   return response;
 }
 
-async function httpCreateNewGroup(name: string): Promise<any> {
+async function httpCreateNewGroup(name: string, groupId: string): Promise<any> {
   return axios.put(
     `${serverUrl}/groups/create`,
-    { name },
+    { name, groupId },
     {
       headers: {
         uid: auth.currentUser?.uid || "",
@@ -165,5 +165,5 @@ export {
   httpGetUserManagementGroups,
   httpJoinGroup,
   httpGenerateGroupInvitationLink,
-  httpCreateNewGroup
+  httpCreateNewGroup,
 };

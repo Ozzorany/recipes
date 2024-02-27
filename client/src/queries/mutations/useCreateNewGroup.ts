@@ -3,8 +3,8 @@ import { httpCreateNewGroup } from "../../hooks/requests";
 
 export const useCreateNewGroup = () => {
   return useMutation({
-    mutationFn: (groupName: string) => {
-      return httpCreateNewGroup(groupName);
+    mutationFn: ({ groupName, groupId }: { groupName: string; groupId: string }) => {
+      return httpCreateNewGroup(groupName, groupId);
     },
   });
 };
