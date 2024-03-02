@@ -1,4 +1,5 @@
 //@ts-check
+const { fetchUserGroups } = require("../../models/groups.model");
 const {
   fetchRecipes,
   updateRecipe,
@@ -25,8 +26,23 @@ async function httpGetAllRecipes(req, res) {
 async function httpGetRecipeById(req, res) {
   logger.info("httpGetRecipeById | GET");
   try {
+    const userId = req?.user?.uid;
+    const userGroups = await fetchUserGroups(userId);
     const recipe = await fetchRecipeById(req?.params?.id);
-    res.status(200).json(recipe);
+
+    const isGroupShared = userGroups.some((userGroup) => {
+      return recipe?.sharedGroups.find(
+        (sharedGroup) => sharedGroup.id === userGroup.id
+      );
+    });
+
+    res
+      .status(200)
+      .json(
+        isGroupShared || recipe?.creatorId === userId
+          ? { ok: true, data: recipe }
+          : { ok: false, data: undefined }
+      );
   } catch (error) {
     logger.error("httpGetRecipeById  | ERROR", error);
     res.status(400);

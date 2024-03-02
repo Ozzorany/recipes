@@ -39,7 +39,7 @@ export default function GroupsManagement() {
   const [openCreateGroupDialog, setOpenCreateGroupDialog] =
     React.useState<boolean>(false);
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
-  const { data: userGroups, refetch } = useGroupsManagement();
+  const { data: userGroups, refetch, isLoading } = useGroupsManagement();
   const { mutate: createNewGroupMutation, isSuccess: createGroupSuccess } =
     useCreateNewGroup();
   const { mutate: deleteGroupMutation, isSuccess: deleteGroupSuccess } =

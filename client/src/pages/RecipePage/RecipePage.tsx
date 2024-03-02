@@ -3,6 +3,8 @@ import styles from "./RecipePage.module.css"; // Import css modules stylesheet a
 import { useRecipeById } from "../../queries/useRecipeById";
 import {
   Box,
+  Card,
+  CardContent,
   Checkbox,
   Chip,
   CircularProgress,
@@ -12,11 +14,13 @@ import {
   Typography,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 function RecipePage() {
   const params = useParams();
   const { id } = params || {};
-  const { data: recipe, isLoading } = useRecipeById(id!);
+  const { data: response, isLoading } = useRecipeById(id!);
+  const { data: recipe, ok } = response || {};
   const { ingredients, method, image, tags } = recipe || {};
 
   if (isLoading) {
@@ -25,6 +29,26 @@ function RecipePage() {
         <CircularProgress />
       </div>
     );
+  }
+
+  if (!isLoading && !ok) {
+    return <div className={styles.erroMessageWrapper}>
+      <Card sx={{ maxWidth: 310, marginTop: "24px" }}>
+        <CardContent>
+        <ErrorOutlineIcon/>
+          <Typography
+            gutterBottom
+            component="div"
+            sx={{ fontSize: "18px", fontWeight: 400 }}
+          >
+           אין אפשרות לצפות במתכון
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            יכול להיות שהמתכון שאתם מחפשים נמחק, או שאתם לא נמצאים בקבוצה שבה הוא משותף.
+          </Typography>
+        </CardContent>
+      </Card>
+    </div>;
   }
 
   return (

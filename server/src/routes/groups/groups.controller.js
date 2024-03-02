@@ -52,7 +52,8 @@ async function httpGenerateInvitation(req, res) {
 
   // @ts-ignore
   const { secretKey } = JSON.parse(process.env.JWT_SECRET_KEY);
-  const token = jwt.sign({ groupId }, secretKey);
+  // expired in 10 minutes
+  const token = jwt.sign({ groupId }, secretKey, { expiresIn: 600  });
 
   logger.info("httpGenerateInvitation | GET");
   try {
@@ -77,7 +78,7 @@ async function httpJoinGroup(req, res) {
   const token = req.body.token;
 
   jwt.verify(token, secretKey, async (err, decoded) => {
-    if (err) {
+    if (err || Date.now() >= decoded?.exp * 1000) {
       res.status(400).send({ success: false });
     } else {
       const { groupId } = decoded;
