@@ -71,7 +71,15 @@ async function httpCreateUser(user: User): Promise<any> {
 }
 
 async function httpGetUserById(userId: string): Promise<any> {
-  return axios.get(`${serverUrl}/users/${userId}`);
+  return axios.get(`${serverUrl}/users/details/${userId}`);
+}
+
+async function httpGetUserLevel(): Promise<any> {
+  return axios.get(`${serverUrl}/users/level`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
 }
 
 async function httpVlidateUser(token: string): Promise<any> {
@@ -180,5 +188,6 @@ export {
   httpJoinGroup,
   httpGenerateGroupInvitationLink,
   httpCreateNewGroup,
-  httpDeleteGroup
+  httpDeleteGroup,
+  httpGetUserLevel
 };

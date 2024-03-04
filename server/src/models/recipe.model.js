@@ -34,6 +34,19 @@ async function fetchRecipes(userId) {
   return _.uniqBy(unifiedRecipes, "id");
 }
 
+async function fetchRecipesByCreatorOnly(userId) {
+  const userRecipes = (
+    await firestore
+      .collection(COLLECTION)
+      .where("creatorId", "==", userId)
+      .where("isDeleted", "!=", true)
+      .get()
+  ).docs.map((doc) => doc.data());
+
+
+  return userRecipes;
+}
+
 async function fetchRecipeById(recipeId) {
   const recipe = (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
   const recipeGroups = await fetchGroupsByIds(recipe?.sharedGroups || [])
@@ -108,4 +121,5 @@ module.exports = {
   createRecipe,
   uploadImage,
   fetchRecipeById,
+  fetchRecipesByCreatorOnly
 };
