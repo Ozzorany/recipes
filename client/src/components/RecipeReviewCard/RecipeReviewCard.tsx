@@ -30,7 +30,7 @@ import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
 import { useAppDispatch } from "../../hooks/storeHooks";
@@ -70,7 +70,7 @@ export default function RecipeReviewCard({
   handleFavoriteRecipesChange: HandleFavoritse;
 }) {
   const [expanded, setExpanded] = React.useState(false);
-  const [like, setLike] = React.useState(false);
+  const [recipeLikes, setRecipeLikes] = React.useState<string[]>([]);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const favoriteRecipesMutation = useFavoriteRecipesMutation();
@@ -78,13 +78,14 @@ export default function RecipeReviewCard({
   const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
   const currentLogedInUser = auth.currentUser;
-  const { likes } = recipe || {};
+  const userId = auth?.currentUser?.uid || "";
+  const { likes = [] } = recipe || {};
+  const firstRender = useRef(true);
 
   useEffect(() => {
-    if (likes?.includes(user?.id)) {
-      setLike(true);
-    } else {
-      setLike(false);
+    if (firstRender.current) {
+      firstRender.current = false;
+      setRecipeLikes(likes);
     }
   }, [likes]);
 
@@ -112,15 +113,17 @@ export default function RecipeReviewCard({
   };
 
   const handleLike = () => {
-    setLike((prevState: boolean) => !prevState);
     mutateRecipeLike(recipe.id);
+    const likes = recipeLikes;
 
-    const index = likes?.indexOf(user.id);
+    const index = likes?.indexOf(userId);
     if (index !== -1) {
       likes?.splice(index, 1);
     } else {
-      likes?.push(user.id);
+      likes?.push(userId);
     }
+
+    setRecipeLikes(likes);
   };
 
   return (
@@ -201,7 +204,7 @@ export default function RecipeReviewCard({
             )}
           </PopupState>
         }
-        title={recipe.description}
+        title={<Typography className={styles.recipeTitle}>{recipe.description}</Typography>}
       />
       <CardMedia
         style={{
@@ -209,6 +212,7 @@ export default function RecipeReviewCard({
           height: "31vh",
           margin: "auto",
           cursor: "pointer",
+          borderRadius: "10px"
         }}
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}
@@ -248,13 +252,15 @@ export default function RecipeReviewCard({
 
       <CardActions disableSpacing>
         <Box display="flex" alignItems="center">
-          {likes?.length > 0 && <Typography>{likes?.length}</Typography>}
+          {recipeLikes?.length > 0 && <Typography>{recipeLikes?.length}</Typography>}
           <IconButton
             aria-label="like"
             onClick={handleLike}
             sx={{ outline: "none !important" }}
           >
-            <FavoriteIcon style={{ color: like ? "red" : "gray" }} />
+            <FavoriteIcon
+              style={{ color: recipeLikes?.includes(userId) ? "red" : "gray" }}
+            />
           </IconButton>
         </Box>
 

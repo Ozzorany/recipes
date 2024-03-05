@@ -124,7 +124,7 @@ async function updateRecipeLikes(userId, recipeId) {
   if (!recipe?.likes) {
     recipe.likes = [];
   }
-  
+
   const likes = recipe?.likes;
 
   const index = likes?.indexOf(userId);
@@ -135,7 +135,7 @@ async function updateRecipeLikes(userId, recipeId) {
   }
 
   const userRef = firestore.collection(COLLECTION).doc(recipe?.id);
-  return await userRef.update(recipe);
+  return await userRef.update("likes", likes);
 }
 
 module.exports = {

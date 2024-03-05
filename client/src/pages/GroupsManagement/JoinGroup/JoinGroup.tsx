@@ -57,7 +57,7 @@ export default function JoinGroup() {
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {isError
-              ? "אוי לא, יש בעיה עם ההזמנה שקיבלתם. אולי היא פגת תוקף. נסו לבקש הזמנה חדשה."
+              ? "אוי לא, יש בעיה עם ההזמנה שקיבלתם. אולי פג תוקפה. נסו לבקש הזמנה חדשה."
               : "קיבלתם הזדמנות להצטרף לקבוצה, איזה כיף לכם! אתם בטוחים שתרצו לקבל את ההזמנה?"}
           </Typography>
         </CardContent>
