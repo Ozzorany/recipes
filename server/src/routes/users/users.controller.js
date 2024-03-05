@@ -23,7 +23,7 @@ async function httpCreateUser(req, res) {
 async function httpGetUserId(req, res) {
   logger.info("httpGetUserId | GET");
   try {
-    const recipe = await fetchUserById(req?.params?.id);
+    const recipe = await fetchUserById(req?.params?.id || "");
     res.status(200).json(recipe);
   } catch (error) {
     logger.error("httpGetUserId  | ERROR", error);
@@ -36,14 +36,18 @@ async function httpUpdateFavoriteRecipes(req, res) {
 }
 
 function differentTags(objects) {
+  if (objects?.length === 0) {
+    return 0;
+  }
+
   const allTags = _.flatMap(objects, "tags");
   const uniqueTags = _.uniq(allTags);
   return uniqueTags.length;
 }
 
 async function httpCalculateUserLevel(req, res) {
-  const userId = req?.user?.uid;
-  const userRecipes = await fetchRecipesByCreatorOnly(userId);
+  const userId = req?.user?.uid || "";
+  const userRecipes = (await fetchRecipesByCreatorOnly(userId)) || [];
   const diferrentTags = differentTags(userRecipes);
   let level = 0;
 
