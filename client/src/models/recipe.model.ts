@@ -7,5 +7,6 @@ export interface Recipe {
     image: string,
     creatorId: string,
     sharedGroups: string[],
-    isDeleted: boolean
+    isDeleted: boolean,
+    likes: string[]
 }

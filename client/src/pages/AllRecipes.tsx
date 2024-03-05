@@ -14,7 +14,7 @@ import { Recipe } from "../models/recipe.model";
 import { useAllRecipes } from "../queries/useAllRecipes";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
 import { auth } from "../utils/firebase.utils";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import GradeIcon from '@mui/icons-material/Grade';
 import { useUserById } from "../queries/useUserById";
 
 function AllRecepis() {
@@ -122,8 +122,8 @@ function AllRecepis() {
               aria-label="add to favorites"
               onClick={toggleShowFavoritesOnly}
             >
-              <FavoriteIcon
-                style={{ color: showFavoritesOnly ? "red" : "gray" }}
+              <GradeIcon
+                style={{ color: showFavoritesOnly ? "#f0dd5a" : "gray" }}
                 fontSize="large"
               />
             </IconButton>

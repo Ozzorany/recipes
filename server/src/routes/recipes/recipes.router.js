@@ -9,6 +9,7 @@ const {
   httpCreateRecipe,
   httpUploadImage,
   httpGetRecipeById,
+  httpUpdateRecipeLikes,
 } = require("./recipes.controller");
 
 const recipesRouter = express.Router();
@@ -16,6 +17,7 @@ const recipesRouter = express.Router();
 recipesRouter.get("/", httpGetAllRecipes);
 recipesRouter.get("/:id", httpGetRecipeById);
 recipesRouter.post("/update", httpUpdateRecipe);
+recipesRouter.post("/update/likes", httpUpdateRecipeLikes);
 recipesRouter.post("/delete", httpDeleteRecipe);
 recipesRouter.post("/create", httpCreateRecipe);
 recipesRouter.post("/upload-image", upload.single("image"), httpUploadImage);

@@ -1,9 +1,11 @@
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import GradeIcon from "@mui/icons-material/Grade";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
+  Box,
   Checkbox,
   Chip,
   List,
@@ -28,7 +30,7 @@ import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
-import * as React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
 import { useAppDispatch } from "../../hooks/storeHooks";
@@ -39,6 +41,7 @@ import { useUserById } from "../../queries/useUserById";
 import { Recipe } from "../../models/recipe.model";
 import { auth } from "../../utils/firebase.utils";
 import { useFavoriteRecipesMutation } from "../../queries/mutations/useFavoriteRecipesMutation";
+import { useRecipeLikesMutation } from "../../queries/mutations/useRecipeLikesMutation";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -67,12 +70,23 @@ export default function RecipeReviewCard({
   handleFavoriteRecipesChange: HandleFavoritse;
 }) {
   const [expanded, setExpanded] = React.useState(false);
+  const [like, setLike] = React.useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const favoriteRecipesMutation = useFavoriteRecipesMutation();
+  const { mutate: mutateRecipeLike } = useRecipeLikesMutation();
   const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
   const currentLogedInUser = auth.currentUser;
+  const { likes } = recipe || {};
+
+  useEffect(() => {
+    if (likes?.includes(user?.id)) {
+      setLike(true);
+    } else {
+      setLike(false);
+    }
+  }, [likes]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -97,16 +111,44 @@ export default function RecipeReviewCard({
     handleFavoriteRecipesChange(recipe.id);
   };
 
+  const handleLike = () => {
+    setLike((prevState: boolean) => !prevState);
+    mutateRecipeLike(recipe.id);
+
+    const index = likes?.indexOf(user.id);
+    if (index !== -1) {
+      likes?.splice(index, 1);
+    } else {
+      likes?.push(user.id);
+    }
+  };
+
   return (
     <Card sx={{ width: "100%" }}>
       <CardHeader
         avatar={
-          <Avatar
-            sx={{ bgcolor: red[500] }}
-            aria-label="recipe"
-            src={userLogoUrl}
-            imgProps={{ referrerPolicy: "no-referrer" }}
-          />
+          <>
+            <Box display="flex" alignItems="center">
+              <IconButton
+                sx={{ outline: "none !important" }}
+                aria-label="add to favorites"
+                onClick={handleFavorite}
+              >
+                <GradeIcon
+                  sx={{
+                    color: isFavorite ? "#f0dd5a" : "gray",
+                    fontSize: "40px",
+                  }}
+                />
+              </IconButton>
+              <Avatar
+                sx={{ bgcolor: red[500] }}
+                aria-label="recipe"
+                src={userLogoUrl}
+                imgProps={{ referrerPolicy: "no-referrer" }}
+              />
+            </Box>
+          </>
         }
         action={
           <PopupState variant="popover" popupId="demo-popup-menu">
@@ -205,9 +247,17 @@ export default function RecipeReviewCard({
       )}
 
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={handleFavorite}>
-          <FavoriteIcon style={{ color: isFavorite ? "red" : "gray" }} />
-        </IconButton>
+        <Box display="flex" alignItems="center">
+          {likes?.length > 0 && <Typography>{likes?.length}</Typography>}
+          <IconButton
+            aria-label="like"
+            onClick={handleLike}
+            sx={{ outline: "none !important" }}
+          >
+            <FavoriteIcon style={{ color: like ? "red" : "gray" }} />
+          </IconButton>
+        </Box>
+
         {recipe.tags.map((tag: any) => {
           return (
             <Stack direction="row" key={tag} spacing={1}>

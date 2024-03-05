@@ -68,7 +68,8 @@ function CreateRecipe() {
       image: getNewImage(),
       creatorId: user?.uid || "",
       sharedGroups: groups,
-      isDeleted: false
+      isDeleted: false,
+      likes: []
     };
 
     if (

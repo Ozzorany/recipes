@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const { fetchUserById } = require("./users.model");
 const COLLECTION = "recipes";
 const _ = require("lodash");
-const {  fetchGroupsByIds } = require("./groups.model");
+const { fetchGroupsByIds } = require("./groups.model");
 
 require("dotenv").config();
 
@@ -21,13 +21,16 @@ async function fetchRecipes(userId) {
       .get()
   ).docs.map((doc) => doc.data());
 
-  const sharedGroupsRecipes = sharedGroups?.length > 0 ?(
-    await firestore
-      .collection(COLLECTION)
-      .where("sharedGroups", "array-contains-any", sharedGroups)
-      .where("isDeleted", "!=", true)
-      .get()
-  ).docs.map((doc) => doc.data()) : [];
+  const sharedGroupsRecipes =
+    sharedGroups?.length > 0
+      ? (
+          await firestore
+            .collection(COLLECTION)
+            .where("sharedGroups", "array-contains-any", sharedGroups)
+            .where("isDeleted", "!=", true)
+            .get()
+        ).docs.map((doc) => doc.data())
+      : [];
 
   const unifiedRecipes = [...userRecipes, ...sharedGroupsRecipes];
 
@@ -43,13 +46,13 @@ async function fetchRecipesByCreatorOnly(userId) {
       .get()
   ).docs.map((doc) => doc.data());
 
-
   return userRecipes;
 }
 
 async function fetchRecipeById(recipeId) {
-  const recipe = (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
-  const recipeGroups = await fetchGroupsByIds(recipe?.sharedGroups || [])
+  const recipe =
+    (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
+  const recipeGroups = await fetchGroupsByIds(recipe?.sharedGroups || []);
   recipe.sharedGroups = recipeGroups;
   return recipe;
 }
@@ -70,12 +73,13 @@ async function createRecipe(recipe) {
 }
 
 async function deleteRecipe(recipeId) {
-  const recipe = (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
+  const recipe =
+    (await firestore.collection(COLLECTION).doc(recipeId).get()).data() || {};
   recipe.isDeleted = true;
-  
+
   const recipeRef = firestore.collection(COLLECTION).doc(recipeId);
   await recipeRef.update(recipe);
-  
+
   return true;
 }
 
@@ -114,6 +118,26 @@ async function uploadImage(file) {
   });
 }
 
+async function updateRecipeLikes(userId, recipeId) {
+  const recipe = (await fetchRecipeById(recipeId)) || {};
+
+  if (!recipe?.likes) {
+    recipe.likes = [];
+  }
+  
+  const likes = recipe?.likes;
+
+  const index = likes?.indexOf(userId);
+  if (index !== -1) {
+    likes?.splice(index, 1);
+  } else {
+    likes?.push(userId);
+  }
+
+  const userRef = firestore.collection(COLLECTION).doc(recipe?.id);
+  return await userRef.update(recipe);
+}
+
 module.exports = {
   fetchRecipes,
   updateRecipe,
@@ -121,5 +145,6 @@ module.exports = {
   createRecipe,
   uploadImage,
   fetchRecipeById,
-  fetchRecipesByCreatorOnly
+  fetchRecipesByCreatorOnly,
+  updateRecipeLikes,
 };

@@ -172,6 +172,20 @@ async function httpDeleteGroup(groupId: string): Promise<any> {
   return response;
 }
 
+async function httpUpdateRecipeLikes(recipeId: string): Promise<any> {
+  const response = await axios.post<string>(
+    `${serverUrl}/recipes/update/likes`,
+    { recipeId },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response;
+}
+
 export {
   httpGetAllRecipes,
   httpSubmitRecipe,
@@ -189,5 +203,6 @@ export {
   httpGenerateGroupInvitationLink,
   httpCreateNewGroup,
   httpDeleteGroup,
-  httpGetUserLevel
+  httpGetUserLevel,
+  httpUpdateRecipeLikes
 };

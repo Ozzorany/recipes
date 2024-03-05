@@ -7,6 +7,7 @@ const {
   createRecipe,
   uploadImage,
   fetchRecipeById,
+  updateRecipeLikes,
 } = require("../../models/recipe.model");
 
 const winston = require("winston");
@@ -69,6 +70,11 @@ async function httpUploadImage(req, res) {
   }
 }
 
+async function httpUpdateRecipeLikes(req, res) {
+  const { recipeId } = req.body;
+  res.status(200).json(await updateRecipeLikes(req?.user?.uid, recipeId));
+}
+
 module.exports = {
   httpGetAllRecipes,
   httpUpdateRecipe,
@@ -76,4 +82,5 @@ module.exports = {
   httpCreateRecipe,
   httpUploadImage,
   httpGetRecipeById,
+  httpUpdateRecipeLikes,
 };
