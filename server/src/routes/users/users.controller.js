@@ -52,9 +52,9 @@ async function httpCalculateUserLevel(req, res) {
   } else if (userRecipes?.length >= 10 && diferrentTags >= 5) {
     level = 3;
   } else if (userRecipes?.length >= 5 && diferrentTags >= 3) {
-    level = 3;
-  } else if (userRecipes?.length >= 2) {
     level = 2;
+  } else if (userRecipes?.length >= 2) {
+    level = 1;
   }
 
   res.status(200).json({ level });
