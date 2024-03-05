@@ -140,9 +140,6 @@ const NavigationBar = () => {
                 <MenuItem onClick={navigateToAllRecepis}>
                   <Typography textAlign="center">כל המתכונים</Typography>
                 </MenuItem>
-                {/* <MenuItem onClick={navigateToMyRecepis}>
-                <Typography textAlign="center">המתכונים שלי</Typography>
-              </MenuItem> */}
                 <MenuItem onClick={navigateToCreateRecipe}>
                   <Typography textAlign="center">יצירת מתכון</Typography>
                 </MenuItem>
@@ -177,12 +174,6 @@ const NavigationBar = () => {
               >
                 כל המתכונים
               </Button>
-              {/* <Button
-              onClick={navigateToMyRecepis}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              המתכונים שלי
-            </Button> */}
               <Button
                 onClick={navigateToCreateRecipe}
                 sx={{ my: 2, color: "white", display: "block" }}
@@ -195,7 +186,10 @@ const NavigationBar = () => {
               {!isUserLevelLoading && (
                 <Box display="flex" alignItems="center">
                   <Level level={level} />
-                  <IconButton onClick={handleOpenLevelDialog}>
+                  <IconButton
+                    onClick={handleOpenLevelDialog}
+                    sx={{ outline: "none !important", color: 'white', marginTop: '2px' }}
+                  >
                     <HelpOutlineIcon fontSize="small" />
                   </IconButton>
                 </Box>

@@ -1,0 +1,24 @@
+.wrapper{
+  border: solid 2px;
+  border-radius: 15px;
+  padding: 2px 13px 1px;
+  width: 95%;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.zero {
+  border-color: antiquewhite;
+}
+
+.one {
+  border-color: rgb(250, 198, 130);
+}
+.two {
+  border-color: rgb(179, 200, 136);
+}
+.three {
+  border-color: rgb(152, 244, 250);
+}
+.four {
+  border-color: rgb(229, 123, 53);
+}
