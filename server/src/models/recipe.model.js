@@ -11,7 +11,7 @@ require("dotenv").config();
 
 async function fetchRecipes(userId) {
   const user = await fetchUserById(userId);
-  const { sharedGroups } = user;
+  const { sharedGroups } = user || {};
 
   const userRecipes = (
     await firestore

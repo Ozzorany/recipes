@@ -1,25 +1,28 @@
+import GradeIcon from '@mui/icons-material/Grade';
 import {
-  CircularProgress,
   debounce,
   IconButton,
   TextField,
-  useMediaQuery,
+  Typography,
+  useMediaQuery
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Lottie from "lottie-react";
 import { useEffect, useMemo, useState } from "react";
+import FoodAnimation from '../assets/animations/FoodAnimation.json';
+import CookingAnimation from '../assets/animations/CookingAnimation.json';
 import MultiSelectFilter from "../components/MultiSelectFilter";
 import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../models/recipe.model";
 import { useAllRecipes } from "../queries/useAllRecipes";
-import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
-import { auth } from "../utils/firebase.utils";
-import GradeIcon from '@mui/icons-material/Grade';
 import { useUserById } from "../queries/useUserById";
+import { auth } from "../utils/firebase.utils";
+import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
 
 function AllRecepis() {
   const currentAuthUser = auth.currentUser || { uid: "" };
-  const { data } = useAllRecipes();
+  const { data: recipes, isLoading } = useAllRecipes();
   const [value, setValue] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [filterTags, setFilterTags] = useState<string[]>([]);
@@ -70,6 +73,25 @@ function AllRecepis() {
   const toggleShowFavoritesOnly = () => {
     setShowFavoritesOnly((prevState: boolean) => !prevState);
   };
+
+  if(isLoading) {
+    return <div style={{ width: '50%', height: '100vh', maxWidth: 300 }}>
+    <Lottie animationData={FoodAnimation} loop={true}  style={{ width: '100%', height: '100%' }}/>
+  </div>
+  }
+
+  if(!isLoading && recipes?.length === 0) {
+    return <div className={styles.animationWrapper}>
+      <div className={styles.noResultsWrapper}>
+      <Lottie animationData={CookingAnimation} loop={true}  style={{ width: '100%', height: '100%' }}/>
+      <Typography style={{
+        color: 'white',
+        
+      }}
+      variant='h5'>אין לכם מתכונים</Typography>
+      </div>
+  </div>
+  }
 
   return (
     <div className={styles.container}>
@@ -137,20 +159,16 @@ function AllRecepis() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
         >
-          {!data?.length ? (
-            <Grid item xs={12} sm={12} md={12} className={styles.spinner}>
-              <CircularProgress />
-            </Grid>
-          ) : (
-            data
-              .filter(
+          {
+            recipes
+              ?.filter(
                 (recipe: Recipe) =>
                   recipe.description.includes(value) &&
                   (filterTags.length === 0 ||
                     recipe.tags.some((tag) => filterTags.includes(tag))) &&
                   (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
               )
-              .map((recipe: Recipe) => {
+              ?.map((recipe: Recipe) => {
                 return (
                   <Grid item xs={2} sm={4} md={4} key={recipe.id}>
                     <RecipeReviewCard
@@ -161,7 +179,7 @@ function AllRecepis() {
                   </Grid>
                 );
               })
-          )}
+            }
         </Grid>
       </Box>
     </div>
