@@ -1,17 +1,17 @@
-import GradeIcon from '@mui/icons-material/Grade';
+import GradeIcon from "@mui/icons-material/Grade";
 import {
   debounce,
   IconButton,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Lottie from "lottie-react";
 import { useEffect, useMemo, useState } from "react";
-import FoodAnimation from '../assets/animations/FoodAnimation.json';
-import CookingAnimation from '../assets/animations/CookingAnimation.json';
+import FoodAnimation from "../assets/animations/FoodAnimation.json";
+import CookingAnimation from "../assets/animations/CookingAnimation.json";
 import MultiSelectFilter from "../components/MultiSelectFilter";
 import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../models/recipe.model";
@@ -40,7 +40,7 @@ function AllRecepis() {
     "דגים",
     "מקסיקני",
     "הודי",
-    "ארוחת בוקר"
+    "ארוחת בוקר",
   ];
   const { data: user } = useUserById(currentAuthUser.uid);
   const userFavoriteRecipes = user?.favoriteRecipes;
@@ -74,23 +74,38 @@ function AllRecepis() {
     setShowFavoritesOnly((prevState: boolean) => !prevState);
   };
 
-  if(isLoading) {
-    return <div style={{ width: '50%', height: '100vh', maxWidth: 300 }}>
-    <Lottie animationData={FoodAnimation} loop={true}  style={{ width: '100%', height: '100%' }}/>
-  </div>
+  if (isLoading) {
+    return (
+      <div style={{ width: "50%", height: "100vh", maxWidth: 300 }}>
+        <Lottie
+          animationData={FoodAnimation}
+          loop={true}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
+    );
   }
 
-  if(!isLoading && recipes?.length === 0) {
-    return <div className={styles.animationWrapper}>
-      <div className={styles.noResultsWrapper}>
-      <Lottie animationData={CookingAnimation} loop={true}  style={{ width: '100%', height: '100%' }}/>
-      <Typography style={{
-        color: 'white',
-        
-      }}
-      variant='h5'>אין לכם מתכונים</Typography>
+  if (!isLoading && recipes?.length === 0) {
+    return (
+      <div className={styles.animationWrapper}>
+        <div className={styles.noResultsWrapper}>
+          <Lottie
+            animationData={CookingAnimation}
+            loop={true}
+            style={{ width: "100%", height: "100%" }}
+          />
+          <Typography
+            style={{
+              color: "white"
+            }}
+            variant="h5"
+          >
+            אין לכם מתכונים
+          </Typography>
+        </div>
       </div>
-  </div>
+    );
   }
 
   return (
@@ -159,27 +174,25 @@ function AllRecepis() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
         >
-          {
-            recipes
-              ?.filter(
-                (recipe: Recipe) =>
-                  recipe.description.includes(value) &&
-                  (filterTags.length === 0 ||
-                    recipe.tags.some((tag) => filterTags.includes(tag))) &&
-                  (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
-              )
-              ?.map((recipe: Recipe) => {
-                return (
-                  <Grid item xs={2} sm={4} md={4} key={recipe.id}>
-                    <RecipeReviewCard
-                      recipe={recipe}
-                      isFavorite={favoriteRecipes.includes(recipe.id)}
-                      handleFavoriteRecipesChange={handleFavoriteRecipesChange}
-                    />
-                  </Grid>
-                );
-              })
-            }
+          {recipes
+            ?.filter(
+              (recipe: Recipe) =>
+                recipe.description.includes(value) &&
+                (filterTags.length === 0 ||
+                  recipe.tags.some((tag) => filterTags.includes(tag))) &&
+                (!showFavoritesOnly || favoriteRecipes?.includes(recipe.id))
+            )
+            ?.map((recipe: Recipe) => {
+              return (
+                <Grid item xs={2} sm={4} md={4} key={recipe.id}>
+                  <RecipeReviewCard
+                    recipe={recipe}
+                    isFavorite={favoriteRecipes.includes(recipe.id)}
+                    handleFavoriteRecipesChange={handleFavoriteRecipesChange}
+                  />
+                </Grid>
+              );
+            })}
         </Grid>
       </Box>
     </div>

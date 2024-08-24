@@ -23,6 +23,8 @@ import CreateNewGroupDialog from "./CreateNewGroupDialog/CreateNewGroupDialog";
 import styles from "./GroupsManagement.module.css"; // Import css modules stylesheet as styles
 import { useDeleteGroup } from "../../queries/mutations/useDeleteGroup";
 import ApprovalDialog from "../../components/ApprovalDialog/ApprovalDialog";
+import Lottie from "lottie-react";
+import GroupAnimation from "../../assets/animations/GroupAnimation.json";
 
 interface GroupState {
   [key: string]: boolean;
@@ -39,7 +41,11 @@ export default function GroupsManagement() {
   const [openCreateGroupDialog, setOpenCreateGroupDialog] =
     React.useState<boolean>(false);
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
-  const { data: userGroups, refetch, isLoading } = useGroupsManagement();
+  const {
+    data: userGroups,
+    refetch,
+    isLoading: isUserGroupsLoading,
+  } = useGroupsManagement();
   const { mutate: createNewGroupMutation, isSuccess: createGroupSuccess } =
     useCreateNewGroup();
   const { mutate: deleteGroupMutation, isSuccess: deleteGroupSuccess } =
@@ -119,6 +125,38 @@ export default function GroupsManagement() {
     setExistingGroupId("");
     setOpenCreateGroupDialog(true);
   };
+
+  if (isUserGroupsLoading) {
+    return (
+      <div
+      style={{
+        height: "100vh",
+        maxWidth: 300,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center", // Center horizontally
+        overflow: "hidden" // Ensure animation stays within the container
+      }}
+    >
+      <div style={{ width: '100%', height: 'auto', maxWidth: '100%' }}>
+        <Lottie
+          animationData={GroupAnimation}
+          loop={true}
+          style={{ width: '100%', height: 'auto' }} // Adjust the size of the Lottie animation
+        />
+      </div>
+      <Typography
+            style={{
+              color: "white"
+            }}
+            variant="h5"
+          >
+            מחפש קבוצות...
+          </Typography>
+    </div>
+    );
+  }
 
   return (
     <>

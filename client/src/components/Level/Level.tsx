@@ -36,7 +36,7 @@ function Level({ level }: { level: number }) {
 
   return (
     <div className={clsx(styles.wrapper, styles[style])}>
-      <Typography >{text}</Typography>
+      <Typography className={styles.text}>{text}</Typography>
     </div>
   );
 }

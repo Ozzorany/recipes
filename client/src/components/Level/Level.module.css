@@ -1,15 +1,21 @@
-.wrapper{
+.wrapper {
   border: solid 2px;
   border-radius: 15px;
   padding: 2px 13px 1px;
-  width: 95%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  align-items: center;
+}
+
+.text {
+  @media (max-width: 380px) {
+   font-size: 12px;
+  }
 }
 
 .zero {
   border-color: antiquewhite;
 }
-
 .one {
   border-color: rgb(250, 198, 130);
 }
