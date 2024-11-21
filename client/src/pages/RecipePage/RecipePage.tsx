@@ -10,11 +10,16 @@ import {
   CircularProgress,
   FormControlLabel,
   FormGroup,
+  IconButton,
   Stack,
   Typography,
+  Snackbar
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { CopyIngredientsWrapper, IngredientsTitleWrapper } from "./RecipePage.styles";
+import { useState } from "react";
 
 function RecipePage() {
   const params = useParams();
@@ -22,6 +27,8 @@ function RecipePage() {
   const { data: response, isLoading } = useRecipeById(id!);
   const { data: recipe, ok } = response || {};
   const { ingredients, method, image, tags } = recipe || {};
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
 
   if (isLoading) {
     return (
@@ -35,13 +42,13 @@ function RecipePage() {
     return <div className={styles.erroMessageWrapper}>
       <Card sx={{ maxWidth: 310, marginTop: "24px" }}>
         <CardContent>
-        <ErrorOutlineIcon/>
+          <ErrorOutlineIcon />
           <Typography
             gutterBottom
             component="div"
             sx={{ fontSize: "18px", fontWeight: 400 }}
           >
-           אין אפשרות לצפות במתכון
+            אין אפשרות לצפות במתכון
           </Typography>
           <Typography variant="body2" color="text.secondary">
             יכול להיות שהמתכון שאתם מחפשים נמחק, או שאתם לא נמצאים בקבוצה שבה הוא משותף.
@@ -51,8 +58,14 @@ function RecipePage() {
     </div>;
   }
 
+  const copyIngredients = () => {
+    setOpenSnackBar(true);
+    navigator.clipboard.writeText(ingredients);
+  }
+
   return (
-    <div className={styles.container}>
+    <>
+     <div className={styles.container}>
       <Typography variant="h3" className={styles.title}>
         {recipe?.description}
       </Typography>
@@ -69,9 +82,17 @@ function RecipePage() {
         })}
       </Box>
 
-      <Typography variant="h5" mt={2} className={styles.ingredientsTitle}>
-        מרכיבים
-      </Typography>
+      <IngredientsTitleWrapper>
+        <Typography variant="h5" className={styles.ingredientsTitle}>
+          מרכיבים
+        </Typography>
+        <CopyIngredientsWrapper onClick={copyIngredients}>
+          <IconButton >
+          <ContentCopyIcon sx={{ color: "white" }}/>
+          </IconButton>
+        </CopyIngredientsWrapper>
+      </IngredientsTitleWrapper>
+
       <FormGroup>
         {ingredients?.map((ingredient: string) => {
           return (
@@ -101,6 +122,14 @@ function RecipePage() {
         src={!!image ? image : noImagePath}
       />
     </div>
+     <Snackbar
+        open={openSnackBar}
+        onClose={() => setOpenSnackBar(false)}
+        autoHideDuration={3000}
+        message="הרכיבים הועתקו"
+      />
+    </>
+   
   );
 }
 

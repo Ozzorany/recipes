@@ -190,14 +190,11 @@ export default function RecipeReviewCard({
                       <WhatsappShareButton
                         url={`https://recipes-e6692.web.app/recipe/${recipe.id}`}
                         title={recipe.description}
-                        separator=":: "
+                        separator=":"
                       >
                         <WhatsappIcon size={32} round />
                       </WhatsappShareButton>
                     </ListItemIcon>
-                    <ListItemText sx={{ marginLeft: "2px" }}>
-                      <Typography textAlign="left">שיתוף מתכון</Typography>
-                    </ListItemText>
                   </MenuItem>
                 </Menu>
               </React.Fragment>
