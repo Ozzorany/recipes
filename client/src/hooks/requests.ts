@@ -5,6 +5,14 @@ import { auth } from "../utils/firebase.utils";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
+async function httpGetHealthCheck(): Promise<any> {
+  return axios.get(`${serverUrl}/health`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+}
+
 async function httpGetAllRecipes(): Promise<any> {
   return axios.get(`${serverUrl}/recipes`, {
     headers: {
@@ -187,6 +195,7 @@ async function httpUpdateRecipeLikes(recipeId: string): Promise<any> {
 }
 
 export {
+  httpGetHealthCheck,
   httpGetAllRecipes,
   httpSubmitRecipe,
   httpDeleteRecipe,

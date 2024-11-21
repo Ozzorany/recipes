@@ -2,6 +2,8 @@ const express = require("express");
 const recipesRouter = require("./recipes/recipes.router");
 const usersRouter = require("./users/users.router");
 const groupsRouter = require("./groups/groups.router");
+const healthRouter = require("./health/health.router");
+
 
 const admin = require("firebase-admin");
 
@@ -33,6 +35,7 @@ const clientMW = async (req, res, next) => {
   };
 
 api.use(clientMW);
+api.use("/health", healthRouter);
 api.use("/recipes", recipesRouter);
 api.use("/users", usersRouter);
 api.use("/groups", groupsRouter);
