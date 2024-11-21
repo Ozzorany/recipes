@@ -15,7 +15,7 @@ import Login from "./pages/Login/Login";
 import { auth } from "./utils/firebase.utils";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import { User } from "firebase/auth";
-import { httpGetUserLevel, httpVlidateUser } from "./hooks/requests";
+import { httpVlidateUser } from "./hooks/requests";
 import GroupsManagement from "./pages/GroupsManagement/GroupsManagement";
 import JoinGroup from "./pages/GroupsManagement/JoinGroup/JoinGroup";
 import HealthCheckWrapper from "./components/HealthCheckWrapper/HealthCheckWrapper";
@@ -26,11 +26,6 @@ function App() {
     initializing: true,
   });
 
-  async function validateUser(user: User) {
-    const token = await user.getIdToken();
-    httpVlidateUser(token);
-  }
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -38,7 +33,6 @@ function App() {
           authenticated: true,
           initializing: false,
         });
-        // validateUser(user);
       } else {
         setAuthState({
           authenticated: false,

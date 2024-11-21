@@ -1,5 +1,4 @@
 import { RestaurantMenu } from "@mui/icons-material";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
@@ -45,11 +44,6 @@ const NavigationBar = () => {
 
   const navigateToAllRecepis = () => {
     navigate("/all-recipes", { replace: true });
-    handleCloseNavMenu();
-  };
-
-  const navigateToMyRecepis = () => {
-    navigate("/my-recipes", { replace: true });
     handleCloseNavMenu();
   };
 

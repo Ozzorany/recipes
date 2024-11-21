@@ -3,7 +3,6 @@ import React from "react";
 import { useHealthCheck } from "../../queries/useHealthCheck ";
 import FoodAnimation from "../../assets/animations/FoodAnimation.json";
 import Lottie from "lottie-react";
-import Typography from "@mui/material/Typography";
 
 
 interface HealthCheckWrapperProps {
