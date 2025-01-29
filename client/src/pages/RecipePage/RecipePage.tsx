@@ -3,8 +3,6 @@ import styles from "./RecipePage.module.css"; // Import css modules stylesheet a
 import { useRecipeById } from "../../queries/useRecipeById";
 import {
   Box,
-  Card,
-  CardContent,
   Checkbox,
   Chip,
   CircularProgress,
@@ -15,22 +13,25 @@ import {
   Typography,
   Snackbar,
 } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import noImagePath from "../../assets/images/recipe-book.jpg";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   CopyIngredientsWrapper,
   IngredientsTitleWrapper,
   TitleWrapper,
 } from "./RecipePage.styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import RecipePageEmptyState from "./components/RecipePageEmptyState";
 
 function RecipePage() {
   const params = useParams();
   const { id } = params || {};
   const { data: recipe, isLoading } = useRecipeById(id!);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (isLoading) {
     return (
@@ -41,26 +42,7 @@ function RecipePage() {
   }
 
   if (!recipe) {
-    return (
-      <div className={styles.erroMessageWrapper}>
-        <Card sx={{ maxWidth: 310, marginTop: "24px" }}>
-          <CardContent>
-            <ErrorOutlineIcon />
-            <Typography
-              gutterBottom
-              component="div"
-              sx={{ fontSize: "18px", fontWeight: 400 }}
-            >
-              אין אפשרות לצפות במתכון
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              יכול להיות שהמתכון שאתם מחפשים נמחק, או שאתם לא נמצאים בקבוצה שבה
-              הוא משותף.
-            </Typography>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <RecipePageEmptyState />;
   }
 
   const { ingredients, method, image, tags } = recipe;
