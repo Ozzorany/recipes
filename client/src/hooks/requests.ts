@@ -2,6 +2,8 @@ import axios from "axios";
 import { Recipe } from "../models/recipe.model";
 import { User } from "../models/user.model";
 import { auth } from "../utils/firebase.utils";
+import { UserMnagementGroups } from "../models/groups.model";
+import { Response } from "../models/response";
 
 const serverUrl = process.env.REACT_APP_SERVER;
 
@@ -21,12 +23,14 @@ async function httpGetAllRecipes(): Promise<any> {
   });
 }
 
-async function httpGetRecipesById(recipeId: string): Promise<any> {
-  return axios.get(`${serverUrl}/recipes/${recipeId}`, {
+async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
+  const response = await axios.get(`${serverUrl}/recipes/${recipeId}`, {
     headers: {
       uid: auth.currentUser?.uid || "",
     },
   });
+
+  return response?.data?.data
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
@@ -118,12 +122,14 @@ async function httpGenerateGroupInvitationLink(groupId: string): Promise<any> {
   );
 }
 
-async function httpGetUserManagementGroups(): Promise<any> {
-  return axios.get(`${serverUrl}/groups/management`, {
+async function httpGetUserManagementGroups(): Promise<UserMnagementGroups> {
+  const response = await axios.get(`${serverUrl}/groups/management`, {
     headers: {
       uid: auth.currentUser?.uid || "",
     },
   });
+
+  return response?.data
 }
 
 async function httpUpdateFavoriteRecipes(recipeId: string): Promise<any> {
