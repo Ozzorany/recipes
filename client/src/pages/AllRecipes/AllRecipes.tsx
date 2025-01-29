@@ -1,24 +1,19 @@
 import GradeIcon from "@mui/icons-material/Grade";
-import {
-  debounce,
-  IconButton,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { debounce, IconButton, TextField, useMediaQuery } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Lottie from "lottie-react";
 import { useEffect, useMemo, useState } from "react";
-import FoodAnimation from "../assets/animations/FoodAnimation.json";
-import CookingAnimation from "../assets/animations/CookingAnimation.json";
-import MultiSelectFilter from "../components/MultiSelectFilter";
-import RecipeReviewCard from "../components/RecipeReviewCard/RecipeReviewCard";
-import { Recipe } from "../models/recipe.model";
-import { useAllRecipes } from "../queries/useAllRecipes";
-import { useUserById } from "../queries/useUserById";
-import { auth } from "../utils/firebase.utils";
+import FoodAnimation from "../../assets/animations/FoodAnimation.json";
+import MultiSelectFilter from "../../components/MultiSelectFilter";
+import RecipeReviewCard from "../../components/RecipeReviewCard/RecipeReviewCard";
+import { Recipe } from "../../models/recipe.model";
+import { useAllRecipes } from "../../queries/useAllRecipes";
+import { useUserById } from "../../queries/useUserById";
+import { auth } from "../../utils/firebase.utils";
 import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
+import { foodCategories } from "../../constants";
+import AllRecipesEmptyState from "./components/AllRecipesEmptyState";
 
 function AllRecepis() {
   const currentAuthUser = auth.currentUser || { uid: "" };
@@ -28,20 +23,7 @@ function AllRecepis() {
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
   const matches = useMediaQuery("(min-width:600px)");
-  const tags = [
-    "איטלקי",
-    "קינוח",
-    "חלבי",
-    "בשרי",
-    "מאפים",
-    "אסייתי",
-    "סלטים",
-    "מרקים",
-    "דגים",
-    "מקסיקני",
-    "הודי",
-    "ארוחת בוקר",
-  ];
+
   const { data: user } = useUserById(currentAuthUser.uid);
   const userFavoriteRecipes = user?.favoriteRecipes;
 
@@ -87,25 +69,7 @@ function AllRecepis() {
   }
 
   if (!isLoading && recipes?.length === 0) {
-    return (
-      <div className={styles.animationWrapper}>
-        <div className={styles.noResultsWrapper}>
-          <Lottie
-            animationData={CookingAnimation}
-            loop={true}
-            style={{ width: "100%", height: "100%" }}
-          />
-          <Typography
-            style={{
-              color: "white"
-            }}
-            variant="h5"
-          >
-            אין לכם מתכונים
-          </Typography>
-        </div>
-      </div>
-    );
+    return <AllRecipesEmptyState />;
   }
 
   return (
@@ -140,7 +104,7 @@ function AllRecepis() {
             style={{ width: `${matches ? "15%" : "100%"}` }}
           >
             <MultiSelectFilter
-              values={tags}
+              values={foodCategories}
               valuesChanged={handleFilterTagsChanged}
             />
           </div>

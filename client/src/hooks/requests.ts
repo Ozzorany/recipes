@@ -15,12 +15,14 @@ async function httpGetHealthCheck(): Promise<any> {
   });
 }
 
-async function httpGetAllRecipes(): Promise<any> {
-  return axios.get(`${serverUrl}/recipes`, {
+async function httpGetAllRecipes(): Promise<Recipe[]> {
+  const response = await axios.get(`${serverUrl}/recipes`, {
     headers: {
       uid: auth.currentUser?.uid || "",
     },
   });
+
+  return response?.data
 }
 
 async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
