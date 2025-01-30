@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import styles from "./JoinGroup.module.css";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -10,7 +10,7 @@ import { useJoinGroup } from "../../../queries/mutations/useJoinGroup";
 import { CircularProgress } from "@mui/material";
 
 export default function JoinGroup() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const groupName = searchParams.get("groupName");
   const token = searchParams.get("token") || "";
   const {
@@ -23,7 +23,7 @@ export default function JoinGroup() {
   const navigate = useNavigate();
 
   const acceptInvitation = () => {
-    const response = joinGroupMutation(token);
+    joinGroupMutation(token);
   };
 
   const handleOtherTime = () => {
@@ -34,7 +34,7 @@ export default function JoinGroup() {
     navigate("/groups-management", { replace: true });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       const timeoutId = setTimeout(() => {
         navigate("/groups-management", { replace: true });

@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { httpGetRecipesById } from "../hooks/requests";
 import { Recipe } from "../models/recipe.model";
-import { Response } from "../models/response";
 
 export const useRecipeById = (recipeId: string) => {
   return useQuery<Recipe>({

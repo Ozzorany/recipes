@@ -22,7 +22,7 @@ export const fetchRecipes = createAsyncThunk(
 export const deleteRecipe = createAsyncThunk(
   "recipes/deleteRecipe",
   async (recipeId: string) => {
-    const response = await httpDeleteRecipe(recipeId);
+    await httpDeleteRecipe(recipeId);
     return recipeId;
   }
 );

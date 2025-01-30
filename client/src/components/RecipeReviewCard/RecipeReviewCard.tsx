@@ -201,7 +201,11 @@ export default function RecipeReviewCard({
             )}
           </PopupState>
         }
-        title={<Typography className={styles.recipeTitle}>{recipe.description}</Typography>}
+        title={
+          <Typography className={styles.recipeTitle}>
+            {recipe.description}
+          </Typography>
+        }
       />
       <CardMedia
         style={{
@@ -209,7 +213,7 @@ export default function RecipeReviewCard({
           height: "31vh",
           margin: "auto",
           cursor: "pointer",
-          borderRadius: "10px"
+          borderRadius: "10px",
         }}
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}
@@ -249,7 +253,9 @@ export default function RecipeReviewCard({
 
       <CardActions disableSpacing>
         <Box display="flex" alignItems="center">
-          {recipeLikes?.length > 0 && <Typography>{recipeLikes?.length}</Typography>}
+          {recipeLikes?.length > 0 && (
+            <Typography>{recipeLikes?.length}</Typography>
+          )}
           <IconButton
             aria-label="like"
             onClick={handleLike}
