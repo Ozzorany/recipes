@@ -34,13 +34,13 @@ async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
   return response?.data?.data
 }
 
-async function httpSubmitRecipe(recipe: Recipe): Promise<any> {
+async function httpSubmitRecipe(recipe: Recipe): Promise<string> {
   const response = await axios.post<Recipe>(
     `${serverUrl}/recipes/create`,
     recipe
   );
 
-  return response;
+  return response?.data?.id;
 }
 
 async function httpUpdateRecipe(recipe: Recipe): Promise<any> {

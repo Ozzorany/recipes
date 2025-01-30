@@ -15,6 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { auth } from "../utils/firebase.utils";
 import MultiSelect from "../components/MultiSelect/MultiSelect";
 import { useGroups } from "../queries/useGroups";
+import { useCreateRecipe } from "../queries/mutations/useCreateRescipe";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -35,7 +37,12 @@ function CreateRecipe() {
   const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
   const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
   const user = auth.currentUser;
-
+  const { mutate: createRecipeMutation, isPending: createRecipeLoading } =
+    useCreateRecipe({
+      onSuccess: (newRecipeId: string) => {
+        navigate(`/recipe/${newRecipeId}`);
+      },
+    });
   useEffect(() => {
     if (isEdit) {
       descriptionRef.current.value = editRecipe.description;
@@ -85,7 +92,9 @@ function CreateRecipe() {
         executeSubmition(newRecipe);
       }
 
-      navigate("/all-recipes", { replace: true });
+      if (isEdit) {
+        navigate("/all-recipes", { replace: true });
+      }
     }
   };
 
@@ -105,7 +114,7 @@ function CreateRecipe() {
     if (isEdit) {
       dispatch(updateRecipe(recipe));
     } else {
-      dispatch(createRecipe(recipe));
+      createRecipeMutation(recipe);
     }
   };
 
@@ -239,14 +248,15 @@ function CreateRecipe() {
         />
       </div>
       <div className={styles.actions}>
-        <Button
+        <LoadingButton
+          loading={createRecipeLoading}
           type="button"
           className={styles.submit}
           onClick={confirmHandler}
           disabled={isEdit && editRecipe?.creatorId !== user?.uid}
         >
           {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
-        </Button>
+        </LoadingButton>
       </div>
     </form>
   );

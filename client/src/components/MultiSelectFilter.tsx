@@ -16,7 +16,7 @@ function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
   const [personName, setPersonName] = useState<string[]>([]);
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
-  
+
   const MenuProps = {
     PaperProps: {
       style: {
@@ -27,7 +27,9 @@ function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
   };
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {target: { value }} = event;
+    const {
+      target: { value },
+    } = event;
     const values = typeof value === "string" ? value.split(",") : value;
     setPersonName(values);
     props.valuesChanged(values);
@@ -35,10 +37,19 @@ function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
 
   return (
     <div>
-      <FormControl sx={{background: "white", width: '100%', textAlign: 'right' }} >
+      <FormControl
+        sx={{
+          background: "white",
+          width: "100%",
+          textAlign: "right",
+          "& .MuiOutlinedInput-notchedOutline": {
+            border: "none",
+          },
+        }}
+      >
         <InputLabel id="demo-multiple-checkbox-label">סגנונות</InputLabel>
-        <Select     
-          style= {{textAlign: 'start'}}   
+        <Select
+          style={{ textAlign: "start" }}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
@@ -49,9 +60,9 @@ function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
           MenuProps={MenuProps}
         >
           {props.values.map((name) => (
-            <MenuItem key={name} value={name} style= {{textAlign: 'start'}}>
+            <MenuItem key={name} value={name} style={{ textAlign: "start" }}>
               <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name}/>
+              <ListItemText primary={name} />
             </MenuItem>
           ))}
         </Select>

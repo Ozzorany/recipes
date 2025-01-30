@@ -50,7 +50,7 @@ function AllRecepis() {
     );
   }
 
-  if (!isLoading && recipes?.length === 0) {
+  if (recipes?.length === 0) {
     return <AllRecipesEmptyState />;
   }
 

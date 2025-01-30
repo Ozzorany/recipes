@@ -40,7 +40,6 @@ const AllRecipesFilters = ({
           justifyContent: "flex-start",
           p: 1,
           m: 1,
-          bgcolor: "background.paper",
           borderRadius: 1,
         }}
       >
@@ -54,7 +53,16 @@ const AllRecipesFilters = ({
             id="outlined-multiline-flexible"
             label="חיפוש..."
             onChange={debouncedChangeHandler}
-            sx={{ background: "white", width: "100%" }}
+            sx={{
+              background: "white",
+              width: "100%",
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "20px", // Adjust the value for more roundness
+              },
+            }}
           />
         </Box>
 

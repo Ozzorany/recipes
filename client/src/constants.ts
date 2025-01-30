@@ -12,3 +12,7 @@ export const foodCategories = [
     "הודי",
     "ארוחת בוקר",
   ];
+
+  export enum QUERY_KEYS {
+    ALL_RECIPES = "allRecipes"
+  }

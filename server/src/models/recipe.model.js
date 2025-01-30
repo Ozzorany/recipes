@@ -67,9 +67,10 @@ async function updateRecipe(recipe) {
 async function createRecipe(recipe) {
   const ref = await firestore.collection(COLLECTION);
   const newId = ref.doc().id;
-  ref.doc(newId).set(recipe);
-  recipe.id = newId;
-  return recipe;
+  const newRecipePayload = {...recipe, createdAt: new Date(), lastUpdatedAt: new Date()}
+  ref.doc(newId).set(newRecipePayload);
+  newRecipePayload.id = newId;
+  return newRecipePayload;
 }
 
 async function deleteRecipe(recipeId) {
