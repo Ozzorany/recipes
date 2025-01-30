@@ -42,6 +42,7 @@ import { Recipe } from "../../models/recipe.model";
 import { auth } from "../../utils/firebase.utils";
 import { useFavoriteRecipesMutation } from "../../queries/mutations/useFavoriteRecipesMutation";
 import { useRecipeLikesMutation } from "../../queries/mutations/useRecipeLikesMutation";
+import { useDeleteRecipe } from "../../queries/mutations/useDeleteRecipe";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -81,6 +82,7 @@ export default function RecipeReviewCard({
   const userId = auth?.currentUser?.uid || "";
   const { likes = [] } = recipe || {};
   const firstRender = useRef(true);
+  const { mutate: deletRecipeMutation } = useDeleteRecipe();
 
   useEffect(() => {
     if (firstRender.current) {
@@ -95,7 +97,7 @@ export default function RecipeReviewCard({
 
   const handleDeleteRecipe = (popupState: any) => {
     popupState.close();
-    dispatch(deleteRecipe(recipe.id));
+    deletRecipeMutation(recipe.id);
   };
 
   const handleEditRecipe = (popupState: any) => {
