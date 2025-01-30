@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
 import FoodAnimation from "../../assets/animations/FoodAnimation.json";
@@ -80,7 +80,7 @@ function AllRecepis() {
             )
             ?.map((recipe: Recipe) => {
               return (
-                <Grid item xs={2} sm={4} md={4} key={recipe.id}>
+                <Grid size={{ xs: 2, sm: 4, md: 4 }} key={recipe.id}>
                   <RecipeReviewCard
                     recipe={recipe}
                     isFavorite={favoriteRecipes.includes(recipe.id)}

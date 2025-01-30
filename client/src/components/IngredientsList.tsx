@@ -1,6 +1,6 @@
 import MenuBookTwoToneIcon from "@mui/icons-material/MenuBookTwoTone";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -14,8 +14,13 @@ const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-function IngredientsList({ ingredients, removeIngredient }: { ingredients: Ingredient[], removeIngredient: (ingredient: Ingredient) => void}) {
-    
+function IngredientsList({
+  ingredients,
+  removeIngredient,
+}: {
+  ingredients: Ingredient[];
+  removeIngredient: (ingredient: Ingredient) => void;
+}) {
   const emmitRemoveIngredient = (ingredient: Ingredient): void => {
     removeIngredient(ingredient);
   };
@@ -28,7 +33,7 @@ function IngredientsList({ ingredients, removeIngredient }: { ingredients: Ingre
         className="d-flex justify-content-center mr-0"
         style={{ width: "100%" }}
       >
-        <Grid item xs md className="pr-0">
+        <Grid size={{ xs: 12, md: 6 }} sx={{ pr: 0 }}>
           <Demo>
             <List>
               {ingredients.map((ingredient) => {
@@ -40,7 +45,12 @@ function IngredientsList({ ingredients, removeIngredient }: { ingredients: Ingre
                         primary={
                           <Fragment>
                             <div className="d-flex justify-context-center">
-                              <DeleteTwoToneIcon sx={{ cursor: "pointer" }} onClick={() => emmitRemoveIngredient(ingredient)}/>
+                              <DeleteTwoToneIcon
+                                sx={{ cursor: "pointer" }}
+                                onClick={() =>
+                                  emmitRemoveIngredient(ingredient)
+                                }
+                              />
                               <span style={{ marginRight: "0.5rem" }}>
                                 {ingredient.description}
                               </span>
