@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import CookingAnimation from "../../../assets/animations/CookingAnimation.json";
+import CookingAnimation from "../../../../assets/animations/CookingAnimation.json";
 
 import {
   AnimationWrapper,

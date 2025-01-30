@@ -1,28 +1,24 @@
-import GradeIcon from "@mui/icons-material/Grade";
-import { debounce, IconButton, TextField, useMediaQuery } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Lottie from "lottie-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import FoodAnimation from "../../assets/animations/FoodAnimation.json";
-import MultiSelectFilter from "../../components/MultiSelectFilter";
 import RecipeReviewCard from "../../components/RecipeReviewCard/RecipeReviewCard";
 import { Recipe } from "../../models/recipe.model";
 import { useAllRecipes } from "../../queries/useAllRecipes";
 import { useUserById } from "../../queries/useUserById";
 import { auth } from "../../utils/firebase.utils";
-import styles from "./AllRecipes.module.css"; // Import css modules stylesheet as styles
-import { foodCategories } from "../../constants";
-import AllRecipesEmptyState from "./components/AllRecipesEmptyState";
+import styles from "./AllRecipes.module.css";
+import AllRecipesEmptyState from "./components/AllRecipesEmptyState/AllRecipesEmptyState";
+import AllRecipesFilters from "./components/AllRecipesFilters/AllRecipesFilters";
 
 function AllRecepis() {
   const currentAuthUser = auth.currentUser || { uid: "" };
   const { data: recipes, isLoading } = useAllRecipes();
-  const [value, setValue] = useState("");
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [value, setValue] = useState<string>("");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
-  const matches = useMediaQuery("(min-width:600px)");
 
   const { data: user } = useUserById(currentAuthUser.uid);
   const userFavoriteRecipes = user?.favoriteRecipes;
@@ -30,16 +26,6 @@ function AllRecepis() {
   useEffect(() => {
     setFavoriteRecipes(userFavoriteRecipes);
   }, [userFavoriteRecipes]);
-
-  const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-  };
-
-  const debouncedChangeHandler = useMemo(() => debounce(changeValue, 100), []);
-
-  const handleFilterTagsChanged = (tags: string[]) => {
-    setFilterTags(tags);
-  };
 
   const handleFavoriteRecipesChange = (recipeId: string) => {
     const index = favoriteRecipes.indexOf(recipeId);
@@ -50,10 +36,6 @@ function AllRecepis() {
     } else {
       setFavoriteRecipes([...favoriteRecipes, recipeId]);
     }
-  };
-
-  const toggleShowFavoritesOnly = () => {
-    setShowFavoritesOnly((prevState: boolean) => !prevState);
   };
 
   if (isLoading) {
@@ -74,64 +56,14 @@ function AllRecepis() {
 
   return (
     <div className={styles.container}>
-      <div style={{ width: "100%" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            p: 1,
-            m: 1,
-            bgcolor: "background.paper",
-            borderRadius: 1,
-          }}
-        >
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            sx={{ width: `${matches ? "15%" : "100%"}` }}
-          >
-            <TextField
-              id="outlined-multiline-flexible"
-              label="חיפוש..."
-              onChange={debouncedChangeHandler}
-              sx={{ background: "white", width: "100%" }}
-            />
-          </Box>
-
-          <div
-            className="mr-2"
-            style={{ width: `${matches ? "15%" : "100%"}` }}
-          >
-            <MultiSelectFilter
-              values={foodCategories}
-              valuesChanged={handleFilterTagsChanged}
-            />
-          </div>
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            sx={{
-              width: `${matches ? "15%" : "100%"}`,
-              alignItems: "center",
-              display: "flex",
-              marginLeft: "16px",
-            }}
-          >
-            <IconButton
-              aria-label="add to favorites"
-              onClick={toggleShowFavoritesOnly}
-            >
-              <GradeIcon
-                style={{ color: showFavoritesOnly ? "#f0dd5a" : "gray" }}
-                fontSize="large"
-              />
-            </IconButton>
-          </Box>
-        </Box>
-      </div>
-
+      <AllRecipesFilters
+        filterTags={filterTags}
+        setFilterTags={setFilterTags}
+        setShowFavoritesOnly={setShowFavoritesOnly}
+        setValue={setValue}
+        showFavoritesOnly={showFavoritesOnly}
+        value={value}
+      />
       <Box sx={{ flexGrow: 1, height: "20%", marginTop: "2rem" }}>
         <Grid
           container
