@@ -26,9 +26,9 @@ function CreateRecipe() {
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isImageRemoved, setIsImageRemoved] = useState<boolean>(false);
   const { data: userGroups } = useGroups();
-  const ingredientRef = useRef<any>();
-  const methodRef = useRef<any>();
-  const descriptionRef = useRef<any>();
+  const ingredientRef = useRef<any>(null);
+  const methodRef = useRef<any>(null);
+  const descriptionRef = useRef<any>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { state }: { state: any } = useLocation();
@@ -69,7 +69,7 @@ function CreateRecipe() {
       creatorId: user?.uid || "",
       sharedGroups: groups,
       isDeleted: false,
-      likes: []
+      likes: [],
     };
 
     if (

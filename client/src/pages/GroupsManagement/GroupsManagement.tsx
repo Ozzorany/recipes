@@ -25,6 +25,7 @@ import { useDeleteGroup } from "../../queries/mutations/useDeleteGroup";
 import ApprovalDialog from "../../components/ApprovalDialog/ApprovalDialog";
 import Lottie from "lottie-react";
 import GroupAnimation from "../../assets/animations/GroupAnimation.json";
+import { useEffect } from "react";
 
 interface GroupState {
   [key: string]: boolean;
@@ -59,7 +60,7 @@ export default function GroupsManagement() {
   } = useGenerateInvitationGroupLink();
   const { data: generatedLink } = responseData || {};
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isPending && !!responseData) {
       setOpenSnackBar(true);
       navigator.clipboard.writeText(generatedLink);
@@ -92,7 +93,7 @@ export default function GroupsManagement() {
     setApprovalDialogOpen(true);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (createGroupSuccess || deleteGroupSuccess) {
       refetch();
     }
@@ -129,32 +130,32 @@ export default function GroupsManagement() {
   if (isUserGroupsLoading) {
     return (
       <div
-      style={{
-        height: "100vh",
-        maxWidth: 300,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center", // Center horizontally
-        overflow: "hidden" // Ensure animation stays within the container
-      }}
-    >
-      <div style={{ width: '100%', height: 'auto', maxWidth: '100%' }}>
-        <Lottie
-          animationData={GroupAnimation}
-          loop={true}
-          style={{ width: '100%', height: 'auto' }} // Adjust the size of the Lottie animation
-        />
+        style={{
+          height: "100vh",
+          maxWidth: 300,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center", // Center horizontally
+          overflow: "hidden", // Ensure animation stays within the container
+        }}
+      >
+        <div style={{ width: "100%", height: "auto", maxWidth: "100%" }}>
+          <Lottie
+            animationData={GroupAnimation}
+            loop={true}
+            style={{ width: "100%", height: "auto" }} // Adjust the size of the Lottie animation
+          />
+        </div>
+        <Typography
+          style={{
+            color: "white",
+          }}
+          variant="h5"
+        >
+          מחפש קבוצות...
+        </Typography>
       </div>
-      <Typography
-            style={{
-              color: "white"
-            }}
-            variant="h5"
-          >
-            מחפש קבוצות...
-          </Typography>
-    </div>
     );
   }
 
