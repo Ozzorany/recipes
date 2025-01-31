@@ -8,5 +8,7 @@ export interface Recipe {
     creatorId: string,
     sharedGroups: string[],
     isDeleted: boolean,
-    likes: string[]
+    likes: string[],
+    createdAt?: Date,
+    lastUpdatedAt?: Date
 }

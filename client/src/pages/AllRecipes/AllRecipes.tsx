@@ -11,6 +11,7 @@ import { auth } from "../../utils/firebase.utils";
 import styles from "./AllRecipes.module.css";
 import AllRecipesEmptyState from "./components/AllRecipesEmptyState/AllRecipesEmptyState";
 import AllRecipesFilters from "./components/AllRecipesFilters/AllRecipesFilters";
+import { sortRecipes } from "./AllRecipes.helper";
 
 function AllRecepis() {
   const currentAuthUser = auth.currentUser || { uid: "" };
@@ -50,7 +51,7 @@ function AllRecepis() {
     );
   }
 
-  if (recipes?.length === 0) {
+  if (!recipes || recipes?.length === 0) {
     return <AllRecipesEmptyState />;
   }
 
@@ -70,7 +71,7 @@ function AllRecepis() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
         >
-          {recipes
+          {sortRecipes(recipes)
             ?.filter(
               (recipe: Recipe) =>
                 recipe.description.includes(value) &&
