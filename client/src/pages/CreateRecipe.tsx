@@ -6,17 +6,16 @@ import IngredientsList from "../components/IngredientsList";
 import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
 import { httpUploadImage } from "../hooks/requests";
-import { useAppDispatch } from "../hooks/storeHooks";
 import { Ingredient } from "../models/ingredient.model";
 import { Recipe } from "../models/recipe.model";
-import { createRecipe, updateRecipe } from "../state/recipesSlice";
 import styles from "./CreateRecipe.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "../utils/firebase.utils";
 import MultiSelect from "../components/MultiSelect/MultiSelect";
 import { useGroups } from "../queries/useGroups";
-import { useCreateRecipe } from "../queries/mutations/useCreateRescipe";
+import { useCreateRecipe } from "../queries/mutations/useCreateRecipe";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useUpdateRecipe } from "../queries/mutations/useUpdateRecipe";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -32,7 +31,6 @@ function CreateRecipe() {
   const methodRef = useRef<any>(null);
   const descriptionRef = useRef<any>(null);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { state }: { state: any } = useLocation();
   const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
   const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
@@ -43,6 +41,13 @@ function CreateRecipe() {
         navigate(`/recipe/${newRecipeId}`);
       },
     });
+  const { mutate: updateRecipeMutation, isPending: updateRecipeLoading } =
+    useUpdateRecipe({
+      onSuccess: () => {
+        navigate(`/all-recipes`);
+      },
+    });
+
   useEffect(() => {
     if (isEdit) {
       descriptionRef.current.value = editRecipe.description;
@@ -76,7 +81,7 @@ function CreateRecipe() {
       creatorId: user?.uid || "",
       sharedGroups: groups,
       isDeleted: false,
-      likes: [],
+      likes: isEdit ? editRecipe.likes : [],
     };
 
     if (
@@ -90,10 +95,6 @@ function CreateRecipe() {
         });
       } else {
         executeSubmition(newRecipe);
-      }
-
-      if (isEdit) {
-        navigate("/all-recipes", { replace: true });
       }
     }
   };
@@ -112,7 +113,7 @@ function CreateRecipe() {
 
   const executeSubmition = (recipe: Recipe): void => {
     if (isEdit) {
-      dispatch(updateRecipe(recipe));
+      updateRecipeMutation(recipe);
     } else {
       createRecipeMutation(recipe);
     }
@@ -249,7 +250,7 @@ function CreateRecipe() {
       </div>
       <div className={styles.actions}>
         <LoadingButton
-          loading={createRecipeLoading}
+          loading={createRecipeLoading || updateRecipeLoading}
           type="button"
           className={styles.submit}
           onClick={confirmHandler}
