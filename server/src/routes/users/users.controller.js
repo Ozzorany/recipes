@@ -5,6 +5,7 @@ const {
   createUser,
   fetchUserById,
   updateFavoriteRecipes,
+  fetchUserFeatures,
 } = require("../../models/users.model");
 const _ = require("lodash");
 
@@ -64,10 +65,20 @@ async function httpCalculateUserLevel(req, res) {
   res.status(200).json({ level });
 }
 
+async function httpUserFeatures(req, res) {
+  const userId = req?.user?.uid;
+
+  if (!userId) {
+    res.status(404);
+  }
+
+  res.status(200).json(await fetchUserFeatures(req?.user?.uid));
+}
 module.exports = {
   httpCreateUser,
   httpGetUserId,
   updateFavoriteRecipes,
   httpUpdateFavoriteRecipes,
   httpCalculateUserLevel,
+  httpUserFeatures,
 };

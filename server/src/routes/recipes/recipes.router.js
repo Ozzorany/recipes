@@ -10,6 +10,7 @@ const {
   httpUploadImage,
   httpGetRecipeById,
   httpUpdateRecipeLikes,
+  httpExtractRecipe,
 } = require("./recipes.controller");
 
 const recipesRouter = express.Router();
@@ -21,5 +22,6 @@ recipesRouter.post("/update/likes", httpUpdateRecipeLikes);
 recipesRouter.post("/delete", httpDeleteRecipe);
 recipesRouter.post("/create", httpCreateRecipe);
 recipesRouter.post("/upload-image", upload.single("image"), httpUploadImage);
+recipesRouter.post("/extract-recipe", httpExtractRecipe);
 
 module.exports = recipesRouter;

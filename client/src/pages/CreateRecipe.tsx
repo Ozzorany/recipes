@@ -7,7 +7,7 @@ import Tags from "../components/Tags";
 import UploadImages from "../components/UploadImages";
 import { httpUploadImage } from "../hooks/requests";
 import { Ingredient } from "../models/ingredient.model";
-import { Recipe } from "../models/recipe.model";
+import { Recipe, SiteRecipe } from "../models/recipe.model";
 import styles from "./CreateRecipe.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "../utils/firebase.utils";
@@ -16,6 +16,11 @@ import { useGroups } from "../queries/useGroups";
 import { useCreateRecipe } from "../queries/mutations/useCreateRecipe";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useUpdateRecipe } from "../queries/mutations/useUpdateRecipe";
+import PhotoFilterIcon from "@mui/icons-material/PhotoFilter";
+import GenerateRecipeFromSiteDialog from "./RecipePage/components/GenerateRecipeFromSiteDialog/GenerateRecipeFromSiteDialog";
+import { Box, CircularProgress, IconButton } from "@mui/material";
+import { useUserFeatures } from "../queries/useUserFeatures";
+import { USER_FEATURES } from "../models/user.model";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -24,6 +29,8 @@ function CreateRecipe() {
   const [recipeDescriptionValid, setRecipeDescriptionValid] =
     useState<boolean>(true);
   const [methodValid, setMethodValid] = useState<boolean>(true);
+  const [openGenerateRecipeFromSite, setOpenGenerateRecipeFromSite] =
+    useState(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isImageRemoved, setIsImageRemoved] = useState<boolean>(false);
   const { data: userGroups } = useGroups();
@@ -35,6 +42,8 @@ function CreateRecipe() {
   const isEdit: boolean = !!state?.isEdit ? state?.isEdit : false;
   const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
   const user = auth.currentUser;
+  const { data: features, isLoading: featuresLoading } = useUserFeatures();
+
   const { mutate: createRecipeMutation, isPending: createRecipeLoading } =
     useCreateRecipe({
       onSuccess: (newRecipeId: string) => {
@@ -48,24 +57,34 @@ function CreateRecipe() {
       },
     });
 
+  const reseIngredientsRef = () => {
+    ingredientRef.current.value = "";
+  };
+
   useEffect(() => {
-    if (isEdit) {
-      descriptionRef.current.value = editRecipe.description;
-      methodRef.current.value = editRecipe.method;
-      setTags(() => editRecipe.tags);
-      setIngredients(() =>
-        editRecipe.ingredients.map((ingredient) => {
-          return { id: uuidv4(), description: ingredient };
-        })
-      );
-    } else {
-      descriptionRef.current.value = "";
-      methodRef.current.value = "";
-      setTags(() => []);
-      setGroups(() => []);
-      setIngredients(() => []);
+    if (!featuresLoading) {
+      if (isEdit) {
+        descriptionRef.current.value = editRecipe.description;
+        methodRef.current.value = editRecipe.method;
+        setTags(() => editRecipe.tags);
+        setIngredients(() =>
+          editRecipe.ingredients.map((ingredient) => {
+            return { id: uuidv4(), description: ingredient };
+          })
+        );
+      } else {
+        descriptionRef.current.value = "";
+        methodRef.current.value = "";
+        setTags(() => []);
+        setGroups(() => []);
+        setIngredients(() => []);
+      }
     }
-  }, [isEdit, editRecipe]);
+  }, [isEdit, editRecipe, featuresLoading]);
+
+  useEffect(() => {
+    reseIngredientsRef();
+  }, [ingredients]);
 
   const confirmHandler = (event: any) => {
     event.preventDefault();
@@ -151,10 +170,6 @@ function CreateRecipe() {
     }
   };
 
-  const reseIngredientsRef = () => {
-    ingredientRef.current.value = "";
-  };
-
   const handleSelectImage = (imageValue: any) => {
     setSelectedImage(imageValue);
     if (!!imageValue) {
@@ -178,88 +193,119 @@ function CreateRecipe() {
     );
   };
 
-  useEffect(() => {
-    reseIngredientsRef();
-  }, [ingredients]);
-
   return (
-    <form className={styles.form}>
-      <div className={styles.control}>
-        <label htmlFor="name">שם מתכון</label>
-        <input type="text" id="name" ref={descriptionRef} autoComplete="off" />
-        {!recipeDescriptionValid && (
-          <p className={styles.errorValidation}>יש להזין שם מתכון</p>
+    <>
+      {!featuresLoading &&
+        features?.includes(USER_FEATURES.RECIPE_FROM_SITE_TOGGLE) && (
+          <IconButton
+            aria-label="generateRecipe"
+            onClick={() => setOpenGenerateRecipeFromSite(true)}
+            sx={{ outline: "none !important" }}
+          >
+            <PhotoFilterIcon style={{ color: "palegreen" }} fontSize="large" />
+          </IconButton>
         )}
-      </div>
-      <div className={styles.control}>
-        <label htmlFor="street">מצרכים</label>
-        <div className="d-flex justify-content-center">
+
+      <form className={styles.form}>
+        <div className={styles.control}>
+          <label htmlFor="name">שם מתכון</label>
           <input
             type="text"
-            id="street"
+            id="name"
+            ref={descriptionRef}
             autoComplete="off"
-            ref={ingredientRef}
-            style={{ height: "2.2rem" }}
-            onKeyDown={handlngredientsKeyPress}
           />
-          <Button variant="contained" onClick={addIngredient}>
-            הוספה
-          </Button>
+          {!recipeDescriptionValid && (
+            <p className={styles.errorValidation}>יש להזין שם מתכון</p>
+          )}
         </div>
-      </div>
-      {!!ingredients.length && (
-        <div className={styles.ingredients}>
-          <IngredientsList
-            ingredients={ingredients}
-            removeIngredient={removeIngredient}
-          />
+        <div className={styles.control}>
+          <label htmlFor="street">מצרכים</label>
+          <div className="d-flex justify-content-center">
+            <input
+              type="text"
+              id="street"
+              autoComplete="off"
+              ref={ingredientRef}
+              style={{ height: "2.2rem" }}
+              onKeyDown={handlngredientsKeyPress}
+            />
+            <Button variant="contained" onClick={addIngredient}>
+              הוספה
+            </Button>
+          </div>
         </div>
-      )}
-
-      <div
-        className={styles.control}
-        style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
-      >
-        <label htmlFor="method">אופן הכנה</label>
-        <textarea
-          id="method"
-          style={{ width: "30vw", height: "20vh" }}
-          ref={methodRef}
-        ></textarea>
-        {!methodValid && (
-          <p className={styles.errorValidation}>יש להזין אופן הכנה</p>
+        {!!ingredients.length && (
+          <div className={styles.ingredients}>
+            <IngredientsList
+              ingredients={ingredients}
+              removeIngredient={removeIngredient}
+            />
+          </div>
         )}
-      </div>
-      <div className={styles.control}>
-        <Tags submitTagsChange={handleTagsChange} currentTags={tags} />
-      </div>
 
-      <div>
-        <UploadImages
-          onSelectedImage={handleSelectImage}
-          currentImage={isEdit ? editRecipe.image : null}
-        />
-      </div>
-
-      <div style={{ marginTop: "16px" }}>
-        <MultiSelect
-          values={userGroups}
-          currentValues={editRecipe?.sharedGroups}
-          submitValuesChange={handleGroupsChange}
-        />
-      </div>
-      <div className={styles.actions}>
-        <LoadingButton
-          loading={createRecipeLoading || updateRecipeLoading}
-          type="button"
-          className={styles.submit}
-          onClick={confirmHandler}
-          disabled={isEdit && editRecipe?.creatorId !== user?.uid}
+        <div
+          className={styles.control}
+          style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
         >
-          {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
-        </LoadingButton>
-      </div>
-    </form>
+          <label htmlFor="method">אופן הכנה</label>
+          <textarea
+            id="method"
+            style={{ width: "30vw", height: "20vh" }}
+            ref={methodRef}
+          ></textarea>
+          {!methodValid && (
+            <p className={styles.errorValidation}>יש להזין אופן הכנה</p>
+          )}
+        </div>
+        <div className={styles.control}>
+          <Tags submitTagsChange={handleTagsChange} currentTags={tags} />
+        </div>
+
+        <div>
+          <UploadImages
+            onSelectedImage={handleSelectImage}
+            currentImage={isEdit ? editRecipe.image : null}
+          />
+        </div>
+
+        <div style={{ marginTop: "16px" }}>
+          <MultiSelect
+            values={userGroups}
+            currentValues={editRecipe?.sharedGroups}
+            submitValuesChange={handleGroupsChange}
+          />
+        </div>
+        <div className={styles.actions}>
+          <LoadingButton
+            loading={createRecipeLoading || updateRecipeLoading}
+            type="button"
+            className={styles.submit}
+            onClick={confirmHandler}
+            disabled={isEdit && editRecipe?.creatorId !== user?.uid}
+          >
+            {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
+          </LoadingButton>
+        </div>
+      </form>
+
+      <GenerateRecipeFromSiteDialog
+        title="מתכון קיים"
+        open={openGenerateRecipeFromSite}
+        setOpen={setOpenGenerateRecipeFromSite}
+        mainAction={(siteRecipe: SiteRecipe) => {
+          if (siteRecipe) {
+            methodRef.current.value = siteRecipe.method;
+            descriptionRef.current.value = siteRecipe.title;
+            setIngredients(() =>
+              siteRecipe.ingredients.map((ingredient) => {
+                return { id: uuidv4(), description: ingredient };
+              })
+            );
+          }
+        }}
+      />
+    </>
   );
 }
 

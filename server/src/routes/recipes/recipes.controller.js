@@ -8,6 +8,7 @@ const {
   uploadImage,
   fetchRecipeById,
   updateRecipeLikes,
+  extractRecipe,
 } = require("../../models/recipe.model");
 
 const winston = require("winston");
@@ -62,6 +63,22 @@ async function httpDeleteRecipe(req, res) {
   res.status(200).json(await deleteRecipe(req.body.recipeId));
 }
 
+async function httpExtractRecipe(req, res) {
+  const url = req.body.url;
+
+  if (!url) return res.status(400).json({ error: "URL is required" });
+
+  const response = await extractRecipe(url);
+
+  if (!response.ok) {
+    return res
+      .status(400)
+      .json({ error: "An issue occured. Please try again later" });
+  }
+
+  res.status(200).json(response.data);
+}
+
 async function httpUploadImage(req, res) {
   const response = await uploadImage(req.file);
 
@@ -79,6 +96,7 @@ module.exports = {
   httpGetAllRecipes,
   httpUpdateRecipe,
   httpDeleteRecipe,
+  httpExtractRecipe,
   httpCreateRecipe,
   httpUploadImage,
   httpGetRecipeById,

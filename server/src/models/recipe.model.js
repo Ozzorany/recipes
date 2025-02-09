@@ -6,6 +6,10 @@ const { fetchUserById } = require("./users.model");
 const COLLECTION = "recipes";
 const _ = require("lodash");
 const { fetchGroupsByIds } = require("./groups.model");
+const { generateOpenAiRequest } = require("./openai.model");
+const axios = require("axios");
+const cheerio = require("cheerio");
+const { fetchRecipeSiteDataSelectors } = require("./recipe-sites.model");
 
 require("dotenv").config();
 
@@ -67,7 +71,11 @@ async function updateRecipe(recipe) {
 async function createRecipe(recipe) {
   const ref = await firestore.collection(COLLECTION);
   const newId = ref.doc().id;
-  const newRecipePayload = {...recipe, createdAt: new Date(), lastUpdatedAt: new Date()}
+  const newRecipePayload = {
+    ...recipe,
+    createdAt: new Date(),
+    lastUpdatedAt: new Date(),
+  };
   ref.doc(newId).set(newRecipePayload);
   newRecipePayload.id = newId;
   return newRecipePayload;
@@ -139,6 +147,62 @@ async function updateRecipeLikes(userId, recipeId) {
   return await userRef.update("likes", likes);
 }
 
+async function extractSiteData(url) {
+  try {
+    const { data: html } = await axios.get(url);
+    const $ = cheerio.load(html);
+
+    const siteSelctors = await fetchRecipeSiteDataSelectors(url);
+    const { ingredientsSelector, methodSelector, titleSelector } = siteSelctors;
+
+    const title = $(titleSelector).first().text().trim();
+    const method = $(methodSelector).first().text().trim();
+    const ingredients = $(ingredientsSelector).first().text().trim();
+    if (!title || !method) {
+      return { ok: false };
+    }
+    return { data: { title, method, ingredients }, ok: true };
+  } catch (error) {
+    return { ok: false };
+  }
+}
+
+async function extractRecipe(url) {
+  const { ok, data } = await extractSiteData(url);
+
+  if (!ok || !data) {
+    return { ok: false };
+  }
+
+  const { title, method, ingredients } = data;
+
+  const messages = [
+    {
+      role: "system",
+      content: "You are an AI that extracts structured JSON recipes from text.",
+    },
+    {
+      role: "user",
+      content: `Title: ${title}
+  
+  Method:
+  ${method}
+  
+  Ingredients:
+  ${ingredients}
+  
+  Return a structured JSON with:
+  - "title": The title of the dish.
+  - "ingredients": An array of strings where each item is in the format "ingredient - quantity". remove line spaces - meaning make the string in one line and don't allow multiple lines for one ingredient string.
+  - "method": A single string containing the full preparation steps as a paragraph.
+  
+  Now extract the structured recipe in JSON format. If some text is not in hebrew, translate it to hebrew`,
+    },
+  ];
+
+  return await generateOpenAiRequest(messages);
+}
+
 module.exports = {
   fetchRecipes,
   updateRecipe,
@@ -148,4 +212,5 @@ module.exports = {
   fetchRecipeById,
   fetchRecipesByCreatorOnly,
   updateRecipeLikes,
+  extractRecipe,
 };

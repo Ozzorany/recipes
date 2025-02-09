@@ -70,10 +70,19 @@ async function deleteGroupFromUsers(groupId) {
   }
 }
 
+async function fetchUserFeatures(userId) {
+  const userRef = await firestore
+    .collection("toggles")
+    .where("users", "array-contains", userId)
+    .get();
+  return userRef.docs.map((doc) => doc.id);
+}
+
 module.exports = {
   createUser,
   fetchUserById,
   updateFavoriteRecipes,
   addSharedGroup,
   deleteGroupFromUsers,
+  fetchUserFeatures,
 };

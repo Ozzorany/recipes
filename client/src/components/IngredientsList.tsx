@@ -33,7 +33,7 @@ function IngredientsList({
         className="d-flex justify-content-center mr-0"
         style={{ width: "100%" }}
       >
-        <Grid size={{ xs: 12, md: 6 }} sx={{ pr: 0 }}>
+        <Grid sx={{ pr: 0 }}>
           <Demo>
             <List>
               {ingredients.map((ingredient) => {
@@ -51,7 +51,12 @@ function IngredientsList({
                                   emmitRemoveIngredient(ingredient)
                                 }
                               />
-                              <span style={{ marginRight: "0.5rem" }}>
+                              <span
+                                style={{
+                                  marginRight: "0.5rem",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
                                 {ingredient.description}
                               </span>
                             </div>

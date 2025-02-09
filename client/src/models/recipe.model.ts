@@ -12,3 +12,10 @@ export interface Recipe {
     createdAt?: Date,
     lastUpdatedAt?: Date
 }
+
+export interface SiteRecipe {
+    title: string,
+    method: string,
+    ingredients: string[],
+
+}

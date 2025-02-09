@@ -201,6 +201,27 @@ async function httpUpdateRecipeLikes(recipeId: string): Promise<any> {
   return response;
 }
 
+
+async function httpGetRecipeFromSite(url: string) {
+  const response = await axios.post<string>(`${serverUrl}/recipes/extract-recipe`, {
+    url,
+  });
+
+  return response?.data;
+}
+
+async function httpUserFeatures(): Promise<any> {
+  const response = await axios.get(`${serverUrl}/users/features`, {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response?.data;
+}
+
+
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -220,5 +241,7 @@ export {
   httpCreateNewGroup,
   httpDeleteGroup,
   httpGetUserLevel,
-  httpUpdateRecipeLikes
+  httpUpdateRecipeLikes,
+  httpGetRecipeFromSite,
+  httpUserFeatures
 };

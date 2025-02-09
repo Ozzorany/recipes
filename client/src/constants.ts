@@ -14,5 +14,7 @@ export const foodCategories = [
   ];
 
   export enum QUERY_KEYS {
-    ALL_RECIPES = "allRecipes"
+    ALL_RECIPES = "allRecipes",
+    GENERATE_RECIPE_FROM_SITE = "generateRecipeFromSite",
+    USER_FEATURES = "userFeatures"
   }
