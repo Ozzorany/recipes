@@ -22,12 +22,16 @@ import {
 } from "./RecipePage.styles";
 import { useEffect, useState } from "react";
 import RecipePageEmptyState from "./components/RecipePageEmptyState";
+import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
+import { useUserFeatures } from "../../queries/useUserFeatures";
+import { USER_FEATURES } from "../../models/user.model";
 
 function RecipePage() {
   const params = useParams();
   const { id } = params || {};
   const { data: recipe, isLoading } = useRecipeById(id!);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const { data: features, isLoading: featuresLoading } = useUserFeatures();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -123,6 +127,15 @@ function RecipePage() {
         autoHideDuration={3000}
         message="הרכיבים הועתקו"
       />
+      {!featuresLoading && features?.includes(USER_FEATURES.RECIPE_CHATBOT) && (
+        <FloatingChatbot
+          recipe={{
+            title: recipe?.description,
+            ingredients,
+            instructions: method,
+          }}
+        />
+      )}
     </>
   );
 }

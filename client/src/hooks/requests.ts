@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Recipe } from "../models/recipe.model";
+import { ChatBotRecipePayload, Recipe } from "../models/recipe.model";
 import { User } from "../models/user.model";
 import { auth } from "../utils/firebase.utils";
 import { UserMnagementGroups } from "../models/groups.model";
@@ -222,6 +222,17 @@ async function httpUserFeatures(): Promise<any> {
 }
 
 
+async function httpRecipeChatbotResponse(message: string, recipe: ChatBotRecipePayload): Promise<any> {
+  const response = await axios.post(`${serverUrl}/recipes/recipe-chatbot-response`, {
+      recipe, message
+    },
+    
+  );
+
+  return response?.data;
+}
+
+
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -243,5 +254,6 @@ export {
   httpGetUserLevel,
   httpUpdateRecipeLikes,
   httpGetRecipeFromSite,
-  httpUserFeatures
+  httpUserFeatures,
+  httpRecipeChatbotResponse
 };

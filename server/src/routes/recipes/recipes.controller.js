@@ -9,6 +9,7 @@ const {
   fetchRecipeById,
   updateRecipeLikes,
   extractRecipe,
+  recipeChatBotResponse,
 } = require("../../models/recipe.model");
 
 const winston = require("winston");
@@ -79,6 +80,21 @@ async function httpExtractRecipe(req, res) {
   res.status(200).json(response.data);
 }
 
+async function httpRecipeChatBotResponseRecipe(req, res) {
+  const message = req.body.message;
+  const recipe = req.body.recipe;
+
+  const response = await recipeChatBotResponse(message, recipe);
+
+  if (!response.ok) {
+    return res
+      .status(400)
+      .json({ error: "An issue occured. Please try again later" });
+  }
+
+  res.status(200).json(response.data);
+}
+
 async function httpUploadImage(req, res) {
   const response = await uploadImage(req.file);
 
@@ -101,4 +117,5 @@ module.exports = {
   httpUploadImage,
   httpGetRecipeById,
   httpUpdateRecipeLikes,
+  httpRecipeChatBotResponseRecipe,
 };
