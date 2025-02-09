@@ -84,9 +84,17 @@ async function httpRecipeChatBotResponseRecipe(req, res) {
   const message = req.body.message;
   const recipe = req.body.recipe;
 
+  logger.info("httpRecipeChatBotResponseRecipe | POST", { message, recipe });
+
   const response = await recipeChatBotResponse(message, recipe);
 
   if (!response.ok) {
+    logger.error("httpRecipeChatBotResponseRecipe | POST", {
+      message,
+      recipe,
+      error: response?.error,
+    });
+
     return res
       .status(400)
       .json({ error: "An issue occured. Please try again later" });

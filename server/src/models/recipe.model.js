@@ -227,7 +227,7 @@ async function recipeChatBotResponse(userMessage, recipe) {
       false
     );
   } catch (error) {
-    return { ok: false };
+    return { ok: false, error };
   }
 }
 
