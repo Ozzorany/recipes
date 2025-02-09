@@ -10,6 +10,7 @@ const { generateOpenAiRequest } = require("./openai.model");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const { fetchRecipeSiteDataSelectors } = require("./recipe-sites.model");
+const { logger } = require("../logger");
 
 require("dotenv").config();
 
@@ -227,6 +228,7 @@ async function recipeChatBotResponse(userMessage, recipe) {
       false
     );
   } catch (error) {
+    logger.error("recipeChatBotResponse", { error });
     return { ok: false, error };
   }
 }

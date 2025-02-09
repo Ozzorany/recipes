@@ -1,4 +1,5 @@
 const { OpenAI } = require("openai");
+const { logger } = require("../logger");
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
@@ -23,6 +24,7 @@ const generateOpenAiRequest = async (
         : response.choices[0].message.content,
     };
   } catch (e) {
+    logger.error("generateOpenAiRequest", { error: e });
     return { ok: false, error: e };
   }
 };

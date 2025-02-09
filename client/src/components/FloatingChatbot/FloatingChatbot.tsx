@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Chatbot, { createChatBotMessage } from "react-chatbot-kit";
+import Chatbot from "react-chatbot-kit";
 import "react-chatbot-kit/build/main.css";
 import config from "../../chatbot/ChatbotConfig";
 import MessageParser from "../../chatbot/MessageParser";
@@ -15,13 +15,6 @@ import { ChatBotRecipePayload } from "../../models/recipe.model";
 
 const FloatingChatbot = ({ recipe }: FloatingChatbotProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, setState] = useState<{
-    messages: any[];
-    recipe: ChatBotRecipePayload;
-  }>({
-    messages: [],
-    recipe,
-  });
 
   return (
     <div>
