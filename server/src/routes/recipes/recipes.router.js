@@ -11,6 +11,7 @@ const {
   httpGetRecipeById,
   httpUpdateRecipeLikes,
   httpExtractRecipe,
+  httpRecipeChatBotResponseRecipe,
 } = require("./recipes.controller");
 
 const recipesRouter = express.Router();
@@ -23,5 +24,6 @@ recipesRouter.post("/delete", httpDeleteRecipe);
 recipesRouter.post("/create", httpCreateRecipe);
 recipesRouter.post("/upload-image", upload.single("image"), httpUploadImage);
 recipesRouter.post("/extract-recipe", httpExtractRecipe);
+recipesRouter.post("/recipe-chatbot-response", httpRecipeChatBotResponseRecipe);
 
 module.exports = recipesRouter;

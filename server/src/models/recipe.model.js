@@ -10,6 +10,7 @@ const { generateOpenAiRequest } = require("./openai.model");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const { fetchRecipeSiteDataSelectors } = require("./recipe-sites.model");
+const { logger } = require("../logger");
 
 require("dotenv").config();
 
@@ -203,6 +204,35 @@ async function extractRecipe(url) {
   return await generateOpenAiRequest(messages);
 }
 
+async function recipeChatBotResponse(userMessage, recipe) {
+  try {
+    const systemPrompt = `
+      You are a helpful AI that only discusses recipes. 
+      The user is talking about the following recipe:
+
+      Title: ${recipe.title}
+      Ingredients: ${recipe.ingredients.join(", ")}
+      Instructions: ${recipe.instructions}
+
+      Your goal:
+      - Help the user with recipe modifications, improvements, or cooking techniques.
+      - If the user asks about a different topic, respond with: "מנסה לשנות נושא הא? איך אפשר לעזור בקשר למתכון?"
+    `;
+
+    return await generateOpenAiRequest(
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      0.7,
+      false
+    );
+  } catch (error) {
+    logger.error("recipeChatBotResponse", { error });
+    return { ok: false, error };
+  }
+}
+
 module.exports = {
   fetchRecipes,
   updateRecipe,
@@ -213,4 +243,5 @@ module.exports = {
   fetchRecipesByCreatorOnly,
   updateRecipeLikes,
   extractRecipe,
+  recipeChatBotResponse,
 };

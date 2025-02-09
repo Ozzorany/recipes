@@ -17,5 +17,10 @@ export interface SiteRecipe {
     title: string,
     method: string,
     ingredients: string[],
+}
 
+export interface ChatBotRecipePayload {
+    title: string,
+    instructions: string,
+    ingredients: string[],
 }

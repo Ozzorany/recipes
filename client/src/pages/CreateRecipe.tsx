@@ -18,7 +18,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useUpdateRecipe } from "../queries/mutations/useUpdateRecipe";
 import PhotoFilterIcon from "@mui/icons-material/PhotoFilter";
 import GenerateRecipeFromSiteDialog from "./RecipePage/components/GenerateRecipeFromSiteDialog/GenerateRecipeFromSiteDialog";
-import { Box, CircularProgress, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useUserFeatures } from "../queries/useUserFeatures";
 import { USER_FEATURES } from "../models/user.model";
 
