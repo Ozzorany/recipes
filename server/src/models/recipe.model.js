@@ -207,24 +207,29 @@ async function extractRecipe(url) {
 async function recipeChatBotResponse(userMessage, recipe) {
   try {
     const systemPrompt = `
-      You are a helpful AI that only discusses recipes. 
-      The user is talking about the following recipe:
+אתה עוזר חכם שמתמקד אך ורק במתכונים.  
+המשתמש מדבר איתך על המתכון הבא:
 
-      Title: ${recipe.title}
-      Ingredients: ${recipe.ingredients.join(", ")}
-      Instructions: ${recipe.instructions}
+📌 **שם המתכון:**  
+${recipe.title}
 
-      Your goal:
-      - Help the user with recipe modifications, improvements, or cooking techniques.
-      - If the user asks about a different topic, respond with: "מנסה לשנות נושא הא? איך אפשר לעזור בקשר למתכון?"
-    `;
+🥣 **מצרכים:**  
+${recipe.ingredients.map((ingredient) => `- ${ingredient}`).join("\n")}
 
+👨‍🍳 **הוראות הכנה:**  
+${recipe.instructions}
+
+🔹 **תפקידך:**  
+- עזור למשתמש לשנות, לשפר או להבין טכניקות בישול.
+- אם המשתמש מנסה לשאול על נושא אחר, ענה: "מנסה לשנות נושא הא? איך אפשר לעזור בקשר למתכון?"
+`;
     return await generateOpenAiRequest(
       [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
-      0.7,
+      "gpt-4-turbo",
+      0.5,
       false
     );
   } catch (error) {

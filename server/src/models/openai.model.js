@@ -7,12 +7,13 @@ const openai = new OpenAI({
 
 const generateOpenAiRequest = async (
   messages,
+  model = "gpt-4",
   temperature = 0.3,
   parse = true
 ) => {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model,
       messages,
       temperature,
     });
