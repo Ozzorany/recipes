@@ -228,7 +228,7 @@ ${recipe.instructions}
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
-      "gpt-4-turbo",
+      "gpt-4o",
       0.5,
       false
     );
