@@ -9,7 +9,10 @@ const { fetchGroupsByIds } = require("./groups.model");
 const { generateOpenAiRequest } = require("./openai.model");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { fetchRecipeSiteDataSelectors } = require("./recipe-sites.model");
+const {
+  fetchRecipeSiteDataSelectors,
+  getRelevantHTML,
+} = require("./recipe-sites.model");
 const { logger } = require("../logger");
 
 require("dotenv").config();
@@ -148,19 +151,87 @@ async function updateRecipeLikes(userId, recipeId) {
   return await userRef.update("likes", likes);
 }
 
+function chunkString(str, size) {
+  const chunks = [];
+  for (let i = 0; i < str.length; i += size) {
+    chunks.push(str.substring(i, i + size));
+  }
+  return chunks;
+}
+
+async function extractWithAI(url) {
+  try {
+    const relevantHtml = await getRelevantHTML(url);
+    const chunks = chunkString(relevantHtml, 5000);
+
+    let extractedData = { title: "", ingredients: "", method: "" };
+
+    for (const chunk of chunks) {
+      const response = await generateOpenAiRequest({
+        messages: [
+          {
+            role: "system",
+            content:
+              "Extract the recipe title, ingredients, and method from the provided HTML content. Ensure all data is extracted if available.",
+          },
+          {
+            role: "user",
+            content: `Extract recipe details from this HTML snippet:\n\n${chunk}\n\nReturn a JSON object with 'title' - it's a string, 'ingredients' - it's an array of strings, and 'method' - it's a string. If any field is missing, set it as an empty string, expect the ingredients - in this case put empty array. You do not need to mention the word Json in your response.
+            Response for example: {"title": "מנה מצויינת", "ingredients": ["עגבניה", "0.5 כף מלח"], "method": ""}
+            Return only the response itself starting with { and ends with }`,
+          },
+        ],
+        model: "gpt-4o",
+        parse: false,
+        temperature: 0.1,
+      });
+
+      if (!response.ok) {
+        continue;
+      }
+
+      let aiResponse;
+      try {
+        aiResponse = JSON.parse(response.data || "{}");
+      } catch (parseError) {
+        continue;
+      }
+
+      // Merge extracted parts
+      extractedData.title = extractedData.title || aiResponse.title || "";
+      extractedData.ingredients += aiResponse.ingredients
+        ? ` ${aiResponse.ingredients}`
+        : "";
+      extractedData.method += aiResponse.method ? ` ${aiResponse.method}` : "";
+    }
+
+    return extractedData.title
+      ? { data: extractedData, ok: true }
+      : { ok: false };
+  } catch (error) {
+    console.error("AI extraction failed:", error);
+    return { ok: false };
+  }
+}
+
 async function extractSiteData(url) {
   try {
     const { data: html } = await axios.get(url);
     const $ = cheerio.load(html);
 
-    const siteSelctors = await fetchRecipeSiteDataSelectors(url);
+    const { data: siteSelctors } = await fetchRecipeSiteDataSelectors(url);
+
     const { ingredientsSelector, methodSelector, titleSelector } = siteSelctors;
 
     const title = $(titleSelector).first().text().trim();
     const method = $(methodSelector).first().text().trim();
     const ingredients = $(ingredientsSelector).first().text().trim();
-    if (!title || !method) {
-      return { ok: false };
+
+    // If extraction fails, use AI with chunking
+    if (!title || !method || !ingredients) {
+      const aiData = await extractWithAI(url);
+      if (!aiData.ok) return { ok: false };
+      return { data: aiData.data, ok: true };
     }
     return { data: { title, method, ingredients }, ok: true };
   } catch (error) {
