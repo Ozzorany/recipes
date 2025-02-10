@@ -81,7 +81,12 @@ export default function GenerateRecipeFromSiteDialog({
           <LoadingButton
             loading={generateRecipeFromSiteMutationLoading}
             type="button"
-            onClick={() => generateRecipeFromSiteMutation(urlValue)}
+            onClick={() => {
+              if (error) {
+                setError(false);
+              }
+              generateRecipeFromSiteMutation(urlValue);
+            }}
             disabled={!urlValue}
           >
             יצירת מתכון

@@ -54,7 +54,7 @@ function IngredientsList({
                               <span
                                 style={{
                                   marginRight: "0.5rem",
-                                  whiteSpace: "nowrap",
+                                  wordBreak: "break-word",
                                 }}
                               >
                                 {ingredient.description}
