@@ -5,12 +5,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
 
-const generateOpenAiRequest = async (
+const generateOpenAiRequest = async ({
   messages,
   model = "gpt-4",
   temperature = 0.3,
-  parse = true
-) => {
+  parse = true,
+}) => {
   try {
     const response = await openai.chat.completions.create({
       model,

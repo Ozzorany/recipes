@@ -192,16 +192,23 @@ async function extractRecipe(url) {
   Ingredients:
   ${ingredients}
   
-  Return a structured JSON with:
+  Return an object structured as Json object with the following fields:
   - "title": The title of the dish.
   - "ingredients": An array of strings where each item is in the format "ingredient - quantity". remove line spaces - meaning make the string in one line and don't allow multiple lines for one ingredient string.
   - "method": A single string containing the full preparation steps as a paragraph.
   
-  Now extract the structured recipe in JSON format. If some text is not in hebrew, translate it to hebrew`,
+  Response for example: {"title": "מנה מצויינת", "ingredients": ["עגבניה", "0.5 כף מלח"], "method": "מערבבים הכל ביחד עד שנהיה לנו מרקם אחיד"}
+  You do not need to mention the word Json in your response. Return only the response itself starting with { and ends with } If some text is not in hebrew, translate it to hebrew`,
     },
   ];
 
-  return await generateOpenAiRequest(messages);
+  const response = await generateOpenAiRequest({
+    messages,
+    model: "gpt-4o",
+    parse: true,
+  });
+
+  return response;
 }
 
 async function recipeChatBotResponse(userMessage, recipe) {
@@ -223,15 +230,15 @@ ${recipe.instructions}
 - עזור למשתמש לשנות, לשפר או להבין טכניקות בישול.
 - אם המשתמש מנסה לשאול על נושא אחר, ענה: "מנסה לשנות נושא הא? איך אפשר לעזור בקשר למתכון?"
 `;
-    return await generateOpenAiRequest(
-      [
+    return await generateOpenAiRequest({
+      messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
-      "gpt-4o",
-      0.5,
-      false
-    );
+      model: "gpt-4o",
+      temperature: 0.5,
+      parse: false,
+    });
   } catch (error) {
     logger.error("recipeChatBotResponse", { error });
     return { ok: false, error };
