@@ -29,7 +29,7 @@ const FloatingChatbot = ({ recipe }: FloatingChatbotProps) => {
             messageParser={MessageParser}
             actionProvider={ActionProvider}
             placeholderText="דברו אליי, קדימה"
-            headerText="שיחה עם בוט מתכונים"
+            headerText="שיחה עם בוט המתכונים"
           />
           <CloseButton onClick={() => setIsOpen(false)}>×</CloseButton>
         </ChatbotContainer>

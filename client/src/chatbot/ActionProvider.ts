@@ -19,7 +19,7 @@ class ActionProvider {
 
   async handleUserMessage(message: string) {
     try {
-      const loadingMessage = this.createChatBotMessage("⏳.....רק רגע");
+      const loadingMessage = this.createChatBotMessage("רק רגע...⏳");
       this.setState((prev) => ({
         ...prev,
         messages: [...prev.messages, loadingMessage],

@@ -11,12 +11,12 @@ const config = (recipe: ChatBotRecipePayload) => ({
   },
   customStyles: {
     botMessageBox: {
-      backgroundColor: '#376B7E',
+      backgroundColor: '#00bfa6',
     },
     chatButton: {
-      backgroundColor: '#5ccc9d',
+      backgroundColor: '#00bfa6',
     },
-  },
+  }
 });
 
 export default config;

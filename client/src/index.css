@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-chatbot-kit-chat-bot-message-container {
+  flex-direction: row-reverse;
+}
+
+
+.react-chatbot-kit-user-chat-message-container {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+
+.react-chatbot-kit-user-chat-message {
+  text-align: right;
+}
+
+.react-chatbot-kit-chat-bot-message {
+  text-align: right !important;
+}
