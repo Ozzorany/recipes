@@ -65,6 +65,11 @@ export default function GenerateRecipeFromSiteDialog({
               label="קישור למתכון"
               variant="standard"
             />
+            {generateRecipeFromSiteMutationLoading && (
+              <Alert severity="info">
+                אני עושה כמיטב יכולתי, תמתינו מעט...
+              </Alert>
+            )}
             {error && (
               <Alert severity="error">
                 לא הצלחנו ליצור את המתכון. נסו שוב מאוחר יותר
