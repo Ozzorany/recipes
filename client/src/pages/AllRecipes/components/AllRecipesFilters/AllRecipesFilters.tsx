@@ -15,8 +15,6 @@ import { AllRecipesFiltersProps } from "./AllRecipesFilters.types";
 const AllRecipesFilters = ({
   setValue,
   setFilterTags,
-  showFavoritesOnly,
-  setShowFavoritesOnly,
 }: AllRecipesFiltersProps) => {
   const matches = useMediaQuery("(min-width:600px)");
   const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,10 +24,6 @@ const AllRecipesFilters = ({
 
   const handleFilterTagsChanged = (tags: string[]) => {
     setFilterTags(tags);
-  };
-
-  const toggleShowFavoritesOnly = () => {
-    setShowFavoritesOnly(!showFavoritesOnly);
   };
 
   return (
@@ -82,17 +76,7 @@ const AllRecipesFilters = ({
             display: "flex",
             marginLeft: "16px",
           }}
-        >
-          <IconButton
-            aria-label="add to favorites"
-            onClick={toggleShowFavoritesOnly}
-          >
-            <GradeIcon
-              style={{ color: showFavoritesOnly ? "#f0dd5a" : "gray" }}
-              fontSize="large"
-            />
-          </IconButton>
-        </Box>
+        ></Box>
       </Box>
     </div>
   );

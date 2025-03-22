@@ -1,7 +1,6 @@
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import GradeIcon from "@mui/icons-material/Grade";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
@@ -33,14 +32,11 @@ import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
-import { useAppDispatch } from "../../hooks/storeHooks";
-import { deleteRecipe } from "../../state/recipesSlice";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import styles from "./RecipeReviewCard.module.css"; // Import css modules stylesheet as styles
 import { useUserById } from "../../queries/useUserById";
 import { Recipe } from "../../models/recipe.model";
 import { auth } from "../../utils/firebase.utils";
-import { useFavoriteRecipesMutation } from "../../queries/mutations/useFavoriteRecipesMutation";
 import { useRecipeLikesMutation } from "../../queries/mutations/useRecipeLikesMutation";
 import { useDeleteRecipe } from "../../queries/mutations/useDeleteRecipe";
 
@@ -59,22 +55,10 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-type HandleFavoritse = (recipeId: string) => void;
-
-export default function RecipeReviewCard({
-  recipe,
-  isFavorite,
-  handleFavoriteRecipesChange,
-}: {
-  recipe: Recipe;
-  isFavorite: boolean;
-  handleFavoriteRecipesChange: HandleFavoritse;
-}) {
+export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
   const [expanded, setExpanded] = React.useState(false);
   const [recipeLikes, setRecipeLikes] = React.useState<string[]>([]);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const favoriteRecipesMutation = useFavoriteRecipesMutation();
   const { mutate: mutateRecipeLike } = useRecipeLikesMutation();
   const { data: user } = useUserById(recipe?.creatorId);
   const userLogoUrl = user?.logo;
@@ -109,11 +93,6 @@ export default function RecipeReviewCard({
     navigate(`/recipe/${recipe.id}`);
   };
 
-  const handleFavorite = () => {
-    favoriteRecipesMutation.mutate(recipe.id);
-    handleFavoriteRecipesChange(recipe.id);
-  };
-
   const handleLike = () => {
     mutateRecipeLike(recipe.id);
     const likes = recipeLikes;
@@ -134,18 +113,6 @@ export default function RecipeReviewCard({
         avatar={
           <>
             <Box display="flex" alignItems="center">
-              <IconButton
-                sx={{ outline: "none !important" }}
-                aria-label="add to favorites"
-                onClick={handleFavorite}
-              >
-                <GradeIcon
-                  sx={{
-                    color: isFavorite ? "#f0dd5a" : "gray",
-                    fontSize: "40px",
-                  }}
-                />
-              </IconButton>
               <Avatar
                 sx={{ bgcolor: red[500] }}
                 aria-label="recipe"

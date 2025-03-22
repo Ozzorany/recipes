@@ -3,6 +3,4 @@ export interface AllRecipesFiltersProps {
     setValue: (value: string) => void;
     filterTags: string[];
     setFilterTags: (tags: string[]) => void;
-    showFavoritesOnly: boolean;
-    setShowFavoritesOnly: (favoriteOnly: boolean) => void
 }
