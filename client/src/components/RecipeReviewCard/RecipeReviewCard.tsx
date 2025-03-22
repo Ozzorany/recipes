@@ -177,12 +177,12 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
         }
       />
       <CardMedia
-        style={{
-          width: "auto",
-          height: "31vh",
-          margin: "auto",
-          cursor: "pointer",
+        sx={{
+          height: 250,
+          width: "100%",
+          objectFit: recipe.image ? "cover" : "contain",
           borderRadius: "10px",
+          cursor: "pointer",
         }}
         component="img"
         image={!!recipe.image ? recipe.image : noImagePath}
