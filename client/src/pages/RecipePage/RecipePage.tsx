@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
   Snackbar,
+  useTheme,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -32,6 +33,7 @@ function RecipePage() {
   const { data: recipe, isLoading } = useRecipeById(id!);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const { data: features, isLoading: featuresLoading } = useUserFeatures();
+  const theme = useTheme();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,7 +76,10 @@ function RecipePage() {
               <Stack direction="row" key={tag} spacing={1} mt={2}>
                 <Chip
                   label={tag}
-                  sx={{ color: "white", backgroundColor: "#3d74eb" }}
+                  sx={{
+                    color: theme.palette.text.primary,
+                    backgroundColor: theme.palette.primary.main,
+                  }}
                 />
               </Stack>
             );
@@ -82,12 +87,16 @@ function RecipePage() {
         </Box>
 
         <IngredientsTitleWrapper>
-          <Typography variant="h5" className={styles.ingredientsTitle}>
+          <Typography
+            variant="h5"
+            className={styles.ingredientsTitle}
+            sx={{ color: theme.palette.text.primary }}
+          >
             מרכיבים
           </Typography>
           <CopyIngredientsWrapper onClick={copyIngredients}>
             <IconButton>
-              <ContentCopyIcon sx={{ color: "white" }} />
+              <ContentCopyIcon sx={{ color: theme.palette.primary.main }} />
             </IconButton>
           </CopyIngredientsWrapper>
         </IngredientsTitleWrapper>
@@ -96,14 +105,22 @@ function RecipePage() {
           {ingredients?.map((ingredient: string) => {
             return (
               <FormControlLabel
-                control={<Checkbox sx={{ color: "white" }} />}
+                sx={{ color: theme.palette.text.primary }}
+                control={
+                  <Checkbox sx={{ color: theme.palette.primary.main }} />
+                }
                 label={ingredient}
                 className={styles.checkBox}
               />
             );
           })}
         </FormGroup>
-        <Typography variant="h5" mt={2} className={styles.title}>
+        <Typography
+          variant="h5"
+          mt={2}
+          className={styles.title}
+          sx={{ color: theme.palette.text.primary }}
+        >
           אופן הכנה:
         </Typography>
         <Typography className={styles.method} mt={2}>

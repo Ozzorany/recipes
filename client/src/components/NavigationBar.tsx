@@ -1,5 +1,6 @@
 import { RestaurantMenu } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { FormControl, InputLabel, Select, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -16,9 +17,19 @@ import { useUserLevel } from "../queries/useUserLevel";
 import { auth } from "../utils/firebase.utils";
 import Level from "./Level/Level";
 import LevelProgressDialog from "./LevelProgressDialog/LevelProgressDialog";
+import { ThemeName, themes } from "../settings";
+import { ThemeContext } from "../context/Theme.context";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
+  const themeContext = React.useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error("NavigationBar must be used within ThemeProviderWrapper");
+  }
+
+  const { themeName, setTheme } = themeContext;
+
   const [isLevelDialogOpen, setIsLevelDialogOpen] = React.useState(false);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -68,6 +79,10 @@ const NavigationBar = () => {
 
   const handleOpenLevelDialog = () => {
     setIsLevelDialogOpen(true);
+  };
+
+  const handleThemeChange = (event: any) => {
+    setTheme(event.target.value as ThemeName);
   };
 
   return (
@@ -148,8 +163,6 @@ const NavigationBar = () => {
                 </Box>
               </>
             )}
-          
-           
             {user && (
               <>
                 <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -204,6 +217,18 @@ const NavigationBar = () => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
+                    <MenuItem>
+                      <FormControl fullWidth>
+                        <InputLabel>בחרו ערכת נושא</InputLabel>
+                        <Select value={themeName} onChange={handleThemeChange}>
+                          {Object.keys(themes).map((themeKey) => (
+                            <MenuItem key={themeKey} value={themeKey}>
+                              {themeKey}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </MenuItem>
                     <MenuItem
                       key={"groups-management"}
                       onClick={navigateToGroupsManagement}

@@ -41,10 +41,7 @@
   
   .actions button {
     font: inherit;
-    color: #5a1a01;
     cursor: pointer;
-    background-color: transparent;
-    border: none;
     border-radius: 25px;
     padding: 0.5rem 2rem; 
   }
@@ -57,16 +54,7 @@
   .actions .submit {
     margin-top: 2rem;
     margin-left: 1rem;
-    border: 1px solid #3d74eb;
-    background-color: #3d74eb;
-    color: white;
   }
-  
-  .actions .submit:hover,
-  .actions .submit:active {
-    background-color: #5b88e9;
-  }
-
 
   textarea {
     text-align: right;

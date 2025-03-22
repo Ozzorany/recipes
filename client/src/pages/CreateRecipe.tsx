@@ -18,7 +18,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useUpdateRecipe } from "../queries/mutations/useUpdateRecipe";
 import PhotoFilterIcon from "@mui/icons-material/PhotoFilter";
 import GenerateRecipeFromSiteDialog from "./RecipePage/components/GenerateRecipeFromSiteDialog/GenerateRecipeFromSiteDialog";
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import { useUserFeatures } from "../queries/useUserFeatures";
 import { USER_FEATURES } from "../models/user.model";
 
@@ -43,6 +43,7 @@ function CreateRecipe() {
   const editRecipe: Recipe = !!state?.recipe ? state?.recipe : null;
   const user = auth.currentUser;
   const { data: features, isLoading: featuresLoading } = useUserFeatures();
+  const theme = useTheme();
 
   const { mutate: createRecipeMutation, isPending: createRecipeLoading } =
     useCreateRecipe({
@@ -206,7 +207,13 @@ function CreateRecipe() {
           </IconButton>
         )}
 
-      <form className={styles.form}>
+      <form
+        className={styles.form}
+        style={{
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
         <div className={styles.control}>
           <label htmlFor="name">שם מתכון</label>
           <input
@@ -283,6 +290,14 @@ function CreateRecipe() {
             className={styles.submit}
             onClick={confirmHandler}
             disabled={isEdit && editRecipe?.creatorId !== user?.uid}
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+              border: `1px solid ${theme.palette.primary.main}`,
+              "&:hover": {
+                backgroundColor: theme.palette.primary.dark,
+              },
+            }}
           >
             {isEdit ? "עריכת מתכון" : "יצירת מתכון"}
           </LoadingButton>

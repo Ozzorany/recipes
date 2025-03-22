@@ -5,21 +5,8 @@
     text-align: right;
 }
 
-.title {
-    color: white
-}
-
-.ingredientsTitle {
-    color: white
-}
-
-.checkBox {
-    color: white
-}
-
 .method {
     white-space: break-spaces;
-    color: white
 }
 
 .spinner { 

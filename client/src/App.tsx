@@ -1,22 +1,21 @@
 import { CacheProvider } from "@emotion/react";
-import CssBaseline from "@mui/material/CssBaseline";
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import HealthCheckWrapper from "./components/HealthCheckWrapper/HealthCheckWrapper";
 import NavigationBar from "./components/NavigationBar";
+import { ThemeProviderWrapper } from "./context/Theme.context";
 import AllRecepis from "./pages/AllRecipes/AllRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
-import MyRecepis from "./pages/MyRecipes";
-import { cacheRtl, theme } from "./settings";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import RecipePage from "./pages/RecipePage/RecipePage";
-import Login from "./pages/Login/Login";
-import { auth } from "./utils/firebase.utils";
-import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import GroupsManagement from "./pages/GroupsManagement/GroupsManagement";
 import JoinGroup from "./pages/GroupsManagement/JoinGroup/JoinGroup";
-import HealthCheckWrapper from "./components/HealthCheckWrapper/HealthCheckWrapper";
+import Login from "./pages/Login/Login";
+import MyRecepis from "./pages/MyRecipes";
+import RecipePage from "./pages/RecipePage/RecipePage";
+import { cacheRtl } from "./settings";
+import { auth } from "./utils/firebase.utils";
 
 function App() {
   const [authentication, setAuthState] = useState({
@@ -51,8 +50,7 @@ function App() {
 
   return (
     <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+      <ThemeProviderWrapper>
         <QueryClientProvider client={queryClient}>
           <HealthCheckWrapper>
             <div className="App">
@@ -146,7 +144,7 @@ function App() {
             </div>
           </HealthCheckWrapper>
         </QueryClientProvider>
-      </ThemeProvider>
+      </ThemeProviderWrapper>
     </CacheProvider>
   );
 }

@@ -10,7 +10,6 @@ export const IngredientsTitleWrapper = styled('div')({
 
   export const CopyIngredientsWrapper = styled('div')({
     cursor: "pointer",
-    color: "white"
   });
 
   export const TitleWrapper = styled('div')({
