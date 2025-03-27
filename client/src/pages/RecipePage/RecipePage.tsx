@@ -26,6 +26,7 @@ import RecipePageEmptyState from "./components/RecipePageEmptyState";
 import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
 import { useUserFeatures } from "../../queries/useUserFeatures";
 import { USER_FEATURES } from "../../models/user.model";
+import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
 
 function RecipePage() {
   const params = useParams();
@@ -63,6 +64,7 @@ function RecipePage() {
 
   return (
     <>
+      <VoiceAssistant recipe={recipe} />
       <div className={styles.container}>
         <TitleWrapper>
           <Typography variant="h4" className={styles.title}>

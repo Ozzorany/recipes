@@ -23,6 +23,8 @@
     "clsx": "^2.1.0",
     "env-cmd": "^10.1.0",
     "firebase": "^10.8.0",
+    "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
     "lottie-react": "^2.4.1",
     "material-ui-popup-state": "^5.3.3",
     "react": "^19.0.0",
@@ -67,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/stylis": "^4.0.2",
     "@types/uuid": "^8.3.4"
   }
