@@ -34,7 +34,7 @@ const generateOpenAiRequest = async ({
 const generateOpenAiVoiceResponse = async ({
   input,
   model = "gpt-4o-mini-tts",
-  voice = "coral",
+  voice = "fable",
 }) => {
   try {
     const res = await openai.audio.speech.create({
