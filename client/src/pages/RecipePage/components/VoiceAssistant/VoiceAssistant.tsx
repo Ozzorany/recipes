@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import MicIcon from "@mui/icons-material/Mic";
@@ -196,6 +197,16 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
           alignItems: "center",
         }}
       >
+        <Chip
+          label="Alpha"
+          color="warning"
+          size="small"
+          sx={{
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+          }}
+        />
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>

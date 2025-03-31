@@ -163,14 +163,17 @@ function RecipePage() {
           }}
         />
       )}
-      <Fab
-        color="primary"
-        aria-label="voice-assistant"
-        onClick={() => setVoiceAssistantOpen(true)}
-        sx={{ position: "fixed", bottom: 25, left: 25, zIndex: 1200 }}
-      >
-        <MicIcon />
-      </Fab>
+      {!featuresLoading &&
+        features?.includes(USER_FEATURES.VOICE_ASSISTANT) && (
+          <Fab
+            color="primary"
+            aria-label="voice-assistant"
+            onClick={() => setVoiceAssistantOpen(true)}
+            sx={{ position: "fixed", bottom: 25, left: 25, zIndex: 1200 }}
+          >
+            <MicIcon />
+          </Fab>
+        )}
     </>
   );
 }
