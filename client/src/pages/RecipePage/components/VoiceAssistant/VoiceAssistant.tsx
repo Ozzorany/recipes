@@ -6,7 +6,6 @@ import {
   IconButton,
   Typography,
   Box,
-  Button,
   CircularProgress,
   Chip,
 } from "@mui/material";
@@ -56,50 +55,55 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     }, 10000);
   };
 
+  const createRecognitionInstance = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const instance = new SpeechRecognition();
+
+    instance.lang = "he-IL";
+    instance.continuous = true;
+    instance.interimResults = false;
+
+    instance.onstart = () => {
+      console.log("Started listening");
+      setIsListening(true);
+      resetInactivityTimer();
+    };
+
+    instance.onend = () => {
+      console.log("Stopped listening");
+      setIsListening(false);
+      if (!manuallyStopped.current) {
+        try {
+          instance.start();
+        } catch (e) {
+          console.warn("Restart error:", e);
+        }
+      }
+    };
+
+    instance.onerror = (event: { error: any }) => {
+      console.error("Speech error:", event.error);
+      setIsListening(false);
+    };
+
+    instance.onnomatch = () => console.warn("Speech not recognized");
+    instance.onspeechend = () => console.log("Speech ended");
+
+    instance.onresult = (event: any) => {
+      resetInactivityTimer();
+      const lastResult = event.results[event.results.length - 1];
+      const spokenText = lastResult[0].transcript;
+      console.log("You said:", spokenText);
+      getAnswerFromServer(spokenText);
+    };
+
+    return instance;
+  };
+
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition.current = new SpeechRecognition();
-      recognition.current.lang = "he-IL";
-      recognition.current.continuous = true;
-      recognition.current.interimResults = false;
-
-      recognition.current.onstart = () => {
-        setIsListening(true);
-        resetInactivityTimer();
-      };
-
-      recognition.current.onend = () => {
-        setIsListening(false);
-        if (!manuallyStopped.current) {
-          try {
-            recognition.current.start();
-          } catch (e) {
-            console.warn("Could not restart recognition:", e);
-          }
-        }
-      };
-
-      recognition.current.onerror = (event: { error: any }) => {
-        console.error("Speech Recognition error:", event.error);
-        setIsListening(false);
-      };
-
-      recognition.current.onnomatch = () => {
-        console.warn("Speech not recognized.");
-      };
-
-      recognition.current.onspeechend = () => {
-        console.log("Speech ended.");
-      };
-
-      recognition.current.onresult = (event: any) => {
-        resetInactivityTimer();
-        const lastResult = event.results[event.results.length - 1];
-        const spokenText = lastResult[0].transcript;
-        getAnswerFromServer(spokenText);
-      };
+      recognition.current = createRecognitionInstance();
     } else {
       setIsSupported(false);
     }
@@ -181,8 +185,21 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
 
   useEffect(() => {
     if (audioSrc && audioRef.current) {
-      audioRef.current.load();
-      audioRef.current
+      const audio = audioRef.current;
+
+      setIsListening(false);
+      stopListening();
+      audio.load();
+
+      audio.onended = () => {
+        manuallyStopped.current = false;
+        setTimeout(() => {
+          recognition.current = createRecognitionInstance();
+          recognition.current.start();
+        }, 500);
+      };
+
+      audio
         .play()
         .catch((error) => console.error("Error playing audio:", error));
     }
