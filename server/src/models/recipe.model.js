@@ -6,9 +6,13 @@ const { fetchUserById } = require("./users.model");
 const COLLECTION = "recipes";
 const _ = require("lodash");
 const { fetchGroupsByIds } = require("./groups.model");
-const { generateOpenAiRequest } = require("./openai.model");
+const {
+  generateOpenAiRequest,
+  generateOpenAiVoiceResponse,
+} = require("./openai.model");
 const axios = require("axios");
 const cheerio = require("cheerio");
+
 const {
   fetchRecipeSiteDataSelectors,
   getRelevantHTML,
@@ -316,6 +320,61 @@ ${recipe.instructions}
   }
 }
 
+async function recipeSteps(method) {
+  const prompt = `
+    Return only an ordered array of Hebrew strings, without any extra text, newline characters, or formatting like "json". 
+    An example of a response should be: ["תחילה יש לערבב את הנוזלים בקערה", "לאחר מכן יש לשבור את הביצים בקערה"]
+    "${method}"
+  `;
+
+  try {
+    const response = await generateOpenAiRequest({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-4o",
+      temperature: 0.3,
+      parse: true,
+    });
+
+    return { ok: true, data: response.data };
+  } catch (error) {
+    logger.error("recipeSteps", { error });
+    return { ok: false, error };
+  }
+}
+
+async function assistantResponse(currentStep, allSteps, question, recipe) {
+  const prompt = `
+אתה עוזר לבישול. המשתמש רוצה עזרה עם הכנת המתכון שלו.
+הנה המתכון המלא: ${recipe}.
+המנטרה הנוכחית של המשתמש היא: "${currentStep}".
+השלבים המלאים הם: ${allSteps}.
+המשתמש שאל את השאלה הבאה: "${question}".
+תענה על השאלה של המשתמש. אם הוא ביקש שתקריא את השלב הבא אז תקריא רק את השלב הבא, אם הוא ביקש עזרה שלא קשורה למתכון בכלל תענה לו בהתאם שאתה לא יכול לענות על שאלות שלא קשורות למתכון ואם הוא שואל שאלות שקשורות למתכון תענה לו בקצרה.
+אנא עשה את תשובתך קצרה ככל האפשר ודאג שדיבורך יהיה במבטא עברי.
+החזר תשובה בפורמט JSON אך ללא המילה "json".
+speech - שדה של המלל שאתה אמור להגיד
+nextStep -  תכתוב את השלב המלא כפי שכתוב במערך של allSteps בדיוק
+`;
+
+  try {
+    const response = await generateOpenAiRequest({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-4o",
+      temperature: 0.5,
+      parse: true,
+    });
+
+    const { speech, nextStep } = response.data;
+
+    const speechResponse = await generateOpenAiVoiceResponse({ input: speech });
+
+    return { ok: true, data: { speechResponse, nextStep } };
+  } catch (error) {
+    logger.error("assistantResponse", { error });
+    return { ok: false, error };
+  }
+}
+
 module.exports = {
   fetchRecipes,
   updateRecipe,
@@ -327,4 +386,6 @@ module.exports = {
   updateRecipeLikes,
   extractRecipe,
   recipeChatBotResponse,
+  recipeSteps,
+  assistantResponse,
 };

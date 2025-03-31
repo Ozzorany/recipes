@@ -10,7 +10,11 @@ const {
   updateRecipeLikes,
   extractRecipe,
   recipeChatBotResponse,
+  assistantResponse,
+  recipeSteps,
 } = require("../../models/recipe.model");
+const fs = require("fs");
+const path = require("path");
 
 const winston = require("winston");
 
@@ -116,6 +120,76 @@ async function httpUpdateRecipeLikes(req, res) {
   res.status(200).json(await updateRecipeLikes(req?.user?.uid, recipeId));
 }
 
+async function httpAssistantResponse(req, res) {
+  const { currentStep, question, recipe, allSteps } = req.body;
+
+  const response = await assistantResponse(
+    currentStep,
+    allSteps,
+    question,
+    recipe
+  );
+
+  if (!response.ok || !response.data) {
+    logger.error("httpAssistantResponse | POST", {
+      currentStep,
+      question,
+      recipe,
+      error: response?.error,
+    });
+
+    return res.status(400).json({ error: "Error processing question" });
+  }
+
+  const filePath = path.resolve("response.mp3");
+
+  // Check if the file exists
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: "Audio file not found" });
+  }
+
+  // Set headers
+  res.set({
+    "Content-Type": "audio/mpeg",
+    "Content-Disposition": 'inline; filename="response.mp3"',
+  });
+
+  // Stream the file
+  const readStream = fs.createReadStream(filePath);
+  readStream.pipe(res);
+
+  const audioBuffer = fs.readFileSync(filePath);
+
+  res.status(200).json({
+    nextStep: response.data?.nextStep,
+    audio: audioBuffer.toString("base64"),
+  });
+
+  // Cleanup after streaming
+  readStream.on("end", () => {
+    fs.unlink(filePath, (err) => {
+      if (err) console.error("Error deleting file:", err);
+    });
+  });
+}
+
+async function httpRecipeSteps(req, res) {
+  const { method } = req.body;
+
+  const response = await recipeSteps(method);
+
+  if (!response.ok) {
+    logger.error("httpRecipeSteps | POST", {
+      method,
+      error: response?.error,
+    });
+
+    return res.status(400).json({ error: "Error processing method" });
+  }
+
+  res.status(200).json(response.data);
+}
+
 module.exports = {
   httpGetAllRecipes,
   httpUpdateRecipe,
@@ -126,4 +200,6 @@ module.exports = {
   httpGetRecipeById,
   httpUpdateRecipeLikes,
   httpRecipeChatBotResponseRecipe,
+  httpAssistantResponse,
+  httpRecipeSteps,
 };

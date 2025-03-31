@@ -13,8 +13,11 @@ import {
   Typography,
   Snackbar,
   useTheme,
+  Fab,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
+import MicIcon from "@mui/icons-material/Mic";
+
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   CopyIngredientsWrapper,
@@ -26,6 +29,7 @@ import RecipePageEmptyState from "./components/RecipePageEmptyState";
 import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
 import { useUserFeatures } from "../../queries/useUserFeatures";
 import { USER_FEATURES } from "../../models/user.model";
+import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
 
 function RecipePage() {
   const params = useParams();
@@ -34,6 +38,7 @@ function RecipePage() {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const { data: features, isLoading: featuresLoading } = useUserFeatures();
   const theme = useTheme();
+  const [voiceAssistantOpen, setVoiceAssistantOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,6 +68,11 @@ function RecipePage() {
 
   return (
     <>
+      <VoiceAssistant
+        recipe={recipe}
+        open={voiceAssistantOpen}
+        onClose={() => setVoiceAssistantOpen(false)}
+      />
       <div className={styles.container}>
         <TitleWrapper>
           <Typography variant="h4" className={styles.title}>
@@ -153,6 +163,17 @@ function RecipePage() {
           }}
         />
       )}
+      {!featuresLoading &&
+        features?.includes(USER_FEATURES.VOICE_ASSISTANT) && (
+          <Fab
+            color="primary"
+            aria-label="voice-assistant"
+            onClick={() => setVoiceAssistantOpen(true)}
+            sx={{ position: "fixed", bottom: 25, left: 25, zIndex: 1200 }}
+          >
+            <MicIcon />
+          </Fab>
+        )}
     </>
   );
 }

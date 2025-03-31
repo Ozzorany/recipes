@@ -232,6 +232,25 @@ async function httpRecipeChatbotResponse(message: string, recipe: ChatBotRecipeP
   return response?.data;
 }
 
+async function httpVoiceAssistantResponse(currentStep: string, allSteps: string[], question: string, recipe: Recipe): Promise<any> {
+  const response = await axios.post(`${serverUrl}/recipes/recipe-assistant-response`, {
+      recipe, currentStep, allSteps, question
+    }
+  );
+
+  return response.data;
+}
+
+async function httpRecipeSteps(method: string,): Promise<any> {
+  const response = await axios.post(`${serverUrl}/recipes/recipe-steps`, {
+    method
+    },
+  );
+
+  return response?.data;
+}
+
+
 
 export {
   httpGetHealthCheck,
@@ -255,5 +274,7 @@ export {
   httpUpdateRecipeLikes,
   httpGetRecipeFromSite,
   httpUserFeatures,
-  httpRecipeChatbotResponse
+  httpRecipeChatbotResponse,
+  httpVoiceAssistantResponse,
+  httpRecipeSteps
 };
