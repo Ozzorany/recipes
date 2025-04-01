@@ -8,6 +8,7 @@ import {
   Box,
   CircularProgress,
   Chip,
+  keyframes,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import MicIcon from "@mui/icons-material/Mic";
@@ -17,6 +18,12 @@ import {
   httpVoiceAssistantResponse,
 } from "../../../../hooks/requests";
 import { Recipe } from "../../../../models/recipe.model";
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+`;
 
 interface RecipeAssistantProps {
   recipe: Recipe;
@@ -33,6 +40,7 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [allSteps, setAllSteps] = useState<string[]>([]);
   const [isListening, setIsListening] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isSupported, setIsSupported] = useState<boolean>(true);
 
   const currentStepRef = useRef<string>("");
@@ -73,6 +81,7 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     instance.onend = () => {
       console.log("Stopped listening");
       setIsListening(false);
+      setIsSpeaking(false);
       if (!manuallyStopped.current) {
         try {
           instance.start();
@@ -85,10 +94,20 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     instance.onerror = (event: { error: any }) => {
       console.error("Speech error:", event.error);
       setIsListening(false);
+      setIsSpeaking(false);
     };
 
     instance.onnomatch = () => console.warn("Speech not recognized");
-    instance.onspeechend = () => console.log("Speech ended");
+
+    instance.onspeechstart = () => {
+      console.log("Speech started");
+      setIsSpeaking(true);
+    };
+
+    instance.onspeechend = () => {
+      console.log("Speech ended");
+      setIsSpeaking(false);
+    };
 
     instance.onresult = (event: any) => {
       resetInactivityTimer();
@@ -251,6 +270,7 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
                   color: "white",
                   width: 80,
                   height: 80,
+                  animation: isSpeaking ? `${pulse} 1.5s infinite` : "none",
                   "&:hover": {
                     backgroundColor: isListening
                       ? "error.dark"
