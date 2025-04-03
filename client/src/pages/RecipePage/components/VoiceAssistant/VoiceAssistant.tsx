@@ -13,11 +13,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
-import {
-  httpRecipeSteps,
-  httpVoiceAssistantResponse,
-} from "../../../../hooks/requests";
+import { httpRecipeSteps } from "../../../../hooks/requests";
 import { Recipe } from "../../../../models/recipe.model";
+import { useVoiceAssistantResponse } from "../../../../queries/mutations/useVoiceAssistantResponse";
 
 const pulse = keyframes`
   0% { transform: scale(1); }
@@ -49,6 +47,14 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
   const recognition = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  const {
+    mutate: voiceAssistantResponse,
+    isPending: voiceAssistantResponseLoading,
+  } = useVoiceAssistantResponse({
+    onSuccess: (response: any) => {
+      handleResponse(response);
+    },
+  });
 
   const resetInactivityTimer = () => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
@@ -138,13 +144,17 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
 
   const getAnswerFromServer = async (question: string) => {
     if (!question) return;
+
+    voiceAssistantResponse({
+      currentStep: currentStepRef.current,
+      allSteps: allStepsRef.current,
+      question,
+      recipe,
+    });
+  };
+
+  const handleResponse = (response: any) => {
     try {
-      const response = await httpVoiceAssistantResponse(
-        currentStepRef.current,
-        allStepsRef.current,
-        question,
-        recipe
-      );
       if (!response) return;
       if (response.nextStep) setCurrentStep(response.nextStep);
       if (response.allSteps && allSteps.length === 0)
