@@ -141,38 +141,20 @@ async function httpAssistantResponse(req, res) {
     return res.status(400).json({ error: "Error processing question" });
   }
 
-  const filePath = path.resolve("response.mp3");
+  const { speechResponse, nextStep } = response.data;
 
-  // Check if the file exists
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "Audio file not found" });
+  if (!speechResponse || !speechResponse.audioBuffer) {
+    logger.error("No audio buffer returned from TTS");
+    return res.status(500).json({ error: "Failed to generate audio response" });
   }
 
-  // Set headers
-  res.set({
-    "Content-Type": "audio/mpeg",
-    "Content-Disposition": 'inline; filename="response.mp3"',
-  });
-
-  // Stream the file
-  const readStream = fs.createReadStream(filePath);
-  readStream.pipe(res);
-
-  const audioBuffer = fs.readFileSync(filePath);
+  const audioBase64 = speechResponse.audioBuffer.toString("base64");
 
   res.status(200).json({
-    nextStep: response.data?.nextStep,
-    audio: audioBuffer.toString("base64"),
-  });
-
-  // Cleanup after streaming
-  readStream.on("end", () => {
-    fs.unlink(filePath, (err) => {
-      if (err) console.error("Error deleting file:", err);
-    });
+    nextStep,
+    audio: audioBase64,
   });
 }
-
 async function httpRecipeSteps(req, res) {
   const { method } = req.body;
 

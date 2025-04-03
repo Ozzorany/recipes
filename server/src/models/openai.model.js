@@ -44,8 +44,7 @@ const generateOpenAiVoiceResponse = async ({
       response_format: "mp3",
     });
     const buffer = Buffer.from(await res.arrayBuffer());
-    await fs.promises.writeFile("response.mp3", buffer);
-    return { ok: true, data: "" };
+    return { ok: true, data: buffer };
   } catch (e) {
     logger.error("generateOpenAiRequest", { error: e });
     return { ok: false, error: e };

@@ -377,7 +377,13 @@ async function assistantResponse(currentStep, allSteps, question, recipe) {
 
     const speechResponse = await generateOpenAiVoiceResponse({ input: speech });
 
-    return { ok: true, data: { speechResponse, nextStep: speech } };
+    return {
+      ok: true,
+      data: {
+        speechResponse: { audioBuffer: speechResponse.data },
+        nextStep: speech,
+      },
+    };
   } catch (error) {
     logger.error("assistantResponse", { error });
     return { ok: false, error };
