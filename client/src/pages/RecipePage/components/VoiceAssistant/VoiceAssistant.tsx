@@ -47,6 +47,7 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
   const recognition = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+
   const {
     mutate: voiceAssistantResponse,
     isPending: voiceAssistantResponseLoading,
@@ -79,13 +80,11 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     instance.interimResults = false;
 
     instance.onstart = () => {
-      console.log("Started listening");
       setIsListening(true);
       resetInactivityTimer();
     };
 
     instance.onend = () => {
-      console.log("Stopped listening");
       setIsListening(false);
       setIsSpeaking(false);
       if (!manuallyStopped.current) {
@@ -97,21 +96,16 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
       }
     };
 
-    instance.onerror = (event: { error: any }) => {
-      console.error("Speech error:", event.error);
+    instance.onerror = () => {
       setIsListening(false);
       setIsSpeaking(false);
     };
 
-    instance.onnomatch = () => console.warn("Speech not recognized");
-
     instance.onspeechstart = () => {
-      console.log("Speech started");
       setIsSpeaking(true);
     };
 
     instance.onspeechend = () => {
-      console.log("Speech ended");
       setIsSpeaking(false);
     };
 
@@ -119,7 +113,6 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
       resetInactivityTimer();
       const lastResult = event.results[event.results.length - 1];
       const spokenText = lastResult[0].transcript;
-      console.log("You said:", spokenText);
       getAnswerFromServer(spokenText);
     };
 
@@ -234,8 +227,13 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     }
   }, [audioSrc]);
 
+  const handleCloseDilaog = () => {
+    stopListening();
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleCloseDilaog} fullWidth maxWidth="sm">
       <DialogTitle
         sx={{
           display: "flex",
@@ -253,16 +251,14 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
             letterSpacing: 0.5,
           }}
         />
-        <IconButton onClick={onClose}>
+        <IconButton onClick={handleCloseDilaog}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <DialogContent sx={{ textAlign: "center", pb: 4 }}>
         {!isSupported ? (
-          <Typography color="error">
-            Your browser does not support speech recognition.
-          </Typography>
+          <Typography color="error">הדפדפן שלך לא תומך בזיהוי קולי.</Typography>
         ) : (
           <>
             <Typography variant="h6" gutterBottom>
@@ -272,15 +268,30 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
               {currentStep || <CircularProgress size={20} />}
             </Typography>
 
-            <Box mt={4} display="flex" justifyContent="center">
+            <Box
+              mt={4}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
               <IconButton
-                onClick={isListening ? stopListening : startListening}
+                onClick={
+                  voiceAssistantResponseLoading
+                    ? undefined
+                    : isListening
+                    ? stopListening
+                    : startListening
+                }
                 sx={{
                   backgroundColor: isListening ? "error.main" : "primary.main",
                   color: "white",
                   width: 80,
                   height: 80,
                   animation: isSpeaking ? `${pulse} 1.5s infinite` : "none",
+                  opacity: voiceAssistantResponseLoading ? 0.7 : 1,
+                  pointerEvents: voiceAssistantResponseLoading
+                    ? "none"
+                    : "auto",
                   "&:hover": {
                     backgroundColor: isListening
                       ? "error.dark"
@@ -288,12 +299,24 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
                   },
                 }}
               >
-                {isListening ? (
+                {voiceAssistantResponseLoading ? (
+                  <CircularProgress size={36} sx={{ color: "white" }} />
+                ) : isListening ? (
                   <StopIcon fontSize="large" />
                 ) : (
                   <MicIcon fontSize="large" />
                 )}
               </IconButton>
+
+              {voiceAssistantResponseLoading && (
+                <Typography
+                  variant="caption"
+                  color="textSecondary"
+                  sx={{ mt: 1 }}
+                >
+                  רק רגע...
+                </Typography>
+              )}
             </Box>
 
             {audioSrc && (
