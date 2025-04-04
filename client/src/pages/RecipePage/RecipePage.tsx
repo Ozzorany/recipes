@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import styles from "./RecipePage.module.css"; // Import css modules stylesheet as styles
+import styles from "./RecipePage.module.css";
 import { useRecipeById } from "../../queries/useRecipeById";
 import {
   Box,
@@ -14,16 +14,20 @@ import {
   Snackbar,
   useTheme,
   Fab,
+  Tooltip,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import MicIcon from "@mui/icons-material/Mic";
-
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 import {
   CopyIngredientsWrapper,
   IngredientsTitleWrapper,
   TitleWrapper,
+  PageCard,
+  TagList,
 } from "./RecipePage.styles";
+
 import { useEffect, useState } from "react";
 import RecipePageEmptyState from "./components/RecipePageEmptyState";
 import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
@@ -73,87 +77,83 @@ function RecipePage() {
         open={voiceAssistantOpen}
         onClose={() => setVoiceAssistantOpen(false)}
       />
-      <div className={styles.container}>
-        <TitleWrapper>
-          <Typography variant="h4" className={styles.title}>
-            {recipe?.description}
-          </Typography>
-        </TitleWrapper>
+      <div className={styles.pageContainer}>
+        <PageCard>
+          <TitleWrapper>
+            <Typography variant="h4" className={styles.title}>
+              {recipe?.description}
+            </Typography>
+          </TitleWrapper>
 
-        <Box display="flex" justifyContent="start" gap={"8px"}>
-          {tags?.map((tag: any) => {
-            return (
-              <Stack direction="row" key={tag} spacing={1} mt={2}>
-                <Chip
-                  label={tag}
-                  sx={{
-                    color: theme.palette.text.primary,
-                    backgroundColor: theme.palette.primary.main,
-                  }}
-                />
-              </Stack>
-            );
-          })}
-        </Box>
+          <TagList>
+            {tags?.map((tag: any) => (
+              <Chip
+                key={tag}
+                label={tag}
+                sx={{
+                  color: theme.palette.text.primary,
+                  backgroundColor: theme.palette.primary.main,
+                }}
+              />
+            ))}
+          </TagList>
 
-        <IngredientsTitleWrapper>
-          <Typography
-            variant="h5"
-            className={styles.ingredientsTitle}
-            sx={{ color: theme.palette.text.primary }}
-          >
-            מרכיבים
-          </Typography>
-          <CopyIngredientsWrapper onClick={copyIngredients}>
-            <IconButton>
-              <ContentCopyIcon sx={{ color: theme.palette.primary.main }} />
-            </IconButton>
-          </CopyIngredientsWrapper>
-        </IngredientsTitleWrapper>
+          <IngredientsTitleWrapper>
+            <Typography
+              variant="h5"
+              className={styles.ingredientsTitle}
+              sx={{ color: theme.palette.text.primary }}
+            >
+              מרכיבים
+            </Typography>
+            <Tooltip title="העתק מרכיבים">
+              <CopyIngredientsWrapper onClick={copyIngredients}>
+                <IconButton>
+                  <ContentCopyIcon sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+              </CopyIngredientsWrapper>
+            </Tooltip>
+          </IngredientsTitleWrapper>
 
-        <FormGroup>
-          {ingredients?.map((ingredient: string) => {
-            return (
+          <FormGroup className={styles.ingredientsList}>
+            {ingredients?.map((ingredient: string, index: number) => (
               <FormControlLabel
+                key={index}
                 sx={{ color: theme.palette.text.primary }}
                 control={
                   <Checkbox sx={{ color: theme.palette.primary.main }} />
                 }
                 label={ingredient}
-                className={styles.checkBox}
+                className={styles.ingredientItem}
               />
-            );
-          })}
-        </FormGroup>
-        <Typography
-          variant="h5"
-          mt={2}
-          className={styles.title}
-          sx={{ color: theme.palette.text.primary }}
-        >
-          אופן הכנה:
-        </Typography>
-        <Typography className={styles.method} mt={2}>
-          {method}
-        </Typography>
-        <Box
-          mt={2}
-          component="img"
-          sx={{
-            height: 350,
-            width: 300,
-            objectFit: "contain",
-          }}
-          alt="The house from the offer."
-          src={!!image ? image : noImagePath}
-        />
+            ))}
+          </FormGroup>
+
+          <Typography
+            variant="h6"
+            mt={3}
+            sx={{ fontWeight: 600, color: theme.palette.text.primary }}
+          >
+            אופן הכנה:
+          </Typography>
+          <Typography className={styles.method}>{method}</Typography>
+
+          <Box
+            component="img"
+            className={styles.recipeImage}
+            alt="The recipe"
+            src={image || noImagePath}
+          />
+        </PageCard>
       </div>
+
       <Snackbar
         open={openSnackBar}
         onClose={() => setOpenSnackBar(false)}
         autoHideDuration={3000}
         message="הרכיבים הועתקו"
       />
+
       {!featuresLoading && features?.includes(USER_FEATURES.RECIPE_CHATBOT) && (
         <FloatingChatbot
           recipe={{
@@ -163,6 +163,7 @@ function RecipePage() {
           }}
         />
       )}
+
       {!featuresLoading &&
         features?.includes(USER_FEATURES.VOICE_ASSISTANT) && (
           <Fab
