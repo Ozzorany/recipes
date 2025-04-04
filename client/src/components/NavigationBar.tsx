@@ -1,16 +1,20 @@
 import { RestaurantMenu } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { FormControl, InputLabel, Select } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  FormControl,
+  IconButton,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../utils/firebase.utils";
@@ -44,10 +48,8 @@ const NavigationBar = () => {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
 
   const navigateToAllRecepis = () => {
     navigate("/all-recipes", { replace: true });
@@ -62,10 +64,6 @@ const NavigationBar = () => {
   const navigateToGroupsManagement = () => {
     handleCloseUserMenu();
     navigate("/groups-management", { replace: true });
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
   };
 
   const signOut = () => {
@@ -91,34 +89,70 @@ const NavigationBar = () => {
             justifyContent: user ? undefined : "center",
           }}
         >
-          <Toolbar disableGutters>
-            <RestaurantMenu
-              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
+          <Toolbar disableGutters sx={{ width: "100%", position: "relative" }}>
+            {/* Logo for md and up */}
+            <Box
               sx={{
-                mr: 2,
                 display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-                cursor: "pointer",
+                alignItems: "center",
+                mr: 2,
+              }}
+            >
+              <RestaurantMenu sx={{ mr: 1 }} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                onClick={navigateToAllRecepis}
+                sx={{
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".3rem",
+                  color: "inherit",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                BAROZ
+              </Typography>
+            </Box>
+
+            {/* Logo for small screens (centered) */}
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+                alignItems: "center",
               }}
               onClick={navigateToAllRecepis}
             >
-              BAROZ
-            </Typography>
+              <RestaurantMenu sx={{ mr: 1 }} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                sx={{
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".3rem",
+                  color: "inherit",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                BAROZ
+              </Typography>
+            </Box>
+
             {user && (
               <>
+                {/* Left side nav for small screens */}
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
-                    aria-label="account of current user"
+                    aria-label="menu"
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     onClick={handleOpenNavMenu}
@@ -141,9 +175,7 @@ const NavigationBar = () => {
                     }}
                     open={Boolean(anchorElNav)}
                     onClose={handleCloseNavMenu}
-                    sx={{
-                      display: { xs: "block", md: "none" },
-                    }}
+                    sx={{ display: { xs: "block", md: "none" } }}
                   >
                     <MenuItem onClick={navigateToAllRecepis}>
                       <Typography textAlign="center">כל המתכונים</Typography>
@@ -153,10 +185,8 @@ const NavigationBar = () => {
                     </MenuItem>
                   </Menu>
                 </Box>
-              </>
-            )}
-            {user && (
-              <>
+
+                {/* Full menu for md and up */}
                 <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                   <Button
                     onClick={navigateToAllRecepis}
@@ -172,13 +202,11 @@ const NavigationBar = () => {
                   </Button>
                 </Box>
 
+                {/* User Avatar and Menu */}
                 <Box sx={{ flexGrow: 0 }} display="flex">
-                  <IconButton
-                    onClick={handleOpenUserMenu}
-                    sx={{ p: 0, marginLeft: 2 }}
-                  >
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2 }}>
                     <Avatar
-                      alt="Remy Sharp"
+                      alt="User"
                       src={photoURL}
                       imgProps={{ referrerPolicy: "no-referrer" }}
                     />
@@ -211,13 +239,10 @@ const NavigationBar = () => {
                         </Select>
                       </FormControl>
                     </MenuItem>
-                    <MenuItem
-                      key={"groups-management"}
-                      onClick={navigateToGroupsManagement}
-                    >
+                    <MenuItem onClick={navigateToGroupsManagement}>
                       <Typography textAlign="center">ניהול קבוצות</Typography>
                     </MenuItem>
-                    <MenuItem key={"logout"} onClick={signOut}>
+                    <MenuItem onClick={signOut}>
                       <Typography textAlign="center">התנתקות</Typography>
                     </MenuItem>
                   </Menu>
@@ -230,4 +255,5 @@ const NavigationBar = () => {
     </>
   );
 };
+
 export default NavigationBar;
