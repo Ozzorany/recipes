@@ -1,6 +1,6 @@
 import { RestaurantMenu } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { FormControl, InputLabel, Select, useTheme } from "@mui/material";
+import { FormControl, InputLabel, Select } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -13,9 +13,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserLevel } from "../queries/useUserLevel";
 import { auth } from "../utils/firebase.utils";
-import Level from "./Level/Level";
 import LevelProgressDialog from "./LevelProgressDialog/LevelProgressDialog";
 import { ThemeName, themes } from "../settings";
 import { ThemeContext } from "../context/Theme.context";
@@ -39,8 +37,6 @@ const NavigationBar = () => {
   );
   const user = auth.currentUser;
   const photoURL = user?.photoURL || "/static/images/avatar/2.jpg";
-  const { data, isLoading: isUserLevelLoading } = useUserLevel();
-  const { level } = data || {};
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -75,10 +71,6 @@ const NavigationBar = () => {
   const signOut = () => {
     auth.signOut();
     handleCloseUserMenu();
-  };
-
-  const handleOpenLevelDialog = () => {
-    setIsLevelDialogOpen(true);
   };
 
   const handleThemeChange = (event: any) => {
@@ -181,16 +173,6 @@ const NavigationBar = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }} display="flex">
-                  {!isUserLevelLoading && (
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      onClick={handleOpenLevelDialog}
-                    >
-                      <Level level={level} />
-                    </Box>
-                  )}
-
                   <IconButton
                     onClick={handleOpenUserMenu}
                     sx={{ p: 0, marginLeft: 2 }}
