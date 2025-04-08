@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  Container,
   Typography,
   List,
-  ListItem,
-  ListItemText,
   Checkbox,
   IconButton,
   TextField,
   Button,
   Divider,
-  Box,
 } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import {
@@ -27,6 +23,16 @@ import {
   useUpdateGroceryItemMutation,
   useDeleteGroceryItemMutation,
 } from "../../queries/mutations/useGroceryItemMutations";
+
+import {
+  PageContainer,
+  Header,
+  AddItemSection,
+  StyledListItem,
+  StyledItemText,
+  AmountControls,
+  CheckedText,
+} from "./GroceryListPage.styles";
 
 const GroceryListPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -78,16 +84,23 @@ const GroceryListPage = () => {
   const handleDeleteItem = (itemId: string) =>
     deleteItemMutation.mutate(itemId);
 
+  const handleAdjustAmount = (item: any, diff: number) => {
+    const newAmount = (item.amount || 1) + diff;
+    if (newAmount <= 0) {
+      handleDeleteItem(item.id);
+    } else {
+      updateItemMutation.mutate({ ...item, amount: newAmount });
+    }
+  };
+
   const unchecked = items.filter((i) => !i.isChecked);
   const checked = items.filter((i) => i.isChecked);
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        {list?.name}
-      </Typography>
+    <PageContainer>
+      <Header variant="h4">{list?.name}</Header>
 
-      <Box display="flex" mb={2}>
+      <AddItemSection>
         <TextField
           fullWidth
           variant="outlined"
@@ -95,55 +108,40 @@ const GroceryListPage = () => {
           value={newItemName}
           onChange={(e) => setNewItemName(e.target.value)}
         />
-        <Button onClick={handleAddItem} sx={{ ml: 1 }} variant="contained">
+        <Button onClick={handleAddItem} variant="contained">
           הוסף
         </Button>
-      </Box>
+      </AddItemSection>
 
       <List>
         {[...unchecked, ...checked].map((item) => (
           <React.Fragment key={item.id}>
-            <ListItem
+            <StyledListItem
               secondaryAction={
-                <Box display="flex" alignItems="center" gap={1}>
+                <AmountControls>
                   <IconButton
                     size="small"
-                    onClick={() =>
-                      item.amount && item.amount > 1
-                        ? updateItemMutation.mutate({
-                            ...item,
-                            amount: item.amount - 1,
-                          })
-                        : deleteItemMutation.mutate(item.id)
-                    }
+                    onClick={() => handleAdjustAmount(item, -1)}
                   >
                     <Remove fontSize="small" />
                   </IconButton>
 
-                  {/* Show current amount */}
                   <Typography variant="body2">{item.amount || 1}</Typography>
 
-                  {/* Increase Amount */}
                   <IconButton
                     size="small"
-                    onClick={() =>
-                      updateItemMutation.mutate({
-                        ...item,
-                        amount: (item.amount || 1) + 1,
-                      })
-                    }
+                    onClick={() => handleAdjustAmount(item, 1)}
                   >
                     <Add fontSize="small" />
                   </IconButton>
 
-                  {/* Optional: extra delete button */}
                   <IconButton
                     size="small"
                     onClick={() => handleDeleteItem(item.id)}
                   >
                     <Delete fontSize="small" />
                   </IconButton>
-                </Box>
+                </AmountControls>
               }
             >
               <Checkbox
@@ -151,13 +149,22 @@ const GroceryListPage = () => {
                 checked={item.isChecked}
                 onChange={() => handleToggleItem(item)}
               />
-              <ListItemText primary={item.name} />
-            </ListItem>
+
+              <StyledItemText
+                primary={
+                  item.isChecked ? (
+                    <CheckedText>{item.name}</CheckedText>
+                  ) : (
+                    item.name
+                  )
+                }
+              />
+            </StyledListItem>
             <Divider />
           </React.Fragment>
         ))}
       </List>
-    </Container>
+    </PageContainer>
   );
 };
 
