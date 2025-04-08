@@ -16,6 +16,8 @@ import MyRecepis from "./pages/MyRecipes";
 import RecipePage from "./pages/RecipePage/RecipePage";
 import { cacheRtl } from "./settings";
 import { auth } from "./utils/firebase.utils";
+import UserGroceryLists from "./pages/UserGroceryLists/UserGroceryLists";
+import GroceryListPage from "./pages/GroceryListPage/GroceryListPage";
 
 function App() {
   const [authentication, setAuthState] = useState({
@@ -137,6 +139,26 @@ function App() {
                       isAuthenticated={authentication.authenticated}
                     >
                       <CreateRecipe />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/grocery-lists"
+                  element={
+                    <PrivateRoute
+                      isAuthenticated={authentication.authenticated}
+                    >
+                      <UserGroceryLists />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/grocery-list/:id"
+                  element={
+                    <PrivateRoute
+                      isAuthenticated={authentication.authenticated}
+                    >
+                      <GroceryListPage />
                     </PrivateRoute>
                   }
                 />
