@@ -66,6 +66,11 @@ const NavigationBar = () => {
     navigate("/groups-management", { replace: true });
   };
 
+  const navigateToGroceryLists = () => {
+    navigate("/grocery-lists", { replace: true });
+    handleCloseNavMenu();
+  };
+
   const signOut = () => {
     auth.signOut();
     handleCloseUserMenu();
@@ -183,6 +188,9 @@ const NavigationBar = () => {
                     <MenuItem onClick={navigateToCreateRecipe}>
                       <Typography textAlign="center">יצירת מתכון</Typography>
                     </MenuItem>
+                    <MenuItem onClick={navigateToGroceryLists}>
+                      <Typography textAlign="center">רשימת קניות</Typography>
+                    </MenuItem>
                   </Menu>
                 </Box>
 
@@ -199,6 +207,12 @@ const NavigationBar = () => {
                     sx={{ my: 2, color: "white", display: "block" }}
                   >
                     יצירת מתכון
+                  </Button>
+                  <Button
+                    onClick={navigateToGroceryLists}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    רשימת קניות
                   </Button>
                 </Box>
 

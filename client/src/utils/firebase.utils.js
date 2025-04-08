@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   getAdditionalUserInfo,
 } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB3V3XmPwu2wngw37lOoSOZZIDSvAlMkSs",
@@ -15,7 +16,7 @@ const firebaseConfig = {
   appId: "1:839606146057:web:ec8b4f2d6e283d5b7254d8",
   measurementId: "G-JM0K7NJ5XL",
 };
- initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 // Initialize Firebase Auth provider
 const provider = new GoogleAuthProvider();
@@ -27,3 +28,4 @@ provider.setCustomParameters({
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const additionalUserInfo = (result) => getAdditionalUserInfo(result);
+export const db = getFirestore();
