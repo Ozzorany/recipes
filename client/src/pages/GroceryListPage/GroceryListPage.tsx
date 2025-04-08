@@ -65,7 +65,7 @@ const GroceryListPage = () => {
     });
 
     const unsubItems = onSnapshot(
-      query(itemsRef, orderBy("createdAt")),
+      query(itemsRef, orderBy("name")),
       (snapshot) => {
         const itemsArr = snapshot.docs.map((doc) => ({
           id: doc.id,

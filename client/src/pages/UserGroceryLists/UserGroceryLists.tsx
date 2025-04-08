@@ -68,7 +68,11 @@ const UserGroceryLists = () => {
 
       await Promise.all(promises);
 
-      setLists(Array.from(listsMap.values()));
+      setLists(
+        Array.from(listsMap.values()).sort(
+          (a, b) => b.createdAt?.toDate?.() - a.createdAt?.toDate?.()
+        )
+      );
     };
 
     const unsub1 = onSnapshot(q1, updateListFromSnapshot);
