@@ -16,7 +16,7 @@ import MyRecepis from "./pages/MyRecipes";
 import RecipePage from "./pages/RecipePage/RecipePage";
 import { cacheRtl } from "./settings";
 import { auth } from "./utils/firebase.utils";
-import UserGroceryLists from "./pages/GroceryList/UserGroceryLists";
+import UserGroceryLists from "./pages/UserGroceryLists/UserGroceryLists";
 import GroceryListPage from "./pages/GroceryListPage/GroceryListPage";
 
 function App() {

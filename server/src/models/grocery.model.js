@@ -64,14 +64,15 @@ async function fetchUserGroceryLists(userId) {
  * Create a new grocery list
  * @param {{ name: string, ownerId: string, members?: string[] }} listData
  */
-async function createGroceryList(listData) {
+async function createGroceryList(userId, listData) {
   const ref = firestore.collection(GROCERY_LISTS);
   const newId = ref.doc().id;
 
   // Construct the new grocery list document
   const payload = {
     ...listData,
-    members: [...(listData.members || []), listData.ownerId], // Ensure the owner is also a member
+    ownerId: userId,
+    members: [...(listData?.members || [])], // Ensure the owner is also a member
     createdAt: new Date(),
     updatedAt: new Date(),
     isArchived: false,

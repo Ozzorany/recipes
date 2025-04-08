@@ -27,8 +27,14 @@ async function httpGetUserGroceryLists(req, res) {
 
 // Controller to create a new grocery list
 async function httpCreateGroceryList(req, res) {
+  const userId = req.headers["uid"];
+  if (!userId)
+    return res
+      .status(400)
+      .json({ ok: false, error: "Missing user ID in headers" });
+
   try {
-    const result = await createGroceryList(req.body);
+    const result = await createGroceryList(userId, req.body);
     res.status(200).json({ ok: true, data: result });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });

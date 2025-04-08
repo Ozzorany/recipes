@@ -286,6 +286,16 @@ async function httpDeleteGroceryItem(listId: string, itemId: string): Promise<an
   return response.data;
 }
 
+async function httpCreateGroceryList(data: { name: string; members?: string[] }) {
+  const response = await axios.post(`${serverUrl}/grocery/create-list`, data, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+
+  return response?.data;
+}
+
 
 export {
   httpGetHealthCheck,
@@ -315,4 +325,5 @@ export {
   httpAddGroceryItem,
   httpUpdateGroceryItem,
   httpDeleteGroceryItem,
+  httpCreateGroceryList
 };
