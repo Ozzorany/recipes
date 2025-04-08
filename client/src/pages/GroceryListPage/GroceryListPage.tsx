@@ -13,7 +13,7 @@ import {
   Divider,
   Box,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Add, Delete, Remove } from "@mui/icons-material";
 import {
   doc,
   onSnapshot,
@@ -72,7 +72,8 @@ const GroceryListPage = () => {
     }
   };
 
-  const handleToggleItem = (item: any) => updateItemMutation.mutate(item);
+  const handleToggleItem = (item: any) =>
+    updateItemMutation.mutate({ ...item, isChecked: !item.isChecked });
 
   const handleDeleteItem = (itemId: string) =>
     deleteItemMutation.mutate(itemId);
@@ -104,12 +105,45 @@ const GroceryListPage = () => {
           <React.Fragment key={item.id}>
             <ListItem
               secondaryAction={
-                <IconButton
-                  edge="end"
-                  onClick={() => handleDeleteItem(item.id)}
-                >
-                  <Delete />
-                </IconButton>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      item.amount && item.amount > 1
+                        ? updateItemMutation.mutate({
+                            ...item,
+                            amount: item.amount - 1,
+                          })
+                        : deleteItemMutation.mutate(item.id)
+                    }
+                  >
+                    <Remove fontSize="small" />
+                  </IconButton>
+
+                  {/* Show current amount */}
+                  <Typography variant="body2">{item.amount || 1}</Typography>
+
+                  {/* Increase Amount */}
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      updateItemMutation.mutate({
+                        ...item,
+                        amount: (item.amount || 1) + 1,
+                      })
+                    }
+                  >
+                    <Add fontSize="small" />
+                  </IconButton>
+
+                  {/* Optional: extra delete button */}
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeleteItem(item.id)}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Box>
               }
             >
               <Checkbox

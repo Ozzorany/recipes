@@ -19,8 +19,10 @@ export const useAddGroceryItemMutation = (listId: string) => {
 export const useUpdateGroceryItemMutation = (listId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (item: any) =>
-      httpUpdateGroceryItem(listId, item.id, { isChecked: !item.isChecked }),
+    mutationFn: (item: any) => {
+      const { id, ...updates } = item;
+      return httpUpdateGroceryItem(listId, id, updates);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groceryList", listId] });
     },
