@@ -94,28 +94,59 @@ const UserGroceryLists = () => {
   return (
     <>
       <PageWrapper>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h4" gutterBottom fontWeight={600}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          flexWrap="wrap"
+          mb={3}
+        >
+          <Typography variant="h4" fontWeight={600}>
             רשימות הקניות שלי
           </Typography>
+
           {lists.length > 0 && (
-            <Button
-              variant="contained"
-              onClick={() => setCreateDialogOpen(true)}
-            >
-              + רשימה חדשה
-            </Button>
+            <Box mt={{ xs: 2, sm: 0 }}>
+              <Button
+                variant="contained"
+                onClick={() => setCreateDialogOpen(true)}
+                sx={{
+                  borderRadius: "12px",
+                  paddingX: 3,
+                  paddingY: 1,
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                }}
+              >
+                + רשימה חדשה
+              </Button>
+            </Box>
           )}
         </Box>
 
         {lists.length === 0 ? (
-          <Box mt={4} textAlign="center">
+          <Box
+            mt={6}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
             <Typography variant="h6" gutterBottom>
               אין לך עדיין רשימות קניות.
             </Typography>
             <Button
               variant="contained"
+              size="large"
               onClick={() => setCreateDialogOpen(true)}
+              sx={{
+                mt: 2,
+                borderRadius: "12px",
+                paddingX: 4,
+                paddingY: 1.2,
+                fontWeight: 600,
+                fontSize: "1rem",
+              }}
             >
               צור רשימת קניות ראשונה
             </Button>
@@ -168,6 +199,7 @@ const UserGroceryLists = () => {
           </GridContainer>
         )}
       </PageWrapper>
+
       <CreateGroceryListDialog
         open={isCreateDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
