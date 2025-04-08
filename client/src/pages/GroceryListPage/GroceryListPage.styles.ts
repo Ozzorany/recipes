@@ -47,3 +47,14 @@ export const CheckedText = styled("span")(() => ({
   textDecoration: "line-through",
   opacity: 0.6,
 }));
+
+export const EditItemBox = styled(Box)(({ theme }) => ({
+  padding: "16px",
+  marginBottom: "12px",
+  background: theme.palette.background.paper,
+  borderRadius: "12px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+}));
