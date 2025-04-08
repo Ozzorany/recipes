@@ -27,8 +27,10 @@ import {
   CardFooter,
   MenuButton,
 } from "./UserGroceryLists.styles";
+import { useNavigate } from "react-router-dom";
 
 const UserGroceryLists = () => {
+  const navigate = useNavigate();
   const [lists, setLists] = useState<DocumentData[]>([]);
   const [anchorEls, setAnchorEls] = useState<
     Record<string, HTMLElement | null>
@@ -94,7 +96,11 @@ const UserGroceryLists = () => {
 
       <GridContainer>
         {lists.map((list) => (
-          <StyledCard key={list.id}>
+          <StyledCard
+            key={list.id}
+            sx={{ cursor: "pointer" }}
+            onClick={() => navigate(`/grocery-list/${list.id}`)}
+          >
             <MenuButton onClick={(e) => handleMenuOpen(e, list.id)}>
               <MoreVertIcon />
             </MenuButton>

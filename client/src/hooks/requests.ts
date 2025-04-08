@@ -250,6 +250,41 @@ async function httpRecipeSteps(method: string,): Promise<any> {
   return response?.data;
 }
 
+async function httpAddGroceryItem(listId: string, items: { name: string }[]): Promise<any> {
+  const response = await axios.post(
+    `${serverUrl}/grocery/${listId}/items`,
+    items,
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+  return response.data;
+}
+
+
+async function httpUpdateGroceryItem(listId: string, itemId: string, updates: any): Promise<any> {
+  const response = await axios.put(
+    `${serverUrl}/grocery/${listId}/items/${itemId}`,
+    updates,
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+  return response.data;
+}
+
+async function httpDeleteGroceryItem(listId: string, itemId: string): Promise<any> {
+  const response = await axios.delete(`${serverUrl}/grocery/${listId}/items/${itemId}`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+  return response.data;
+}
 
 
 export {
@@ -276,5 +311,8 @@ export {
   httpUserFeatures,
   httpRecipeChatbotResponse,
   httpVoiceAssistantResponse,
-  httpRecipeSteps
+  httpRecipeSteps,
+  httpAddGroceryItem,
+  httpUpdateGroceryItem,
+  httpDeleteGroceryItem,
 };
