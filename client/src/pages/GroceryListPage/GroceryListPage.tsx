@@ -133,12 +133,12 @@ const GroceryListPage = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="הוסף פריט חדש"
+          placeholder="הוספת פריט חדש"
           value={newItemName}
           onChange={(e) => setNewItemName(e.target.value)}
         />
         <Button onClick={handleAddItem} variant="contained">
-          הוסף
+          הוספה
         </Button>
       </AddItemSection>
 

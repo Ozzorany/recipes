@@ -8,6 +8,7 @@ import {
   Badge,
   Button,
   Box,
+  Chip,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import GroupIcon from "@mui/icons-material/Group";
@@ -77,7 +78,7 @@ const UserGroceryLists = () => {
           mb={3}
         >
           <Typography variant="h4" fontWeight={600}>
-            רשימות הקניות שלי
+            רשימת הקניות שלי
           </Typography>
 
           {lists.length > 0 && (
@@ -159,26 +160,27 @@ const UserGroceryLists = () => {
                   >
                     <MenuItem
                       onClick={(e) => {
+                        e.stopPropagation();
+                        handleInviteClick(list.id, list.name);
+                      }}
+                    >
+                      הזמנת חבר
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
                         console.log("Edit", list.id);
                       }}
                     >
-                      ערוך
+                      עריכה
                     </MenuItem>
+
                     <MenuItem
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteList(list.id);
                       }}
                     >
-                      מחק
-                    </MenuItem>
-                    <MenuItem
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleInviteClick(list.id, list.name);
-                      }}
-                    >
-                      הזמן חבר
+                      מחיקה
                     </MenuItem>
                   </Menu>
                 )}
@@ -195,9 +197,18 @@ const UserGroceryLists = () => {
                 </Stats>
 
                 <CardFooter>
-                  <Typography variant="caption">
-                    {list.isOwner ? "(בעלותך)" : "(שותף)"}
-                  </Typography>
+                  <Chip
+                    label={list.isOwner ? "רשימה שלי" : "שותף איתי"}
+                    size="small"
+                    color={list.isOwner ? "primary" : "default"}
+                    sx={{
+                      fontWeight: 500,
+                      fontSize: "0.75rem",
+                      "& .MuiChip-label": {
+                        px: 1,
+                      },
+                    }}
+                  />
                 </CardFooter>
               </StyledCard>
             ))}
