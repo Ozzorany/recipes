@@ -49,7 +49,9 @@ const CreateGroceryListDialog: React.FC<Props> = ({ open, onClose }) => {
           </IconButton>
         </CreateDialogTitle>
 
-        <DialogContent>
+        <DialogContent
+          sx={{ padding: "24px", "& .MuiTextField-root": { marginTop: "8px" } }}
+        >
           <TextField
             label="שם הרשימה"
             variant="outlined"
@@ -57,6 +59,11 @@ const CreateGroceryListDialog: React.FC<Props> = ({ open, onClose }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
+            sx={{
+              "& .MuiInputLabel-root": {
+                padding: "0 4px",
+              },
+            }}
           />
         </DialogContent>
 

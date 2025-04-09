@@ -71,7 +71,7 @@ const UserGroceryLists = () => {
       <PageWrapper>
         <Box
           display="flex"
-          justifyContent="space-between"
+          justifyContent="center"
           alignItems="center"
           flexWrap="wrap"
           mb={3}

@@ -116,7 +116,21 @@ async function addUserToGroceryList(listId, userId) {
  * @param {string} listId
  */
 async function deleteGroceryList(listId) {
-  await firestore.collection(GROCERY_LISTS).doc(listId).delete();
+  const listRef = firestore.collection(GROCERY_LISTS).doc(listId);
+
+  // First delete all items in the subcollection
+  const itemsSnapshot = await listRef.collection("items").get();
+  const batch = firestore.batch();
+
+  itemsSnapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  // Then delete the main document
+  batch.delete(listRef);
+
+  // Commit the batch operation
+  await batch.commit();
   return true;
 }
 
