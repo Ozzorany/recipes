@@ -296,6 +296,23 @@ async function httpCreateGroceryList(data: { name: string; members?: string[] })
   return response?.data;
 }
 
+async function httpDeleteGroceryList(listId: string): Promise<any> {
+  const response = await axios.delete(`${serverUrl}/grocery/${listId}`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+  return response.data;
+}
+
+async function httpGetUserGroceryLists(): Promise<any> {
+  const response = await axios.get(`${serverUrl}/grocery/user-lists`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+  return response?.data?.data;
+}
 
 export {
   httpGetHealthCheck,
@@ -325,5 +342,7 @@ export {
   httpAddGroceryItem,
   httpUpdateGroceryItem,
   httpDeleteGroceryItem,
-  httpCreateGroceryList
+  httpCreateGroceryList,
+  httpDeleteGroceryList,
+  httpGetUserGroceryLists
 };

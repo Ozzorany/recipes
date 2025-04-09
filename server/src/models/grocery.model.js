@@ -23,6 +23,7 @@ async function fetchUserGroceryLists(userId) {
       id: doc.id,
       members: doc.data().members,
       isOwner: true,
+      name: doc.data().name,
     }))
   );
 
@@ -36,7 +37,12 @@ async function fetchUserGroceryLists(userId) {
   memberSnap.docs.forEach((doc) => {
     if (!existingIds.has(doc.id)) {
       const data = doc.data();
-      results.push({ id: doc.id, members: data.members, isOwner: false });
+      results.push({
+        id: doc.id,
+        members: data.members,
+        isOwner: false,
+        name: doc.data().name,
+      });
     }
   });
 
