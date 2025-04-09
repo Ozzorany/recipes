@@ -7,7 +7,16 @@ const {
   editGroceryItem,
   removeGroceryItem,
   fetchUserGroceryLists,
+  fetchGroceryListById,
 } = require("../../models/grocery.model");
+const jwt = require("jsonwebtoken");
+
+const winston = require("winston");
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [new winston.transports.Console()],
+});
 
 // Controller to get all grocery lists for a user
 async function httpGetUserGroceryLists(req, res) {
@@ -113,6 +122,78 @@ async function httpRemoveGroceryItem(req, res) {
   }
 }
 
+// Controller to generate invitation link for a grocery list
+async function httpGenerateGroceryInvitation(req, res) {
+  const userId = req.headers["uid"];
+  const listId = req.params.listId;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ ok: false, error: "Missing user ID in headers" });
+  }
+
+  try {
+    const list = await fetchGroceryListById(listId);
+    if (!list) {
+      return res.status(404).json({ ok: false, error: "List not found" });
+    }
+
+    if (list.ownerId !== userId) {
+      return res.status(403).json({
+        ok: false,
+        error: "Only the list owner can generate invitations",
+      });
+    }
+
+    // @ts-ignore
+    const { secretKey } = JSON.parse(process.env.JWT_SECRET_KEY);
+    // expired in 10 minutes
+    const token = jwt.sign({ listId }, secretKey, { expiresIn: 600 });
+
+    const invitationLink = encodeURI(
+      `https://recipes-e6692.web.app/grocery-lists/join?listName=${list.name}&token=${token}`
+    );
+
+    res.status(200).json({ ok: true, data: invitationLink });
+  } catch (error) {
+    logger.error("httpGenerateGroceryInvitation | ERROR", error);
+    res.status(400).json({ ok: false, error: error.message });
+  }
+}
+
+// Controller to join a grocery list using invitation token
+async function httpJoinGroceryList(req, res) {
+  const userId = req.headers["uid"];
+  const { token } = req.body;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ ok: false, error: "Missing user ID in headers" });
+  }
+
+  try {
+    // @ts-ignore
+    const { secretKey } = JSON.parse(process.env.JWT_SECRET_KEY);
+
+    jwt.verify(token, secretKey, async (err, decoded) => {
+      if (err || Date.now() >= decoded?.exp * 1000) {
+        return res
+          .status(400)
+          .json({ ok: false, error: "Invalid or expired invitation link" });
+      }
+
+      const { listId } = decoded;
+      await addUserToGroceryList(listId, userId);
+      res.status(200).json({ ok: true });
+    });
+  } catch (error) {
+    logger.error("httpJoinGroceryList | ERROR", error);
+    res.status(400).json({ ok: false, error: error.message });
+  }
+}
+
 module.exports = {
   httpCreateGroceryList,
   httpEditGroceryList,
@@ -122,4 +203,6 @@ module.exports = {
   httpEditGroceryItem,
   httpRemoveGroceryItem,
   httpGetUserGroceryLists,
+  httpGenerateGroceryInvitation,
+  httpJoinGroceryList,
 };

@@ -16,6 +16,7 @@ import CreateGroceryListDialog from "./components/CreateGroceryListDialog/Create
 import { useDeleteGroceryListMutation } from "../../queries/mutations/useDeleteGroceryListMutation";
 import { useUserGroceryLists } from "../../queries/useUserGroceryLists";
 import GroceryListSkeleton from "./components/GroceryListSkeleton/GroceryListSkeleton";
+import InvitationDialog from "./components/InvitationDialog/InvitationDialog";
 import {
   PageWrapper,
   GridContainer,
@@ -29,6 +30,11 @@ import {
 const UserGroceryLists = () => {
   const navigate = useNavigate();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isInvitationDialogOpen, setInvitationDialogOpen] = useState(false);
+  const [selectedList, setSelectedList] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const [anchorEls, setAnchorEls] = useState<
     Record<string, HTMLElement | null>
   >({});
@@ -52,6 +58,12 @@ const UserGroceryLists = () => {
         handleMenuClose(listId);
       },
     });
+  };
+
+  const handleInviteClick = (listId: string, listName: string) => {
+    setSelectedList({ id: listId, name: listName });
+    setInvitationDialogOpen(true);
+    handleMenuClose(listId);
   };
 
   return (
@@ -128,43 +140,48 @@ const UserGroceryLists = () => {
                 sx={{ cursor: "pointer" }}
                 onClick={() => navigate(`/grocery-list/${list.id}`)}
               >
-                <MenuButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMenuOpen(e, list.id);
-                  }}
-                >
-                  <MoreVertIcon />
-                </MenuButton>
-                <Menu
-                  anchorEl={anchorEls[list.id]}
-                  open={Boolean(anchorEls[list.id])}
-                  onClose={() => handleMenuClose(list.id)}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MenuItem
-                    onClick={(e) => {
-                      console.log("Edit", list.id);
-                    }}
-                  >
-                    ערוך
-                  </MenuItem>
-                  <MenuItem
+                {list.isOwner && (
+                  <MenuButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteList(list.id);
+                      handleMenuOpen(e, list.id);
                     }}
                   >
-                    מחק
-                  </MenuItem>
-                  <MenuItem
-                    onClick={(e) => {
-                      console.log("Invite", list.id);
-                    }}
+                    <MoreVertIcon />
+                  </MenuButton>
+                )}
+                {list.isOwner && (
+                  <Menu
+                    anchorEl={anchorEls[list.id]}
+                    open={Boolean(anchorEls[list.id])}
+                    onClose={() => handleMenuClose(list.id)}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    הזמן חבר
-                  </MenuItem>
-                </Menu>
+                    <MenuItem
+                      onClick={(e) => {
+                        console.log("Edit", list.id);
+                      }}
+                    >
+                      ערוך
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteList(list.id);
+                      }}
+                    >
+                      מחק
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleInviteClick(list.id, list.name);
+                      }}
+                    >
+                      הזמן חבר
+                    </MenuItem>
+                  </Menu>
+                )}
 
                 <Title>{list.name}</Title>
 
@@ -191,6 +208,13 @@ const UserGroceryLists = () => {
       <CreateGroceryListDialog
         open={isCreateDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
+      />
+
+      <InvitationDialog
+        open={isInvitationDialogOpen}
+        onClose={() => setInvitationDialogOpen(false)}
+        listId={selectedList?.id || ""}
+        listName={selectedList?.name || ""}
       />
     </>
   );

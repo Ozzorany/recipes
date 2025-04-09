@@ -191,6 +191,20 @@ async function editGroceryItem(listId, itemId, updates) {
   return true;
 }
 
+/**
+ * Fetch a grocery list by its ID
+ * @param {string} listId
+ */
+async function fetchGroceryListById(listId) {
+  const doc = await firestore.collection(GROCERY_LISTS).doc(listId).get();
+  if (!doc.exists) return null;
+
+  return {
+    id: doc.id,
+    ...doc.data(),
+  };
+}
+
 module.exports = {
   createGroceryList,
   addUserToGroceryList,
@@ -200,4 +214,5 @@ module.exports = {
   removeGroceryItem,
   editGroceryItem,
   fetchUserGroceryLists,
+  fetchGroceryListById,
 };

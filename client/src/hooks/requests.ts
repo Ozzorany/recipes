@@ -314,6 +314,30 @@ async function httpGetUserGroceryLists(): Promise<any> {
   return response?.data?.data;
 }
 
+async function httpGenerateGroceryInvitationLink(listId: string): Promise<any> {
+  return axios.post(
+    `${serverUrl}/grocery/${listId}/generate-invitation`,
+    {},
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+}
+
+async function httpJoinGroceryList(token: string): Promise<any> {
+  return axios.post(
+    `${serverUrl}/grocery/join`,
+    { token },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+}
+
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -344,5 +368,7 @@ export {
   httpDeleteGroceryItem,
   httpCreateGroceryList,
   httpDeleteGroceryList,
-  httpGetUserGroceryLists
+  httpGetUserGroceryLists,
+  httpGenerateGroceryInvitationLink,
+  httpJoinGroceryList,
 };

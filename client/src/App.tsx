@@ -18,6 +18,7 @@ import { cacheRtl } from "./settings";
 import { auth } from "./utils/firebase.utils";
 import UserGroceryLists from "./pages/UserGroceryLists/UserGroceryLists";
 import GroceryListPage from "./pages/GroceryListPage/GroceryListPage";
+import JoinGroceryList from "./pages/GroceryLists/JoinGroceryList/JoinGroceryList";
 
 function App() {
   const [authentication, setAuthState] = useState({
@@ -161,6 +162,10 @@ function App() {
                       <GroceryListPage />
                     </PrivateRoute>
                   }
+                />
+                <Route
+                  path="/grocery-lists/join"
+                  element={<JoinGroceryList />}
                 />
               </Routes>
             </div>
