@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import CreateGroceryListDialog from "./components/CreateGroceryListDialog/CreateGroceryListDialog";
 import { useDeleteGroceryListMutation } from "../../queries/mutations/useDeleteGroceryListMutation";
 import { useUserGroceryLists } from "../../queries/useUserGroceryLists";
+import GroceryListSkeleton from "./components/GroceryListSkeleton/GroceryListSkeleton";
 import {
   PageWrapper,
   GridContainer,
@@ -86,7 +87,13 @@ const UserGroceryLists = () => {
           )}
         </Box>
 
-        {lists.length === 0 ? (
+        {isListLoading ? (
+          <GridContainer>
+            {[...Array(3)].map((_, index) => (
+              <GroceryListSkeleton key={index} />
+            ))}
+          </GridContainer>
+        ) : lists.length === 0 ? (
           <Box
             mt={6}
             display="flex"
