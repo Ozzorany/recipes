@@ -66,17 +66,6 @@ const AllRecipesFilters = ({
             valuesChanged={handleFilterTagsChanged}
           />
         </div>
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          sx={{
-            width: `${matches ? "15%" : "100%"}`,
-            alignItems: "center",
-            display: "flex",
-            marginLeft: "16px",
-          }}
-        ></Box>
       </Box>
     </div>
   );
