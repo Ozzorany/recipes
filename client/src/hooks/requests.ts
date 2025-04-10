@@ -263,7 +263,6 @@ async function httpAddGroceryItem(listId: string, items: { name: string }[]): Pr
   return response.data;
 }
 
-
 async function httpUpdateGroceryItem(listId: string, itemId: string, updates: any): Promise<any> {
   const response = await axios.put(
     `${serverUrl}/grocery/${listId}/items/${itemId}`,
@@ -337,6 +336,13 @@ async function httpJoinGroceryList(token: string): Promise<any> {
     }
   );
 }
+async function httpExtractGroceryItems(recipe: Recipe): Promise<any> {
+  const response = await axios.post(`${serverUrl}/grocery/extract-items`, {
+    recipe,
+  });
+  return response.data.data;
+}
+
 
 export {
   httpGetHealthCheck,
@@ -371,4 +377,5 @@ export {
   httpGetUserGroceryLists,
   httpGenerateGroceryInvitationLink,
   httpJoinGroceryList,
+  httpExtractGroceryItems
 };

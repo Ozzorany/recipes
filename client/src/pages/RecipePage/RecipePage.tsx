@@ -19,6 +19,7 @@ import {
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import MicIcon from "@mui/icons-material/Mic";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import {
   CopyIngredientsWrapper,
@@ -34,6 +35,7 @@ import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
 import { useUserFeatures } from "../../queries/useUserFeatures";
 import { USER_FEATURES } from "../../models/user.model";
 import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
+import GroceryListExtractor from "./components/GroceryListExtractor/GroceryListExtractor";
 
 function RecipePage() {
   const params = useParams();
@@ -43,6 +45,7 @@ function RecipePage() {
   const { data: features, isLoading: featuresLoading } = useUserFeatures();
   const theme = useTheme();
   const [voiceAssistantOpen, setVoiceAssistantOpen] = useState(false);
+  const [groceryExtractorOpen, setGroceryExtractorOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,6 +80,11 @@ function RecipePage() {
         open={voiceAssistantOpen}
         onClose={() => setVoiceAssistantOpen(false)}
       />
+      <GroceryListExtractor
+        open={groceryExtractorOpen}
+        onClose={() => setGroceryExtractorOpen(false)}
+        recipe={recipe}
+      />
       <div className={styles.pageContainer}>
         <PageCard>
           <TitleWrapper>
@@ -106,13 +114,24 @@ function RecipePage() {
             >
               מרכיבים
             </Typography>
-            <Tooltip title="העתק מרכיבים">
-              <CopyIngredientsWrapper onClick={copyIngredients}>
-                <IconButton>
-                  <ContentCopyIcon sx={{ color: theme.palette.primary.main }} />
+            <Stack direction="row" spacing={1}>
+              <Tooltip title="העתק מרכיבים">
+                <CopyIngredientsWrapper onClick={copyIngredients}>
+                  <IconButton>
+                    <ContentCopyIcon
+                      sx={{ color: theme.palette.primary.main }}
+                    />
+                  </IconButton>
+                </CopyIngredientsWrapper>
+              </Tooltip>
+              <Tooltip title="הוסף לרשימת מצרכים">
+                <IconButton onClick={() => setGroceryExtractorOpen(true)}>
+                  <ShoppingCartIcon
+                    sx={{ color: theme.palette.primary.main }}
+                  />
                 </IconButton>
-              </CopyIngredientsWrapper>
-            </Tooltip>
+              </Tooltip>
+            </Stack>
           </IngredientsTitleWrapper>
 
           <FormGroup className={styles.ingredientsList}>

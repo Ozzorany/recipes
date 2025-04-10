@@ -41,7 +41,31 @@ import {
 } from "./GroceryListPage.styles";
 import GroceryListSkeleton from "./GroceryListSkeleton";
 
-const CATEGORIES = ["Dairy", "Produce", "Bakery", "Meat", "Pantry"];
+const CATEGORIES = [
+  "פירות",
+  "ירקות",
+  "מוצרי חלב",
+  "בשר ועוף",
+  "דגים",
+  "קפואים",
+  "מעדנייה",
+  "מאפים ולחמים",
+  "מוצרים יבשים",
+  "שימורים",
+  "תבלינים",
+  "חטיפים",
+  "ממתקים",
+  "משקאות",
+  "אלכוהול",
+  "ניקיון",
+  "טואלטיקה והיגיינה",
+  "תינוקות וילדים",
+  "חיות מחמד",
+  "כלי בית וכלים חד פעמיים",
+  "בריאות וטבע",
+  "מזון מהיר",
+  "בישול ואפייה",
+];
 
 const GroceryListPage = () => {
   const { id } = useParams<{ id: string }>();
