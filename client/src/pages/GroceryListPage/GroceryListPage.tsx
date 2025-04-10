@@ -13,6 +13,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import {
@@ -84,11 +85,21 @@ const GroceryListPage = () => {
     };
   }, [id]);
 
-  const handleAddItem = () => {
-    if (newItemName.trim()) {
-      addItemMutation.mutate({ name: newItemName.trim() });
-      setNewItemName("");
+  const handleAddItem = (value: string | null) => {
+    if (!value) return;
+
+    const existingItem = items.find(
+      (item) => item.name.toLowerCase() === value.toLowerCase()
+    );
+
+    if (existingItem && existingItem.isChecked) {
+      handleToggleItem(existingItem);
     }
+
+    if (!existingItem) {
+      addItemMutation.mutate({ name: value.trim() });
+    }
+    setNewItemName("");
   };
 
   const handleToggleItem = (item: any) =>
@@ -128,19 +139,48 @@ const GroceryListPage = () => {
   const unchecked = items.filter((i) => !i.isChecked);
   const checked = items.filter((i) => i.isChecked);
 
+  const handleInputChange = (
+    _: React.SyntheticEvent,
+    newInputValue: string
+  ) => {
+    setNewItemName(newInputValue);
+  };
+
   return (
     <PageContainer>
       <Header variant="h4">{list?.name}</Header>
 
       <AddItemSection>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="הוספת פריט חדש"
+        <Autocomplete
+          freeSolo
+          options={items.map((item) => item.name)}
           value={newItemName}
-          onChange={(e) => setNewItemName(e.target.value)}
+          onChange={(_, newValue) => handleAddItem(newValue)}
+          onInputChange={handleInputChange}
+          filterOptions={(options) => {
+            const inputValue = newItemName.toLowerCase();
+            return options.filter((option) =>
+              option.toLowerCase().includes(inputValue)
+            );
+          }}
+          noOptionsText="לא נמצאו תוצאות"
+          open={newItemName.length > 0}
+          sx={{ width: "100%" }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              variant="outlined"
+              placeholder="הוספת פריט חדש"
+              sx={{ width: "100%" }}
+            />
+          )}
         />
-        <Button onClick={handleAddItem} variant="contained">
+        <Button
+          onClick={() => handleAddItem(newItemName)}
+          variant="contained"
+          disabled={!newItemName.trim()}
+        >
           הוספה
         </Button>
       </AddItemSection>
