@@ -38,6 +38,7 @@ import {
   CheckedText,
   EditItemBox,
 } from "./GroceryListPage.styles";
+import GroceryListSkeleton from "./GroceryListSkeleton";
 
 const CATEGORIES = ["Dairy", "Produce", "Bakery", "Meat", "Pantry"];
 
@@ -46,6 +47,7 @@ const GroceryListPage = () => {
   const [list, setList] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [newItemName, setNewItemName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState({ name: "", category: "" });
@@ -62,6 +64,7 @@ const GroceryListPage = () => {
 
     const unsubList = onSnapshot(listRef, (docSnap) => {
       setList({ id: docSnap.id, ...docSnap.data() });
+      setIsLoading(false);
     });
 
     const unsubItems = onSnapshot(
@@ -142,110 +145,116 @@ const GroceryListPage = () => {
         </Button>
       </AddItemSection>
 
-      <List>
-        {[...unchecked, ...checked].map((item) => (
-          <React.Fragment key={item.id}>
-            {editingItemId === item.id ? (
-              <EditItemBox>
-                <TextField
-                  label="שם הפריט"
-                  fullWidth
-                  size="small"
-                  value={editValues.name}
-                  onChange={(e) =>
-                    setEditValues((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                />
-                <FormControl size="small" fullWidth>
-                  <InputLabel>קטגוריה</InputLabel>
-                  <Select
-                    value={editValues.category}
+      {isLoading ? (
+        <GroceryListSkeleton />
+      ) : (
+        <List>
+          {[...unchecked, ...checked].map((item) => (
+            <React.Fragment key={item.id}>
+              {editingItemId === item.id ? (
+                <EditItemBox>
+                  <TextField
+                    label="שם הפריט"
+                    fullWidth
+                    size="small"
+                    value={editValues.name}
                     onChange={(e) =>
                       setEditValues((prev) => ({
                         ...prev,
-                        category: e.target.value,
+                        name: e.target.value,
                       }))
                     }
-                    label="קטגוריה"
-                  >
-                    {CATEGORIES.map((cat) => (
-                      <MenuItem key={cat} value={cat}>
-                        {cat}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <Box display="flex" gap={1} justifyContent="flex-end">
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={() => saveItemEdits(item)}
-                  >
-                    שמור
-                  </Button>
-                  <Button size="small" onClick={cancelEditing}>
-                    ביטול
-                  </Button>
-                </Box>
-              </EditItemBox>
-            ) : (
-              <StyledListItem
-                secondaryAction={
-                  <AmountControls>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleAdjustAmount(item, -1)}
-                    >
-                      <Remove fontSize="small" />
-                    </IconButton>
-                    <Typography variant="body2">{item.amount || 1}</Typography>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleAdjustAmount(item, 1)}
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDeleteItem(item.id)}
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </AmountControls>
-                }
-              >
-                <Checkbox
-                  edge="start"
-                  checked={item.isChecked}
-                  onChange={() => handleToggleItem(item)}
-                />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => startEditing(item)}
-                >
-                  <StyledItemText
-                    primary={
-                      item.isChecked ? (
-                        <CheckedText>{item.name}</CheckedText>
-                      ) : (
-                        item.name
-                      )
-                    }
-                    secondary={item.category || ""}
                   />
-                </Box>
-              </StyledListItem>
-            )}
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
+                  <FormControl size="small" fullWidth>
+                    <InputLabel>קטגוריה</InputLabel>
+                    <Select
+                      value={editValues.category}
+                      onChange={(e) =>
+                        setEditValues((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
+                      label="קטגוריה"
+                    >
+                      {CATEGORIES.map((cat) => (
+                        <MenuItem key={cat} value={cat}>
+                          {cat}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Box display="flex" gap={1} justifyContent="flex-end">
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => saveItemEdits(item)}
+                    >
+                      שמור
+                    </Button>
+                    <Button size="small" onClick={cancelEditing}>
+                      ביטול
+                    </Button>
+                  </Box>
+                </EditItemBox>
+              ) : (
+                <StyledListItem
+                  secondaryAction={
+                    <AmountControls>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleAdjustAmount(item, -1)}
+                      >
+                        <Remove fontSize="small" />
+                      </IconButton>
+                      <Typography variant="body2">
+                        {item.amount || 1}
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleAdjustAmount(item, 1)}
+                      >
+                        <Add fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteItem(item.id)}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </AmountControls>
+                  }
+                >
+                  <Checkbox
+                    edge="start"
+                    checked={item.isChecked}
+                    onChange={() => handleToggleItem(item)}
+                  />
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => startEditing(item)}
+                  >
+                    <StyledItemText
+                      primary={
+                        item.isChecked ? (
+                          <CheckedText>{item.name}</CheckedText>
+                        ) : (
+                          item.name
+                        )
+                      }
+                      secondary={item.category || ""}
+                    />
+                  </Box>
+                </StyledListItem>
+              )}
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
+      )}
     </PageContainer>
   );
 };
