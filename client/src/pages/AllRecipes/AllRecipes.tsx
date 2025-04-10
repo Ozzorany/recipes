@@ -10,11 +10,16 @@ import styles from "./AllRecipes.module.css";
 import AllRecipesEmptyState from "./components/AllRecipesEmptyState/AllRecipesEmptyState";
 import AllRecipesFilters from "./components/AllRecipesFilters/AllRecipesFilters";
 import { sortRecipes } from "./AllRecipes.helper";
+import Fab from "@mui/material/Fab";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { Tooltip } from "@mui/material";
 
 function AllRecepis() {
   const { data: recipes, isLoading } = useAllRecipes();
   const [value, setValue] = useState<string>("");
   const [filterTags, setFilterTags] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -62,6 +67,24 @@ function AllRecepis() {
             })}
         </Grid>
       </Box>
+      <Tooltip title="רשימת קניות" placement="left">
+        <Fab
+          color="primary"
+          aria-label="grocery lists"
+          sx={{
+            position: "fixed",
+            bottom: 32,
+            right: 32,
+            transition: "transform 0.2s ease-in-out",
+            "&:hover": {
+              transform: "scale(1.1)",
+            },
+          }}
+          onClick={() => navigate("/grocery-lists")}
+        >
+          <ShoppingCartIcon />
+        </Fab>
+      </Tooltip>
     </div>
   );
 }
