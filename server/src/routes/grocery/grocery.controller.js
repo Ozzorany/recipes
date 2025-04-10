@@ -10,6 +10,7 @@ const {
   fetchGroceryListById,
 } = require("../../models/grocery.model");
 const jwt = require("jsonwebtoken");
+const { generateOpenAiRequest } = require("../../models/openai.model");
 
 const winston = require("winston");
 const logger = winston.createLogger({
@@ -194,6 +195,59 @@ async function httpJoinGroceryList(req, res) {
   }
 }
 
+// Controller to extract grocery items from a recipe
+async function httpExtractGroceryItems(req, res) {
+  try {
+    const { recipe } = req.body;
+    if (!recipe) {
+      return res.status(400).json({ ok: false, error: "Recipe is required" });
+    }
+
+    const response = await generateOpenAiRequest({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an AI that extracts grocery items from recipes. Return a JSON array of objects with 'name' and 'amount' properties.",
+        },
+        {
+          role: "user",
+          content: `Extract the grocery items from this recipe:\n\n${JSON.stringify(
+            recipe,
+            null,
+            2
+          )}\n\nReturn a JSON array of objects where each object has 'name' (string) and 'amount' (number) properties. For example: [{"name": "eggs", "amount": 4}, {"name": "sugar", "amount": 1}]. Return only the JSON array, nothing else. 
+                Rules:
+                For each item, determine whether the quantity should be measured by weight or volume (e.g., grams, kilograms, cups) or by unit count (e.g., 4 eggs, 1 milk carton).
+                If the item is measured by weight or volume, include the quantity directly in the product name, separated by a hyphen.
+                Example: "Flour - 500g", "Milk - 2 cups".
+                In this case, set "amount" to 1.
+
+                If the item is counted by units, write the name normally (e.g., "Eggs") and include the count in the "amount" field.
+                Example: { "name": "Eggs", "amount": 4 }.
+
+                If no specific quantity is found, set "amount" to 1 by default (regardless of measurement type).
+                
+                - Always separate combined ingredients into individual items.
+                  For example, if the text says "salt and pepper", return two separate entries: one for "Salt" and one for "Pepper". Never group multiple ingredients into a single item.`,
+        },
+      ],
+      model: "gpt-4",
+      temperature: 0.3,
+      parse: true,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to extract grocery items");
+    }
+
+    res.status(200).json({ ok: true, data: response.data });
+  } catch (error) {
+    logger.error("httpExtractGroceryItems | ERROR", error);
+    res.status(400).json({ ok: false, error: error.message });
+  }
+}
+
 module.exports = {
   httpCreateGroceryList,
   httpEditGroceryList,
@@ -205,4 +259,5 @@ module.exports = {
   httpGetUserGroceryLists,
   httpGenerateGroceryInvitation,
   httpJoinGroceryList,
+  httpExtractGroceryItems,
 };

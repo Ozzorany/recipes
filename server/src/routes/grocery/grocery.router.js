@@ -10,6 +10,7 @@ const {
   httpGetUserGroceryLists,
   httpGenerateGroceryInvitation,
   httpJoinGroceryList,
+  httpExtractGroceryItems,
 } = require("./grocery.controller");
 
 const groceryRouter = express.Router();
@@ -30,5 +31,8 @@ groceryRouter.post("/join", httpJoinGroceryList);
 groceryRouter.post("/:listId/items", httpAddGroceryItems);
 groceryRouter.put("/:listId/items/:itemId", httpEditGroceryItem);
 groceryRouter.delete("/:listId/items/:itemId", httpRemoveGroceryItem);
+
+// Recipe to grocery items route
+groceryRouter.post("/extract-items", httpExtractGroceryItems);
 
 module.exports = groceryRouter;
