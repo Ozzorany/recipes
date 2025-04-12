@@ -12,7 +12,7 @@ export interface GroceryItem {
 
 export interface AddGroceryItemsParams {
   listId: string;
-  items: GroceryItem[];
+  items: NewSelectedGroceryItem[];
 }
 
 export interface CreateGroceryListParams {

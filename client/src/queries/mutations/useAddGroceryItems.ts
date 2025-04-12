@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { httpAddGroceryItem } from "../../hooks/requests";
-
+import { AddGroceryItemsParams } from "../../models/grocery.model";
 
 export const useAddGroceryItems = (
   options?: UseMutationOptions<void, Error, AddGroceryItemsParams>
@@ -10,4 +10,4 @@ export const useAddGroceryItems = (
       httpAddGroceryItem(listId, items),
     ...options,
   });
-}; 
+};
