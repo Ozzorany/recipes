@@ -3,6 +3,8 @@ const firebase = require("../firebase/db");
 const firestore = firebase.firestore();
 const COLLECTION = "recipe_sites";
 const cheerio = require("cheerio");
+const { JSDOM } = require("jsdom");
+const { Readability } = require("@mozilla/readability");
 const axios = require("axios");
 require("dotenv").config();
 
@@ -26,8 +28,11 @@ async function fetchRecipeSiteDataSelectors(url) {
 async function getRelevantHTML(url) {
   try {
     const { data: html } = await axios.get(url);
-    const $ = cheerio.load(html);
-    return $("body").html() || html;
+    const dom = new JSDOM(html, { url });
+    const reader = new Readability(dom.window.document);
+    const article = reader.parse();
+
+    return article?.textContent || "";
   } catch (e) {
     return "";
   }
