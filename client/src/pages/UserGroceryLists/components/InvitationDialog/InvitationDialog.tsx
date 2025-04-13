@@ -51,7 +51,15 @@ const InvitationDialog: React.FC<InvitationDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ textAlign: "center" }}>הזמנה - {listName}</DialogTitle>
+      <DialogTitle sx={{ textAlign: "center" }}>
+        הזמנה - {listName}
+        <Typography
+          variant="subtitle2"
+          sx={{ mt: 1, color: "text.secondary", fontWeight: 400 }}
+        >
+          שלחו את הקישור לחברים שברצונכם לצרף לרשימה
+        </Typography>
+      </DialogTitle>
       <DialogContent>
         <Box
           sx={{

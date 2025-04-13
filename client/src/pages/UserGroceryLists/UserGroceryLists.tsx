@@ -26,6 +26,9 @@ import {
   Stats,
   CardFooter,
   MenuButton,
+  MemberChip,
+  OwnershipChip,
+  SharedChip,
 } from "./UserGroceryLists.styles";
 
 const UserGroceryLists = () => {
@@ -166,13 +169,6 @@ const UserGroceryLists = () => {
                     >
                       הזמנת חבר
                     </MenuItem>
-                    <MenuItem
-                      onClick={(e) => {
-                        console.log("Edit", list.id);
-                      }}
-                    >
-                      עריכה
-                    </MenuItem>
 
                     <MenuItem
                       onClick={(e) => {
@@ -189,26 +185,19 @@ const UserGroceryLists = () => {
 
                 <Stats>
                   <span>{list.items?.length} פריטים</span>
-                  <Tooltip title={`${list.members?.length} חברים`}>
-                    <Badge badgeContent={list.members?.length} color="primary">
-                      <GroupIcon color="action" />
-                    </Badge>
-                  </Tooltip>
                 </Stats>
 
                 <CardFooter>
-                  <Chip
-                    label={list.isOwner ? "רשימה שלי" : "שותף איתי"}
-                    size="small"
-                    color={list.isOwner ? "primary" : "default"}
-                    sx={{
-                      fontWeight: 500,
-                      fontSize: "0.75rem",
-                      "& .MuiChip-label": {
-                        px: 1,
-                      },
-                    }}
+                  <MemberChip
+                    icon={<GroupIcon fontSize="small" />}
+                    label={`${(list.members?.length || 0) + 1} חברים`}
                   />
+
+                  {list.isOwner ? (
+                    <OwnershipChip label="רשימה שלי" size="small" />
+                  ) : (
+                    <SharedChip label="שותף איתי" size="small" />
+                  )}
                 </CardFooter>
               </StyledCard>
             ))}
