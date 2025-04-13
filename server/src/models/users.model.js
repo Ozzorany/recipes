@@ -11,9 +11,23 @@ async function createUser(user) {
   return user;
 }
 
-async function fetchUserById(userId) {
-  const userRef = await firestore.collection(COLLECTION).doc(userId).get();
-  return userRef.data();
+async function fetchUserById(userId, isFullData = true) {
+  const docRef = firestore.collection(COLLECTION).doc(userId);
+  const docSnap = await docRef.get();
+
+  if (!docSnap.exists) return null;
+
+  const data = docSnap.data();
+  if (!data) return null;
+
+  if (!isFullData) {
+    return {
+      displayName: data.displayName ?? "",
+      logo: data.logo ?? null,
+    };
+  }
+
+  return data;
 }
 
 async function updateFavoriteRecipes(userId, { recipeId }) {

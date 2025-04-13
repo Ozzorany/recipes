@@ -21,7 +21,7 @@ async function httpGetAllRecipes(): Promise<Recipe[]> {
     },
   });
 
-  return response?.data
+  return response?.data;
 }
 
 async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
@@ -31,7 +31,7 @@ async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
     },
   });
 
-  return response?.data?.data
+  return response?.data?.data;
 }
 
 async function httpSubmitRecipe(recipe: Recipe): Promise<string> {
@@ -84,7 +84,11 @@ async function httpCreateUser(user: User): Promise<any> {
 }
 
 async function httpGetUserById(userId: string): Promise<any> {
-  return axios.get(`${serverUrl}/users/details/${userId}`);
+  return axios.get(`${serverUrl}/users/details/${userId}`, {
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
 }
 
 async function httpGetUserLevel(): Promise<any> {
@@ -130,7 +134,7 @@ async function httpGetUserManagementGroups(): Promise<UserMnagementGroups> {
     },
   });
 
-  return response?.data
+  return response?.data;
 }
 
 async function httpUpdateFavoriteRecipes(recipeId: string): Promise<any> {
@@ -201,56 +205,73 @@ async function httpUpdateRecipeLikes(recipeId: string): Promise<any> {
   return response;
 }
 
-
 async function httpGetRecipeFromSite(url: string) {
-  const response = await axios.post<string>(`${serverUrl}/recipes/extract-recipe`, {
-    url,
-  });
+  const response = await axios.post<string>(
+    `${serverUrl}/recipes/extract-recipe`,
+    {
+      url,
+    }
+  );
 
   return response?.data;
 }
 
 async function httpUserFeatures(): Promise<any> {
   const response = await axios.get(`${serverUrl}/users/features`, {
-      headers: {
-        uid: auth.currentUser?.uid || "",
-      },
+    headers: {
+      uid: auth.currentUser?.uid || "",
+    },
+  });
+
+  return response?.data;
+}
+
+async function httpRecipeChatbotResponse(
+  message: string,
+  recipe: ChatBotRecipePayload
+): Promise<any> {
+  const response = await axios.post(
+    `${serverUrl}/recipes/recipe-chatbot-response`,
+    {
+      recipe,
+      message,
     }
   );
 
   return response?.data;
 }
 
-
-async function httpRecipeChatbotResponse(message: string, recipe: ChatBotRecipePayload): Promise<any> {
-  const response = await axios.post(`${serverUrl}/recipes/recipe-chatbot-response`, {
-      recipe, message
-    },
-    
-  );
-
-  return response?.data;
-}
-
-async function httpVoiceAssistantResponse(currentStep: string, allSteps: string[], question: string, recipe: Recipe): Promise<any> {
-  const response = await axios.post(`${serverUrl}/recipes/recipe-assistant-response`, {
-      recipe, currentStep, allSteps, question
+async function httpVoiceAssistantResponse(
+  currentStep: string,
+  allSteps: string[],
+  question: string,
+  recipe: Recipe
+): Promise<any> {
+  const response = await axios.post(
+    `${serverUrl}/recipes/recipe-assistant-response`,
+    {
+      recipe,
+      currentStep,
+      allSteps,
+      question,
     }
   );
 
   return response.data;
 }
 
-async function httpRecipeSteps(method: string,): Promise<any> {
+async function httpRecipeSteps(method: string): Promise<any> {
   const response = await axios.post(`${serverUrl}/recipes/recipe-steps`, {
-    method
-    },
-  );
+    method,
+  });
 
   return response?.data;
 }
 
-async function httpAddGroceryItem(listId: string, items: { name: string }[]): Promise<any> {
+async function httpAddGroceryItem(
+  listId: string,
+  items: { name: string }[]
+): Promise<any> {
   const response = await axios.post(
     `${serverUrl}/grocery/${listId}/items`,
     items,
@@ -263,7 +284,11 @@ async function httpAddGroceryItem(listId: string, items: { name: string }[]): Pr
   return response.data;
 }
 
-async function httpUpdateGroceryItem(listId: string, itemId: string, updates: any): Promise<any> {
+async function httpUpdateGroceryItem(
+  listId: string,
+  itemId: string,
+  updates: any
+): Promise<any> {
   const response = await axios.put(
     `${serverUrl}/grocery/${listId}/items/${itemId}`,
     updates,
@@ -276,16 +301,25 @@ async function httpUpdateGroceryItem(listId: string, itemId: string, updates: an
   return response.data;
 }
 
-async function httpDeleteGroceryItem(listId: string, itemId: string): Promise<any> {
-  const response = await axios.delete(`${serverUrl}/grocery/${listId}/items/${itemId}`, {
-    headers: {
-      uid: auth.currentUser?.uid || "",
-    },
-  });
+async function httpDeleteGroceryItem(
+  listId: string,
+  itemId: string
+): Promise<any> {
+  const response = await axios.delete(
+    `${serverUrl}/grocery/${listId}/items/${itemId}`,
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
   return response.data;
 }
 
-async function httpCreateGroceryList(data: { name: string; members?: string[] }) {
+async function httpCreateGroceryList(data: {
+  name: string;
+  members?: string[];
+}) {
   const response = await axios.post(`${serverUrl}/grocery/create-list`, data, {
     headers: {
       uid: auth.currentUser?.uid || "",
@@ -343,7 +377,6 @@ async function httpExtractGroceryItems(recipe: Recipe): Promise<any> {
   return response.data.data;
 }
 
-
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -377,5 +410,5 @@ export {
   httpGetUserGroceryLists,
   httpGenerateGroceryInvitationLink,
   httpJoinGroceryList,
-  httpExtractGroceryItems
+  httpExtractGroceryItems,
 };

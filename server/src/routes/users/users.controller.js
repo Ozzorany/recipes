@@ -23,9 +23,17 @@ async function httpCreateUser(req, res) {
 
 async function httpGetUserId(req, res) {
   logger.info("httpGetUserId | GET");
+  const currentUserId = req.headers["uid"];
+  if (!currentUserId)
+    return res
+      .status(400)
+      .json({ ok: false, error: "Missing user ID in headers" });
+
+  const userId = req?.params?.id || "";
+
   try {
-    const recipe = await fetchUserById(req?.params?.id || "");
-    res.status(200).json(recipe);
+    const user = await fetchUserById(userId, currentUserId === userId);
+    res.status(200).json(user);
   } catch (error) {
     logger.error("httpGetUserId  | ERROR", error);
     res.status(400);
