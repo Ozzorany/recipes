@@ -17,6 +17,7 @@ const fs = require("fs");
 const path = require("path");
 
 const winston = require("winston");
+const RecipeRouterAgent = require("../../agents/recipeRouterAgent");
 
 const logger = winston.createLogger({
   level: "info",
@@ -172,6 +173,22 @@ async function httpRecipeSteps(req, res) {
   res.status(200).json(response.data);
 }
 
+async function httpRecipeGeneratorHelper(req, res) {
+  try {
+    const { input } = req.body;
+
+    if (!input) {
+      return res.status(400).json({ error: "חסרה בקשה" });
+    }
+
+    const recipe = await RecipeRouterAgent(input);
+    return res.status(200).json(recipe);
+  } catch (error) {
+    return res.status(500).json({
+      error: "אירעה שגיאה בעת יצירת המתכון",
+    });
+  }
+}
 module.exports = {
   httpGetAllRecipes,
   httpUpdateRecipe,
@@ -184,4 +201,5 @@ module.exports = {
   httpRecipeChatBotResponseRecipe,
   httpAssistantResponse,
   httpRecipeSteps,
+  httpRecipeGeneratorHelper,
 };

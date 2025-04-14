@@ -18,9 +18,11 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useUpdateRecipe } from "../queries/mutations/useUpdateRecipe";
 import PhotoFilterIcon from "@mui/icons-material/PhotoFilter";
 import GenerateRecipeFromSiteDialog from "./RecipePage/components/GenerateRecipeFromSiteDialog/GenerateRecipeFromSiteDialog";
-import { IconButton, useTheme } from "@mui/material";
+import { Fab, IconButton, useTheme } from "@mui/material";
 import { useUserFeatures } from "../queries/useUserFeatures";
 import { USER_FEATURES } from "../models/user.model";
+import GenerateRecipeAssistantDialog from "./GenerateRecipeAssistantDialog/GenerateRecipeAssistantDialog";
+import AssistantIcon from "@mui/icons-material/Assistant";
 
 function CreateRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -33,6 +35,7 @@ function CreateRecipe() {
     useState(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isImageRemoved, setIsImageRemoved] = useState<boolean>(false);
+  const [openAssistantDialog, setOpenAssistantDialog] = useState(false);
   const { data: userGroups } = useGroups();
   const ingredientRef = useRef<any>(null);
   const methodRef = useRef<any>(null);
@@ -318,6 +321,44 @@ function CreateRecipe() {
               })
             );
           }
+        }}
+      />
+
+      {!isEdit && (
+        <Fab
+          color="info"
+          aria-label="assistant"
+          onClick={() => setOpenAssistantDialog(true)}
+          sx={{
+            position: "fixed",
+            bottom: 25,
+            left: 25,
+            zIndex: 1200,
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText, // icon color
+            boxShadow: `0px 4px 20px ${theme.palette.primary.main}66`,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.dark,
+              boxShadow: `0px 0px 20px 4px ${theme.palette.primary.main}`,
+            },
+          }}
+        >
+          <AssistantIcon />
+        </Fab>
+      )}
+
+      <GenerateRecipeAssistantDialog
+        open={openAssistantDialog}
+        setOpen={setOpenAssistantDialog}
+        onRecipeGenerated={(recipe: SiteRecipe) => {
+          methodRef.current.value = recipe.method;
+          descriptionRef.current.value = recipe.title;
+          setIngredients(
+            recipe.ingredients.map((ing) => ({
+              id: uuidv4(),
+              description: ing,
+            }))
+          );
         }}
       />
     </>

@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ChatBotRecipePayload, Recipe } from "../models/recipe.model";
+import {
+  ChatBotRecipePayload,
+  Recipe,
+  SiteRecipe,
+} from "../models/recipe.model";
 import { User } from "../models/user.model";
 import { auth } from "../utils/firebase.utils";
 import { UserMnagementGroups } from "../models/groups.model";
@@ -377,6 +381,20 @@ async function httpExtractGroceryItems(recipe: Recipe): Promise<any> {
   return response.data.data;
 }
 
+async function httpGenerateRecipeAssistant(input: string): Promise<SiteRecipe> {
+  const response = await axios.post<{ ok: boolean; data: SiteRecipe }>(
+    `${serverUrl}/recipes/recipe-generator-helper`,
+    { input },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+
+  return response.data?.data;
+}
+
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -411,4 +429,5 @@ export {
   httpGenerateGroceryInvitationLink,
   httpJoinGroceryList,
   httpExtractGroceryItems,
+  httpGenerateRecipeAssistant,
 };
