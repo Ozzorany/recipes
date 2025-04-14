@@ -382,17 +382,36 @@ async function httpExtractGroceryItems(recipe: Recipe): Promise<any> {
 }
 
 async function httpGenerateRecipeAssistant(input: string): Promise<SiteRecipe> {
-  const response = await axios.post<{ ok: boolean; data: SiteRecipe }>(
-    `${serverUrl}/recipes/recipe-generator-helper`,
-    { input },
-    {
-      headers: {
-        uid: auth.currentUser?.uid || "",
-      },
-    }
-  );
+  try {
+    const response = await axios.post<{
+      ok: boolean;
+      data: SiteRecipe | string;
+    }>(
+      `${serverUrl}/recipes/recipe-generator-helper`,
+      { input },
+      {
+        headers: {
+          uid: auth.currentUser?.uid || "",
+        },
+      }
+    );
 
-  return response.data?.data;
+    const { ok, data } = response.data;
+
+    if (!ok) {
+      throw new Error(
+        typeof data === "string" ? data : "התרחשה שגיאה בלתי צפויה"
+      );
+    }
+
+    return data as SiteRecipe;
+  } catch (error: any) {
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("שגיאה לא צפויה. נסו שוב מאוחר יותר");
+  }
 }
 
 export {
