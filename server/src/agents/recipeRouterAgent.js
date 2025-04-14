@@ -59,7 +59,7 @@ const functionHandlers = {
 async function RecipeRouterAgent(input) {
   try {
     const { choices } = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo-1106",
       temperature: 0,
       messages: [
         {
