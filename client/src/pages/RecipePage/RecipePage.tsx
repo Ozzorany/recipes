@@ -108,22 +108,24 @@ function RecipePage() {
             ))}
           </TagList>
 
-          <Box sx={{ mt: 2, mb: 2 }}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: theme.palette.text.secondary,
-                mb: 1,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <GroupIcon fontSize="small" />
-              קבוצות משותפות
-            </Typography>
-            <GroupsDisplay groups={recipe?.sharedGroups || []} />
-          </Box>
+          {recipe?.sharedGroups?.length > 0 && (
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  mb: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <GroupIcon fontSize="small" />
+                קבוצות משותפות
+              </Typography>
+              <GroupsDisplay groups={recipe?.sharedGroups || []} />
+            </Box>
+          )}
 
           <IngredientsTitleWrapper>
             <Typography
