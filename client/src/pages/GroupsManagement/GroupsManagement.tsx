@@ -4,9 +4,17 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import GroupIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
-import { Badge, IconButton, Snackbar, Typography } from "@mui/material";
+import {
+  Badge,
+  IconButton,
+  Snackbar,
+  Typography,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -42,6 +50,8 @@ export default function GroupsManagement() {
   const [openCreateGroupDialog, setOpenCreateGroupDialog] =
     React.useState<boolean>(false);
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuGroupId, setMenuGroupId] = React.useState<string>("");
   const {
     data: userGroups,
     refetch,
@@ -127,6 +137,39 @@ export default function GroupsManagement() {
     setOpenCreateGroupDialog(true);
   };
 
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    groupId: string
+  ) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setMenuGroupId(groupId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setMenuGroupId("");
+  };
+
+  const handleEditClick = (
+    event: React.MouseEvent<HTMLElement>,
+    groupId: string,
+    groupName: string
+  ) => {
+    event.stopPropagation();
+    handleEditGroupName(event, groupId, groupName);
+    handleMenuClose();
+  };
+
+  const handleDeleteClick = (
+    event: React.MouseEvent<HTMLElement>,
+    groupId: string
+  ) => {
+    event.stopPropagation();
+    handleOpenDeleteApprovalDialog(event, groupId);
+    handleMenuClose();
+  };
+
   if (isUserGroupsLoading) {
     return (
       <div
@@ -203,11 +246,8 @@ export default function GroupsManagement() {
           }
         >
           {managedGroups?.map((group: any) => (
-            <div>
-              <ListItemButton
-                key={group.id}
-                onClick={() => handleClick(group.id)}
-              >
+            <div key={group.id}>
+              <ListItemButton onClick={() => handleClick(group.id)}>
                 <ListItemIcon>
                   <StyledBadge
                     color="primary"
@@ -228,23 +268,30 @@ export default function GroupsManagement() {
                     </div>
                   }
                 />
-                <div className={styles.actions}>
-                  <IconButton
-                    onClick={(event) =>
-                      handleEditGroupName(event, group.id, group.name)
-                    }
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    onClick={(event) =>
-                      handleOpenDeleteApprovalDialog(event, group.id)
-                    }
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </div>
+                <IconButton
+                  onClick={(event) => handleMenuClick(event, group.id)}
+                  size="small"
+                >
+                  <MoreVertIcon />
+                </IconButton>
               </ListItemButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl) && menuGroupId === group.id}
+                onClose={handleMenuClose}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MenuItem
+                  onClick={(e) => handleEditClick(e, group.id, group.name)}
+                >
+                  <EditIcon fontSize="small" sx={{ mr: 1 }} />
+                  עריכה
+                </MenuItem>
+                <MenuItem onClick={(e) => handleDeleteClick(e, group.id)}>
+                  <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+                  מחיקה
+                </MenuItem>
+              </Menu>
               <Collapse in={open[group.id]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {group?.users?.map((user: any) => (
