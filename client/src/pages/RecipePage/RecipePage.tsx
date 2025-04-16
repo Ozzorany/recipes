@@ -157,7 +157,11 @@ function RecipePage() {
             {ingredients?.map((ingredient: string, index: number) => (
               <FormControlLabel
                 key={index}
-                sx={{ color: theme.palette.text.primary }}
+                sx={{
+                  color: theme.palette.text.primary,
+                  textAlign: "left",
+                  direction: "ltr",
+                }}
                 control={
                   <Checkbox sx={{ color: theme.palette.primary.main }} />
                 }
