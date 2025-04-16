@@ -14,7 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import { httpRecipeSteps } from "../../../../hooks/requests";
-import { Recipe } from "../../../../models/recipe.model";
+import { RecipeResponsePayload } from "../../../../models/recipe.model";
 import { useVoiceAssistantResponse } from "../../../../queries/mutations/useVoiceAssistantResponse";
 
 const pulse = keyframes`
@@ -24,7 +24,7 @@ const pulse = keyframes`
 `;
 
 interface RecipeAssistantProps {
-  recipe: Recipe;
+  recipe: RecipeResponsePayload;
   open: boolean;
   onClose: () => void;
 }

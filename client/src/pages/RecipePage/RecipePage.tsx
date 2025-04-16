@@ -20,6 +20,7 @@ import noImagePath from "../../assets/images/recipe-book.jpg";
 import MicIcon from "@mui/icons-material/Mic";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import GroupIcon from "@mui/icons-material/Group";
 
 import {
   CopyIngredientsWrapper,
@@ -36,6 +37,7 @@ import { useUserFeatures } from "../../queries/useUserFeatures";
 import { USER_FEATURES } from "../../models/user.model";
 import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
 import GroceryListExtractor from "./components/GroceryListExtractor/GroceryListExtractor";
+import GroupsDisplay from "./components/GroupsDisplay/GroupsDisplay";
 
 function RecipePage() {
   const params = useParams();
@@ -105,6 +107,23 @@ function RecipePage() {
               />
             ))}
           </TagList>
+
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: theme.palette.text.secondary,
+                mb: 1,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <GroupIcon fontSize="small" />
+              קבוצות משותפות
+            </Typography>
+            <GroupsDisplay groups={recipe?.sharedGroups || []} />
+          </Box>
 
           <IngredientsTitleWrapper>
             <Typography

@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   ChatBotRecipePayload,
   Recipe,
+  RecipeResponsePayload,
   SiteRecipe,
 } from "../models/recipe.model";
 import { User } from "../models/user.model";
@@ -28,7 +29,9 @@ async function httpGetAllRecipes(): Promise<Recipe[]> {
   return response?.data;
 }
 
-async function httpGetRecipesById(recipeId: string): Promise<Recipe> {
+async function httpGetRecipesById(
+  recipeId: string
+): Promise<RecipeResponsePayload> {
   const response = await axios.get(`${serverUrl}/recipes/${recipeId}`, {
     headers: {
       uid: auth.currentUser?.uid || "",
@@ -249,7 +252,7 @@ async function httpVoiceAssistantResponse(
   currentStep: string,
   allSteps: string[],
   question: string,
-  recipe: Recipe
+  recipe: RecipeResponsePayload
 ): Promise<any> {
   const response = await axios.post(
     `${serverUrl}/recipes/recipe-assistant-response`,
@@ -374,7 +377,9 @@ async function httpJoinGroceryList(token: string): Promise<any> {
     }
   );
 }
-async function httpExtractGroceryItems(recipe: Recipe): Promise<any> {
+async function httpExtractGroceryItems(
+  recipe: RecipeResponsePayload
+): Promise<any> {
   const response = await axios.post(`${serverUrl}/grocery/extract-items`, {
     recipe,
   });

@@ -1,37 +1,27 @@
-import React, { useState } from "react";
-import {
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Badge,
-  Button,
-  Box,
-  Chip,
-} from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import GroupIcon from "@mui/icons-material/Group";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Box, Button, Menu, MenuItem, Typography } from "@mui/material";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateGroceryListDialog from "./components/CreateGroceryListDialog/CreateGroceryListDialog";
 import { useDeleteGroceryListMutation } from "../../queries/mutations/useDeleteGroceryListMutation";
 import { useRemoveUserFromGroceryList } from "../../queries/mutations/useRemoveUserFromGroceryList";
 import { useUserGroceryLists } from "../../queries/useUserGroceryLists";
+import { auth } from "../../utils/firebase.utils";
+import CreateGroceryListDialog from "./components/CreateGroceryListDialog/CreateGroceryListDialog";
 import GroceryListSkeleton from "./components/GroceryListSkeleton/GroceryListSkeleton";
 import InvitationDialog from "./components/InvitationDialog/InvitationDialog";
 import {
-  PageWrapper,
+  CardFooter,
   GridContainer,
+  MemberChip,
+  MenuButton,
+  OwnershipChip,
+  PageWrapper,
+  SharedChip,
+  Stats,
   StyledCard,
   Title,
-  Stats,
-  CardFooter,
-  MenuButton,
-  MemberChip,
-  OwnershipChip,
-  SharedChip,
 } from "./UserGroceryLists.styles";
-import { auth } from "../../utils/firebase.utils";
 
 const UserGroceryLists = () => {
   const navigate = useNavigate();

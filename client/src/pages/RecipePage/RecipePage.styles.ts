@@ -15,42 +15,34 @@ export const Spinner = styled("div")({
   height: "70vh",
 });
 
-export const PageCard = styled("div")(({ theme }) => ({
-  background: theme.palette.background.paper,
-  padding: "24px",
-  borderRadius: "16px",
-  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
-  maxWidth: "800px",
-  margin: "0 auto",
-  width: "100%",
-}));
+export const PageCard = styled(Box)`
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+`;
 
-export const TitleWrapper = styled("div")({
-  display: "flex",
-  justifyContent: "start",
-  gap: "8px",
-  alignItems: "center",
-});
+export const TitleWrapper = styled(Box)`
+  margin-bottom: 20px;
+`;
 
 export const Title = styled(Typography)({
   fontWeight: 700,
 });
 
-export const IngredientsTitleWrapper = styled("div")({
-  display: "flex",
-  justifyContent: "start",
-  gap: "8px",
-  alignItems: "center",
-  marginTop: "24px",
-});
+export const IngredientsTitleWrapper = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
 
 export const IngredientsTitle = styled(Typography)({
   fontWeight: 600,
 });
 
-export const CopyIngredientsWrapper = styled("div")({
-  cursor: "pointer",
-});
+export const CopyIngredientsWrapper = styled(Box)`
+  cursor: pointer;
+`;
 
 export const IngredientsList = styled("div")({
   marginTop: "12px",
@@ -82,9 +74,15 @@ export const RecipeImage = styled(Box)({
   objectFit: "cover",
 });
 
-export const TagList = styled("div")({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "8px",
-  marginTop: "16px",
-});
+export const TagList = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+`;
+
+export const GroupsWrapper = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+`;

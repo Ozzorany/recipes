@@ -1,3 +1,20 @@
+import { RecipeGroupProps } from "./groups.model";
+
+export interface RecipeResponsePayload {
+  id: string;
+  description: string;
+  method: string;
+  ingredients: string[];
+  tags: string[];
+  image: string;
+  creatorId: string;
+  sharedGroups: RecipeGroupProps[];
+  isDeleted: boolean;
+  likes: string[];
+  createdAt?: Date;
+  lastUpdatedAt?: Date;
+}
+
 export interface Recipe {
   id: string;
   description: string;

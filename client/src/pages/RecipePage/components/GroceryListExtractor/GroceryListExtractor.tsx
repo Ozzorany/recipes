@@ -22,7 +22,7 @@ import { useTheme } from "@mui/material/styles";
 import { useGroceryLists } from "../../../../queries/useGroceryLists";
 import { useExtractGroceryItems } from "../../../../queries/mutations/useExtractGroceryItems";
 import { useAddGroceryItems } from "../../../../queries/mutations/useAddGroceryItems";
-import { Recipe } from "../../../../models/recipe.model";
+import { RecipeResponsePayload } from "../../../../models/recipe.model";
 import { NewSelectedGroceryItem } from "../../../../models/grocery.model";
 import { useCreateGroceryListMutation } from "../../../../queries/mutations/useCreateGroceryListMutation";
 import { Add, Remove } from "@mui/icons-material";
@@ -31,7 +31,7 @@ import { styles } from "./GroceryListExtractor.styles";
 interface GroceryListExtractorProps {
   open: boolean;
   onClose: () => void;
-  recipe: Recipe;
+  recipe: RecipeResponsePayload;
 }
 
 const GroceryListExtractor: React.FC<GroceryListExtractorProps> = ({
