@@ -8,6 +8,7 @@ const {
   removeGroceryItem,
   fetchUserGroceryLists,
   fetchGroceryListById,
+  removeUserFromGroceryList,
 } = require("../../models/grocery.model");
 const jwt = require("jsonwebtoken");
 const { generateOpenAiRequest } = require("../../models/openai.model");
@@ -248,6 +249,40 @@ async function httpExtractGroceryItems(req, res) {
   }
 }
 
+// Controller to remove a user from a grocery list
+async function httpRemoveUserFromGroceryList(req, res) {
+  try {
+    const currentUserId = req.headers["uid"];
+    const listId = req.params.listId;
+    const userId = req.params.userId;
+
+    if (!currentUserId) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "Missing user ID in headers" });
+    }
+
+    // If trying to remove another user, check if current user is the owner
+    if (currentUserId !== userId) {
+      const list = await fetchGroceryListById(listId);
+      if (!list) {
+        return res.status(404).json({ ok: false, error: "List not found" });
+      }
+      if (list.ownerId !== currentUserId) {
+        return res.status(403).json({
+          ok: false,
+          error: "Only the list owner can remove other users",
+        });
+      }
+    }
+
+    await removeUserFromGroceryList(listId, userId);
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    res.status(400).json({ ok: false, error: error.message });
+  }
+}
+
 module.exports = {
   httpCreateGroceryList,
   httpEditGroceryList,
@@ -260,4 +295,5 @@ module.exports = {
   httpGenerateGroceryInvitation,
   httpJoinGroceryList,
   httpExtractGroceryItems,
+  httpRemoveUserFromGroceryList,
 };

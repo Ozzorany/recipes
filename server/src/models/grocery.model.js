@@ -223,6 +223,29 @@ async function fetchGroceryListById(listId) {
   };
 }
 
+/**
+ * Remove a user from a grocery list
+ * @param {string} listId
+ * @param {string} userId
+ */
+async function removeUserFromGroceryList(listId, userId) {
+  const ref = firestore.collection(GROCERY_LISTS).doc(listId);
+  const doc = await ref.get();
+  if (!doc.exists) throw new Error("List not found");
+
+  const data = doc.data();
+  if (!data?.members.includes(userId)) {
+    throw new Error("User is not a member of this list");
+  }
+
+  // Remove user from members array
+  await ref.update({
+    members: data.members.filter((memberId) => memberId !== userId),
+    updatedAt: new Date(),
+  });
+  return true;
+}
+
 module.exports = {
   createGroceryList,
   addUserToGroceryList,
@@ -233,4 +256,5 @@ module.exports = {
   editGroceryItem,
   fetchUserGroceryLists,
   fetchGroceryListById,
+  removeUserFromGroceryList,
 };

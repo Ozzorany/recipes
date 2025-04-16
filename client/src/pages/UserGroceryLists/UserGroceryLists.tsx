@@ -15,6 +15,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
 import CreateGroceryListDialog from "./components/CreateGroceryListDialog/CreateGroceryListDialog";
 import { useDeleteGroceryListMutation } from "../../queries/mutations/useDeleteGroceryListMutation";
+import { useRemoveUserFromGroceryList } from "../../queries/mutations/useRemoveUserFromGroceryList";
 import { useUserGroceryLists } from "../../queries/useUserGroceryLists";
 import GroceryListSkeleton from "./components/GroceryListSkeleton/GroceryListSkeleton";
 import InvitationDialog from "./components/InvitationDialog/InvitationDialog";
@@ -30,6 +31,7 @@ import {
   OwnershipChip,
   SharedChip,
 } from "./UserGroceryLists.styles";
+import { auth } from "../../utils/firebase.utils";
 
 const UserGroceryLists = () => {
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ const UserGroceryLists = () => {
     Record<string, HTMLElement | null>
   >({});
   const deleteListMutation = useDeleteGroceryListMutation();
+  const removeUserMutation = useRemoveUserFromGroceryList();
   const { data: lists = [], isPending: isListLoading } = useUserGroceryLists();
 
   const handleMenuOpen = (
@@ -64,6 +67,17 @@ const UserGroceryLists = () => {
     });
   };
 
+  const handleLeaveList = (listId: string) => {
+    removeUserMutation.mutate(
+      { listId, userId: auth.currentUser?.uid || "" },
+      {
+        onSuccess: () => {
+          handleMenuClose(listId);
+        },
+      }
+    );
+  };
+
   const handleInviteClick = (listId: string, listName: string) => {
     setSelectedList({ id: listId, name: listName });
     setInvitationDialogOpen(true);
@@ -76,6 +90,7 @@ const UserGroceryLists = () => {
         <Box
           display="flex"
           justifyContent="center"
+          flexDirection="column"
           alignItems="center"
           flexWrap="wrap"
           mb={3}
@@ -144,42 +159,50 @@ const UserGroceryLists = () => {
                 sx={{ cursor: "pointer" }}
                 onClick={() => navigate(`/grocery-list/${list.id}`)}
               >
-                {list.isOwner && (
-                  <MenuButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMenuOpen(e, list.id);
-                    }}
-                  >
-                    <MoreVertIcon />
-                  </MenuButton>
-                )}
-                {list.isOwner && (
-                  <Menu
-                    anchorEl={anchorEls[list.id]}
-                    open={Boolean(anchorEls[list.id])}
-                    onClose={() => handleMenuClose(list.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                <MenuButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMenuOpen(e, list.id);
+                  }}
+                >
+                  <MoreVertIcon />
+                </MenuButton>
+                <Menu
+                  anchorEl={anchorEls[list.id]}
+                  open={Boolean(anchorEls[list.id])}
+                  onClose={() => handleMenuClose(list.id)}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {list.isOwner ? (
+                    <>
+                      <MenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleInviteClick(list.id, list.name);
+                        }}
+                      >
+                        הזמנת חבר
+                      </MenuItem>
+                      <MenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteList(list.id);
+                        }}
+                      >
+                        מחיקה
+                      </MenuItem>
+                    </>
+                  ) : (
                     <MenuItem
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleInviteClick(list.id, list.name);
+                        handleLeaveList(list.id);
                       }}
                     >
-                      הזמנת חבר
+                      צאו מהרשימה
                     </MenuItem>
-
-                    <MenuItem
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteList(list.id);
-                      }}
-                    >
-                      מחיקה
-                    </MenuItem>
-                  </Menu>
-                )}
+                  )}
+                </Menu>
 
                 <Title>{list.name}</Title>
 

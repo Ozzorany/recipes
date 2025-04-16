@@ -414,6 +414,21 @@ async function httpGenerateRecipeAssistant(input: string): Promise<SiteRecipe> {
   }
 }
 
+async function httpRemoveUserFromGroceryList(
+  listId: string,
+  userId: string
+): Promise<any> {
+  const response = await axios.delete(
+    `${serverUrl}/grocery/${listId}/remove-user/${userId}`,
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
+  return response.data;
+}
+
 export {
   httpGetHealthCheck,
   httpGetAllRecipes,
@@ -449,4 +464,5 @@ export {
   httpJoinGroceryList,
   httpExtractGroceryItems,
   httpGenerateRecipeAssistant,
+  httpRemoveUserFromGroceryList,
 };

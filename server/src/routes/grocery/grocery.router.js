@@ -11,6 +11,7 @@ const {
   httpGenerateGroceryInvitation,
   httpJoinGroceryList,
   httpExtractGroceryItems,
+  httpRemoveUserFromGroceryList,
 } = require("./grocery.controller");
 
 const groceryRouter = express.Router();
@@ -26,6 +27,10 @@ groceryRouter.post(
   httpGenerateGroceryInvitation
 );
 groceryRouter.post("/join", httpJoinGroceryList);
+groceryRouter.delete(
+  "/:listId/remove-user/:userId",
+  httpRemoveUserFromGroceryList
+);
 
 // Grocery item routes
 groceryRouter.post("/:listId/items", httpAddGroceryItems);
