@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Tooltip, Fade, useTheme, Box, Typography } from "@mui/material";
-import GroupIcon from "@mui/icons-material/Group";
 import { RecipeGroupProps } from "../../../../models/groups.model";
 import { GroupsContainer, GroupChip } from "./GroupsDisplay.styles";
 
@@ -60,14 +59,15 @@ function GroupsDisplay({ groups }: GroupsDisplayProps) {
             slots={{ transition: Fade }}
           >
             <GroupChip
-              icon={<GroupIcon />}
               label={group.name}
               size="small"
               sx={{
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.secondary.main,
+                color: theme.palette.primary.contrastText,
+                backgroundColor: theme.palette.primary.main,
+                border: `1px solid ${theme.palette.primary.dark}`,
                 "&:hover": {
-                  backgroundColor: theme.palette.secondary.dark,
+                  backgroundColor: theme.palette.primary.dark,
+                  border: `1px solid ${theme.palette.primary.dark}`,
                 },
                 maxWidth: "200px",
                 "& .MuiChip-label": {
@@ -112,10 +112,12 @@ function GroupsDisplay({ groups }: GroupsDisplayProps) {
                 size="small"
                 onClick={() => setOpen(!open)}
                 sx={{
-                  color: theme.palette.text.primary,
-                  backgroundColor: theme.palette.secondary.light,
+                  color: theme.palette.secondary.contrastText,
+                  backgroundColor: theme.palette.secondary.main,
+                  border: `1px solid ${theme.palette.secondary.dark}`,
                   "&:hover": {
-                    backgroundColor: theme.palette.secondary.main,
+                    backgroundColor: theme.palette.secondary.dark,
+                    border: `1px solid ${theme.palette.secondary.dark}`,
                   },
                 }}
               />
