@@ -1,5 +1,11 @@
 import { styled } from "@mui/system";
-import { Box, Typography, ListItem, ListItemText, Container } from "@mui/material";
+import {
+  Box,
+  Typography,
+  ListItem,
+  ListItemText,
+  Container,
+} from "@mui/material";
 
 export const PageContainer = styled(Container)(({ theme }) => ({
   paddingTop: theme.spacing(4),
@@ -8,7 +14,6 @@ export const PageContainer = styled(Container)(({ theme }) => ({
 
 export const Header = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  marginBottom: theme.spacing(3),
 }));
 
 export const AddItemSection = styled(Box)(({ theme }) => ({

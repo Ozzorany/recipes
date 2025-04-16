@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Typography,
   List,
@@ -15,15 +15,16 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
-import { Add, Delete, Remove } from "@mui/icons-material";
+import { Add, Delete, Remove, ArrowForward } from "@mui/icons-material";
 import {
   doc,
   onSnapshot,
   collection,
   query,
   orderBy,
+  getDoc,
 } from "firebase/firestore";
-import { db } from "../../utils/firebase.utils";
+import { db, auth } from "../../utils/firebase.utils";
 import {
   useAddGroceryItemMutation,
   useUpdateGroceryItemMutation,
@@ -69,6 +70,7 @@ const CATEGORIES = [
 
 const GroceryListPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [list, setList] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [newItemName, setNewItemName] = useState("");
@@ -84,30 +86,64 @@ const GroceryListPage = () => {
   useEffect(() => {
     if (!id) return;
 
-    const listRef = doc(db, "grocery_lists", id);
-    const itemsRef = collection(db, "grocery_lists", id, "items");
-
-    const unsubList = onSnapshot(listRef, (docSnap) => {
-      setList({ id: docSnap.id, ...docSnap.data() });
-      setIsLoading(false);
-    });
-
-    const unsubItems = onSnapshot(
-      query(itemsRef, orderBy("name")),
-      (snapshot) => {
-        const itemsArr = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setItems(itemsArr);
+    const checkAccess = async () => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        navigate("/login");
+        return false;
       }
-    );
 
-    return () => {
-      unsubList();
-      unsubItems();
+      const listRef = doc(db, "grocery_lists", id);
+      const listDoc = await getDoc(listRef);
+
+      if (!listDoc.exists()) {
+        navigate("/grocery-lists");
+        return false;
+      }
+
+      const listData = listDoc.data();
+      const isOwner = listData.ownerId === currentUser.uid;
+      const isMember = listData.members?.includes(currentUser.uid);
+
+      if (!isOwner && !isMember) {
+        navigate("/grocery-lists");
+        return false;
+      }
+
+      return true;
     };
-  }, [id]);
+
+    const setupListeners = async () => {
+      const hasAccess = await checkAccess();
+      if (!hasAccess) return;
+
+      const listRef = doc(db, "grocery_lists", id);
+      const itemsRef = collection(db, "grocery_lists", id, "items");
+
+      const unsubList = onSnapshot(listRef, (docSnap) => {
+        setList({ id: docSnap.id, ...docSnap.data() });
+        setIsLoading(false);
+      });
+
+      const unsubItems = onSnapshot(
+        query(itemsRef, orderBy("name")),
+        (snapshot) => {
+          const itemsArr = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setItems(itemsArr);
+        }
+      );
+
+      return () => {
+        unsubList();
+        unsubItems();
+      };
+    };
+
+    setupListeners();
+  }, [id, navigate]);
 
   const handleAddItem = (value: string | null) => {
     if (!value) return;
@@ -172,7 +208,18 @@ const GroceryListPage = () => {
 
   return (
     <PageContainer>
-      <Header variant="h4">{list?.name}</Header>
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={2}
+        mb={2}
+        alignContent="center"
+      >
+        <IconButton onClick={() => navigate("/grocery-lists")}>
+          <ArrowForward />
+        </IconButton>
+        <Header variant="h4">{list?.name}</Header>
+      </Box>
 
       <AddItemSection>
         <Autocomplete
