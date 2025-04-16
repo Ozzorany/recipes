@@ -70,6 +70,7 @@ function CreateRecipe() {
       if (isEdit) {
         descriptionRef.current.value = editRecipe.description;
         methodRef.current.value = editRecipe.method;
+        setGroups(() => editRecipe.sharedGroups || []);
         setTags(() => editRecipe.tags);
         setIngredients(() =>
           editRecipe.ingredients.map((ingredient) => {
