@@ -30,6 +30,7 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.4.0",
     "react-chatbot-kit": "^2.2.2",
+    "react-confetti": "^6.4.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.3.0",
