@@ -47,6 +47,7 @@ import {
   EditItemBox,
 } from "./GroceryListPage.styles";
 import GroceryListSkeleton from "./GroceryListSkeleton";
+import { CATEGORY_COLORS } from "./GroceryListPage.helper";
 
 const CATEGORIES = [
   "פירות",
@@ -308,9 +309,26 @@ const GroceryListPage = () => {
           {/* Render unchecked items grouped by category */}
           {sortedCategories.map((category) => (
             <React.Fragment key={category}>
-              <Typography variant="h6" sx={{ mt: 2, mb: 1, px: 2 }}>
-                {category}
-              </Typography>
+              <Box
+                sx={{
+                  backgroundColor: CATEGORY_COLORS[category] || "#eeeeee",
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.5,
+                  mx: 2,
+                  mt: 3,
+                  mb: 1,
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  fontWeight="bold"
+                  sx={{ color: "#333" }}
+                >
+                  {category}
+                </Typography>
+              </Box>
+
               {groupedItems[category].map((item: GroceryItem) => (
                 <React.Fragment key={item.id}>
                   {editingItemId === item.id ? (
@@ -417,17 +435,24 @@ const GroceryListPage = () => {
             <>
               <Box
                 sx={{
+                  backgroundColor: "#D7CCC8",
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.5,
+                  mx: 2,
+                  mt: 3,
+                  mb: 1,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  mt: 2,
-                  mb: 1,
-                  px: 2,
+                  gap: 1,
                 }}
               >
-                <ShoppingCart sx={{ mr: 1 }} />
-                <Typography variant="h6">כבר בסל</Typography>
+                <ShoppingCart />
+                <Typography variant="subtitle1" fontWeight="bold">
+                  כבר בסל
+                </Typography>
               </Box>
+
               {checked.map((item) => (
                 <React.Fragment key={item.id}>
                   {editingItemId === item.id ? (
