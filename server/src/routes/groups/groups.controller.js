@@ -8,6 +8,7 @@ const {
   deleteGroup,
 } = require("../../models/groups.model");
 const jwt = require("jsonwebtoken");
+const { removeGroupFromRecipes } = require("../../models/recipe.model");
 
 const winston = require("winston");
 const { deleteGroupFromUsers } = require("../../models/users.model");
@@ -53,7 +54,7 @@ async function httpGenerateInvitation(req, res) {
   // @ts-ignore
   const { secretKey } = JSON.parse(process.env.JWT_SECRET_KEY);
   // expired in 10 minutes
-  const token = jwt.sign({ groupId }, secretKey, { expiresIn: 600  });
+  const token = jwt.sign({ groupId }, secretKey, { expiresIn: 600 });
 
   logger.info("httpGenerateInvitation | GET");
   try {
@@ -95,7 +96,11 @@ async function httpCreateGroup(req, res) {
 
 async function httpDeleteGroup(req, res) {
   const { groupId } = req.body || {};
-  await Promise.all([deleteGroup(groupId), deleteGroupFromUsers(groupId)]);
+  await Promise.all([
+    deleteGroup(groupId),
+    deleteGroupFromUsers(groupId),
+    removeGroupFromRecipes(groupId),
+  ]);
 
   res.status(200).json({ ok: true });
 }

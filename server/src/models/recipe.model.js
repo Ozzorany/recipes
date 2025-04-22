@@ -390,6 +390,33 @@ async function assistantResponse(currentStep, allSteps, question, recipe) {
   }
 }
 
+async function removeGroupFromRecipes(groupId) {
+  try {
+    const recipesSnapshot = await firestore
+      .collection(COLLECTION)
+      .where("sharedGroups", "array-contains", groupId)
+      .get();
+
+    // Update each recipe document
+    const batch = firestore.batch();
+    recipesSnapshot.forEach((recipeDoc) => {
+      const recipeData = recipeDoc.data();
+      const updatedSharedGroups = recipeData.sharedGroups.filter(
+        (id) => id !== groupId
+      );
+      const recipeRef = firestore.collection(COLLECTION).doc(recipeDoc.id);
+      batch.update(recipeRef, { sharedGroups: updatedSharedGroups });
+    });
+
+    // Commit the batch update
+    await batch.commit();
+    return true;
+  } catch (error) {
+    logger.error("Error removing group ID from recipes:", error);
+    return false;
+  }
+}
+
 module.exports = {
   fetchRecipes,
   updateRecipe,
@@ -403,4 +430,5 @@ module.exports = {
   recipeChatBotResponse,
   recipeSteps,
   assistantResponse,
+  removeGroupFromRecipes,
 };
