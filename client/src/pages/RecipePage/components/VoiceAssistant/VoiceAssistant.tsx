@@ -40,15 +40,13 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isSupported, setIsSupported] = useState<boolean>(true);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const currentStepRef = useRef<string>("");
   const allStepsRef = useRef<string[]>([]);
   const manuallyStopped = useRef<boolean>(false);
   const recognition = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const restartAttempts = useRef<number>(0);
-  const maxRestartAttempts = 3;
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
   const {
     mutate: voiceAssistantResponse,
@@ -59,6 +57,19 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     },
   });
 
+  const resetInactivityTimer = () => {
+    if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
+    inactivityTimer.current = setTimeout(() => {
+      if (!manuallyStopped.current && recognition.current) {
+        try {
+          recognition.current.stop();
+        } catch (e) {
+          console.warn("Error forcing restart:", e);
+        }
+      }
+    }, 10000);
+  };
+
   const createRecognitionInstance = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -66,41 +77,28 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
 
     instance.lang = "he-IL";
     instance.continuous = true;
-    instance.interimResults = true;
-    instance.maxAlternatives = 1;
+    instance.interimResults = false;
 
     instance.onstart = () => {
       setIsListening(true);
-      restartAttempts.current = 0;
+      resetInactivityTimer();
     };
 
     instance.onend = () => {
       setIsListening(false);
-      if (!manuallyStopped.current && !isProcessing) {
-        if (restartAttempts.current < maxRestartAttempts) {
-          restartAttempts.current += 1;
-          try {
-            instance.start();
-          } catch (e) {
-            console.warn("Restart error:", e);
-          }
+      setIsSpeaking(false);
+      if (!manuallyStopped.current) {
+        try {
+          instance.start();
+        } catch (e) {
+          console.warn("Restart error:", e);
         }
       }
     };
 
-    instance.onerror = (event: any) => {
-      console.warn("Recognition error:", event.error);
+    instance.onerror = () => {
       setIsListening(false);
-      if (event.error === "no-speech" && !manuallyStopped.current) {
-        if (restartAttempts.current < maxRestartAttempts) {
-          restartAttempts.current += 1;
-          try {
-            instance.start();
-          } catch (e) {
-            console.warn("Restart error:", e);
-          }
-        }
-      }
+      setIsSpeaking(false);
     };
 
     instance.onspeechstart = () => {
@@ -112,14 +110,10 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
     };
 
     instance.onresult = (event: any) => {
+      resetInactivityTimer();
       const lastResult = event.results[event.results.length - 1];
-      if (lastResult.isFinal) {
-        const spokenText = lastResult[0].transcript;
-        if (spokenText.trim()) {
-          setIsProcessing(true);
-          getAnswerFromServer(spokenText);
-        }
-      }
+      const spokenText = lastResult[0].transcript;
+      getAnswerFromServer(spokenText);
     };
 
     return instance;
@@ -174,15 +168,12 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
       }
     } catch (error) {
       console.error("Error fetching response:", error);
-    } finally {
-      setIsProcessing(false);
     }
   };
 
   const startListening = () => {
     if (recognition.current && !isListening) {
       manuallyStopped.current = false;
-      restartAttempts.current = 0;
       try {
         recognition.current.start();
       } catch (error) {
@@ -194,6 +185,7 @@ const RecipeAssistant: React.FC<RecipeAssistantProps> = ({
   const stopListening = () => {
     if (recognition.current) {
       manuallyStopped.current = true;
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       recognition.current.stop();
     }
   };
