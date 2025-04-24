@@ -47,6 +47,19 @@ export const mediaStyles: SxProps<Theme> = {
   },
 };
 
+export const noImageStyles: SxProps<Theme> = {
+  ...mediaStyles,
+  "& img": {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    objectPosition: "center",
+  },
+};
+
 export const tagStyles: SxProps<Theme> = {
   backgroundColor: "primary.light",
   color: "white",

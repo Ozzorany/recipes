@@ -8,7 +8,6 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
@@ -27,6 +26,7 @@ import {
   cardStyles,
   titleStyles,
   mediaStyles,
+  noImageStyles,
   tagStyles,
   likeButtonStyles,
   likeIconStyles,
@@ -143,7 +143,7 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
           </Typography>
         }
       />
-      <Box sx={mediaStyles}>
+      <Box sx={!recipe.image ? noImageStyles : mediaStyles}>
         <img
           src={!!recipe.image ? recipe.image : noImagePath}
           alt={recipe.description}
