@@ -21,7 +21,6 @@ export const titleStyles: SxProps<Theme> = {
   display: "-webkit-box",
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
-  minHeight: "3.6rem",
   "&:hover": {
     color: "primary.main",
   },
