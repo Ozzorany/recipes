@@ -141,14 +141,15 @@ const GenerateRecipeAssistantDialog = ({
 
         <TextField
           fullWidth
-          multiline
-          minRows={1}
-          maxRows={2}
           placeholder="הוסיפו הערות או בקשות לשינוי במתכון..."
           value={userComments}
           onChange={(e) => setUserComments(e.target.value)}
+          size="small"
           sx={{
             flexShrink: 0,
+            "& .MuiInputBase-root": {
+              height: "50px",
+            },
           }}
         />
       </Box>
