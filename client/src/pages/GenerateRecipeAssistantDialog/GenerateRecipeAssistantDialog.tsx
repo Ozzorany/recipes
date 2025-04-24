@@ -85,7 +85,7 @@ const GenerateRecipeAssistantDialog = ({
   const handleApply = () => {
     if (generatedRecipe) {
       onRecipeGenerated(generatedRecipe);
-      setOpen(false);
+      handleClose();
     }
   };
 
