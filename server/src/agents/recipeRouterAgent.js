@@ -2,6 +2,7 @@ const { OpenAI } = require("openai");
 const ExtractRecipeAgent = require("./extractRecipeAgent");
 const IngredientsToRecipeAgent = require("./ingredientsToRecipeAgent");
 const SuggestRecipeAgent = require("./suggestRecipeAgent");
+const ModifyRecipeAgent = require("./modifyRecipeAgent");
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
@@ -48,12 +49,31 @@ const functions = [
       required: ["context"],
     },
   },
+  {
+    name: "modify_recipe",
+    description: "שינוי מתכון לפי הערות משתמש",
+    parameters: {
+      type: "object",
+      properties: {
+        recipe: {
+          type: "string",
+          description: "המתכון המקורי",
+        },
+        comments: {
+          type: "string",
+          description: "הערות המשתמש לשינוי המתכון",
+        },
+      },
+      required: ["recipe", "comments"],
+    },
+  },
 ];
 
 const functionHandlers = {
   extract_recipe_from_text: ExtractRecipeAgent,
   create_recipe_from_ingredients: IngredientsToRecipeAgent,
   suggest_recipe: SuggestRecipeAgent,
+  modify_recipe: ModifyRecipeAgent,
 };
 
 async function RecipeRouterAgent(input) {
@@ -85,7 +105,8 @@ async function RecipeRouterAgent(input) {
 
     return await fn(args);
   } catch (error) {
-    return { ok: false };
+    console.error("Error in RecipeRouterAgent:", error);
+    return { ok: false, error: error.message };
   }
 }
 module.exports = RecipeRouterAgent;
