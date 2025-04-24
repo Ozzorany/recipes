@@ -20,9 +20,9 @@ import { useGenerateRecipeAssistantMutation } from "../../queries/mutations/useG
 import { SiteRecipe } from "../../models/recipe.model";
 import styles from "./GenerateRecipeAssistantDialog.styles";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import CheckIcon from "@mui/icons-material/Check";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 interface Props {
   open: boolean;
@@ -139,19 +139,46 @@ const GenerateRecipeAssistantDialog = ({
           </ul>
         </Paper>
 
-        <TextField
-          fullWidth
-          placeholder="הוסיפו הערות או בקשות לשינוי במתכון..."
-          value={userComments}
-          onChange={(e) => setUserComments(e.target.value)}
-          size="small"
+        <Box
           sx={{
-            flexShrink: 0,
-            "& .MuiInputBase-root": {
-              height: "50px",
-            },
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            width: "100%",
+            mt: 2,
           }}
-        />
+        >
+          <TextField
+            fullWidth
+            placeholder="בקשות לשינוי במתכון..."
+            value={userComments}
+            onChange={(e) => setUserComments(e.target.value)}
+            size="small"
+            sx={{
+              flex: 1,
+              "& .MuiInputBase-root": {
+                height: "50px",
+              },
+            }}
+          />
+          <LoadingButton
+            onClick={handleRegenerate}
+            loading={isPending}
+            disabled={!userComments.trim()}
+            variant="contained"
+            size="small"
+            sx={{
+              height: "40px",
+              width: "40px",
+              minWidth: "40px",
+              p: 0,
+              borderRadius: "8px",
+              flexShrink: 0,
+            }}
+          >
+            <AutoAwesomeIcon />
+          </LoadingButton>
+        </Box>
       </Box>
     );
   };
@@ -254,29 +281,16 @@ const GenerateRecipeAssistantDialog = ({
               >
                 חזרה
               </Button>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <LoadingButton
-                  onClick={handleRegenerate}
-                  loading={isPending}
-                  disabled={!userComments.trim()}
-                  variant="contained"
-                  startIcon={<RefreshIcon />}
-                  size="small"
-                  sx={{ px: 1 }}
-                >
-                  נסו שוב
-                </LoadingButton>
-                <Button
-                  onClick={handleApply}
-                  variant="contained"
-                  color="success"
-                  startIcon={<CheckIcon />}
-                  size="small"
-                  sx={{ px: 1 }}
-                >
-                  מעולה!
-                </Button>
-              </Box>
+              <Button
+                onClick={handleApply}
+                variant="contained"
+                color="success"
+                startIcon={<CheckIcon />}
+                size="small"
+                sx={{ px: 1 }}
+              >
+                מעולה!
+              </Button>
             </>
           ) : (
             <LoadingButton
