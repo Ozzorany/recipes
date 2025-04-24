@@ -105,9 +105,20 @@ const GenerateRecipeAssistantDialog = ({
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          height: "100%",
+          overflow: "hidden",
         }}
       >
-        <Paper elevation={2} sx={{ p: 2, width: "100%", textAlign: "left" }}>
+        <Paper
+          elevation={2}
+          sx={{
+            p: 2,
+            width: "100%",
+            textAlign: "left",
+            flex: 1,
+            overflow: "auto",
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             {generatedRecipe.title}
           </Typography>
@@ -131,10 +142,14 @@ const GenerateRecipeAssistantDialog = ({
         <TextField
           fullWidth
           multiline
-          minRows={2}
+          minRows={1}
+          maxRows={2}
           placeholder="הוסיפו הערות או בקשות לשינוי במתכון..."
           value={userComments}
           onChange={(e) => setUserComments(e.target.value)}
+          sx={{
+            flexShrink: 0,
+          }}
         />
       </Box>
     );
@@ -153,7 +168,19 @@ const GenerateRecipeAssistantDialog = ({
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            height: isReviewMode ? "80vh" : "auto",
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
         <DialogTitle sx={styles.title}>
           {isReviewMode ? "בדיקת המתכון" : "סו שף חכם"}
           <IconButton onClick={handleClose} sx={styles.closeBtn}>
@@ -169,6 +196,9 @@ const GenerateRecipeAssistantDialog = ({
             justifyContent: "flex-start",
             textAlign: "right",
             gap: 2,
+            flex: 1,
+            overflow: "hidden",
+            p: 2,
           }}
         >
           {!isReviewMode && showAlert && (
@@ -218,6 +248,8 @@ const GenerateRecipeAssistantDialog = ({
                 onClick={handleBack}
                 startIcon={<ArrowBackIcon />}
                 variant="outlined"
+                size="small"
+                sx={{ px: 1 }}
               >
                 חזרה
               </Button>
@@ -228,14 +260,18 @@ const GenerateRecipeAssistantDialog = ({
                   disabled={!userComments.trim()}
                   variant="contained"
                   startIcon={<RefreshIcon />}
+                  size="small"
+                  sx={{ px: 1 }}
                 >
-                  בואו ננסה שוב
+                  נסו שוב
                 </LoadingButton>
                 <Button
                   onClick={handleApply}
                   variant="contained"
                   color="success"
                   startIcon={<CheckIcon />}
+                  size="small"
+                  sx={{ px: 1 }}
                 >
                   מעולה!
                 </Button>
