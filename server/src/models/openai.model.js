@@ -7,17 +7,24 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
 
-const checkAndUpdateUsage = async (userId, planId) => {
+const checkAndUpdateUsage = async (userId) => {
   const userRef = admin.firestore().collection("users").doc(userId);
-  const planRef = admin.firestore().collection("plans").doc(planId);
+  const userDoc = await userRef.get();
 
-  const [userDoc, planDoc] = await Promise.all([userRef.get(), planRef.get()]);
-
-  if (!userDoc.exists || !planDoc.exists) {
-    throw new Error("User or plan not found");
+  if (!userDoc.exists) {
+    throw new Error("User not found");
   }
 
   const userData = userDoc.data();
+  const planId = userData.plan;
+
+  const planRef = admin.firestore().collection("plans").doc(planId);
+  const planDoc = await planRef.get();
+
+  if (!planDoc.exists) {
+    throw new Error("Plan not found");
+  }
+
   const planData = planDoc.data();
   const now = new Date();
   const lastReset = userData.lastHourlyReset
@@ -55,11 +62,10 @@ const generateOpenAiRequest = async ({
   temperature = 0.3,
   parse = true,
   userId,
-  planId = PLANS.FREE,
 }) => {
   try {
     // Check and update usage before making the request
-    await checkAndUpdateUsage(userId, planId);
+    await checkAndUpdateUsage(userId);
 
     const response = await openai.chat.completions.create({
       model,
