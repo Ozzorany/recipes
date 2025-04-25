@@ -1,28 +1,24 @@
-// components/GenerateRecipeAssistantDialog/GenerateRecipeAssistantDialog.tsx
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  IconButton,
-  Alert,
-  Snackbar,
-  Button,
-  Box,
-  Typography,
-  Paper,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { useState } from "react";
-import { useGenerateRecipeAssistantMutation } from "../../queries/mutations/useGenerateRecipeAssistantMutation";
-import { SiteRecipe } from "../../models/recipe.model";
-import styles from "./GenerateRecipeAssistantDialog.styles";
-import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import CheckIcon from "@mui/icons-material/Check";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Snackbar,
+  TextField,
+} from "@mui/material";
+import { useState } from "react";
+import { SiteRecipe } from "../../models/recipe.model";
+import { useGenerateRecipeAssistantMutation } from "../../queries/mutations/useGenerateRecipeAssistantMutation";
+import styles from "./GenerateRecipeAssistantDialog.styles";
+import RecipeReviewContent from "./RecipeReviewContent";
 
 interface Props {
   open: boolean;
@@ -99,87 +95,13 @@ const GenerateRecipeAssistantDialog = ({
     if (!generatedRecipe) return null;
 
     return (
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          height: "100%",
-          overflow: "hidden",
-        }}
-      >
-        <Paper
-          elevation={2}
-          sx={{
-            p: 2,
-            width: "100%",
-            textAlign: "left",
-            flex: 1,
-            overflow: "auto",
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            {generatedRecipe.title}
-          </Typography>
-          <Typography variant="body1" paragraph>
-            {generatedRecipe.method}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            מרכיבים:
-          </Typography>
-          <ul>
-            {generatedRecipe.ingredients.map(
-              (ingredient: string, index: number) => (
-                <li key={index}>
-                  <Typography variant="body1">{ingredient}</Typography>
-                </li>
-              )
-            )}
-          </ul>
-        </Paper>
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-            width: "100%",
-            mt: 2,
-          }}
-        >
-          <TextField
-            fullWidth
-            placeholder="בקשות לשינוי במתכון..."
-            value={userComments}
-            onChange={(e) => setUserComments(e.target.value)}
-            size="small"
-            sx={{
-              flex: 1,
-              "& .MuiInputBase-root": {
-                height: "50px",
-              },
-            }}
-          />
-          <LoadingButton
-            onClick={handleRegenerate}
-            loading={isPending}
-            disabled={!userComments.trim()}
-            variant="contained"
-            size="small"
-            sx={{
-              height: "40px",
-              width: "40px",
-              minWidth: "40px",
-              p: 0,
-              borderRadius: "8px",
-              flexShrink: 0,
-            }}
-          >
-            <AutoAwesomeIcon />
-          </LoadingButton>
-        </Box>
-      </Box>
+      <RecipeReviewContent
+        generatedRecipe={generatedRecipe}
+        userComments={userComments}
+        setUserComments={setUserComments}
+        onRegenerate={handleRegenerate}
+        isPending={isPending}
+      />
     );
   };
 
