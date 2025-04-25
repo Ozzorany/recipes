@@ -199,6 +199,7 @@ async function httpJoinGroceryList(req, res) {
 // Controller to extract grocery items from a recipe
 async function httpExtractGroceryItems(req, res) {
   try {
+    const userId = req.headers["uid"];
     const { recipe } = req.body;
     if (!recipe) {
       return res.status(400).json({ ok: false, error: "Recipe is required" });
@@ -236,6 +237,7 @@ async function httpExtractGroceryItems(req, res) {
       model: "gpt-4",
       temperature: 0.3,
       parse: true,
+      userId,
     });
 
     if (!response.ok) {

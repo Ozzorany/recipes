@@ -5,7 +5,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
 
-async function ModifyRecipeAgent({ recipe, comments }) {
+async function ModifyRecipeAgent({ recipe, comments }, userId) {
   try {
     const response = await generateOpenAiRequest({
       messages: [
@@ -34,6 +34,7 @@ async function ModifyRecipeAgent({ recipe, comments }) {
       model: "gpt-4.1",
       temperature: 0.4,
       parse: true,
+      userId,
     });
 
     return response;

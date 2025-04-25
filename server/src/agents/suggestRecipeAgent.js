@@ -1,6 +1,6 @@
 const { generateOpenAiRequest } = require("../models/openai.model");
 
-async function SuggestRecipeAgent(description) {
+async function SuggestRecipeAgent(description, userId) {
   const { context } = description;
   const prompt = `
 המשתמש ביקש שתעזור לו לחשוב על ארוחה עם הבקשה הבאה: "${context}" \n
@@ -15,6 +15,7 @@ async function SuggestRecipeAgent(description) {
     model: "gpt-4o",
     temperature: 0.5,
     parse: true,
+    userId,
   });
 
   return response;

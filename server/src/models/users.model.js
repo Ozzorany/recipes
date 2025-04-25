@@ -1,4 +1,5 @@
 //@ts-check
+const { PLANS } = require("../constants");
 const firebase = require("../firebase/db");
 const firestore = firebase.firestore();
 const COLLECTION = "users";
@@ -7,8 +8,14 @@ require("dotenv").config();
 
 async function createUser(user) {
   const ref = await firestore.collection(COLLECTION);
-  ref.doc(user.id).set(user);
-  return user;
+  const userWithDefaults = {
+    ...user,
+    plan: PLANS.FREE, // Default plan
+    hourlyUsage: 0, // Initialize hourly usage counter (total tokens used)
+    lastHourlyReset: new Date(), // Initialize last reset timestamp
+  };
+  ref.doc(user.id).set(userWithDefaults);
+  return userWithDefaults;
 }
 
 async function fetchUserById(userId, isFullData = true) {

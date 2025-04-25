@@ -1,6 +1,6 @@
 const { generateOpenAiRequest } = require("../models/openai.model");
 
-async function IngredientsToRecipeAgent(body) {
+async function IngredientsToRecipeAgent(body, userId) {
   const prompt = `
 צור מתכון בעברית שמתבסס רק על המצרכים הבאים:
 ${body.ingredients?.join(", ")} \n
@@ -14,6 +14,7 @@ ${body.ingredients?.join(", ")} \n
     model: "gpt-4o",
     temperature: 0.7,
     parse: true,
+    userId,
   });
 
   return response;

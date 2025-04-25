@@ -217,6 +217,11 @@ async function httpGetRecipeFromSite(url: string) {
     `${serverUrl}/recipes/extract-recipe`,
     {
       url,
+    },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
     }
   );
 
@@ -242,6 +247,11 @@ async function httpRecipeChatbotResponse(
     {
       recipe,
       message,
+    },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
     }
   );
 
@@ -380,9 +390,17 @@ async function httpJoinGroceryList(token: string): Promise<any> {
 async function httpExtractGroceryItems(
   recipe: RecipeResponsePayload
 ): Promise<any> {
-  const response = await axios.post(`${serverUrl}/grocery/extract-items`, {
-    recipe,
-  });
+  const response = await axios.post(
+    `${serverUrl}/grocery/extract-items`,
+    {
+      recipe,
+    },
+    {
+      headers: {
+        uid: auth.currentUser?.uid || "",
+      },
+    }
+  );
   return response.data.data;
 }
 

@@ -1,5 +1,5 @@
 const { generateOpenAiRequest } = require("../models/openai.model");
-async function ExtractRecipeAgent(body) {
+async function ExtractRecipeAgent(body, userId) {
   const { text } = body;
   const prompt = `
 הטקסט הבא מכיל מידע על מתכון. תחלץ אותו ותחזיר בפורמט JSON:
@@ -18,6 +18,7 @@ ${text}
     model: "gpt-4o",
     temperature: 0.2,
     parse: true,
+    userId,
   });
 
   return response;

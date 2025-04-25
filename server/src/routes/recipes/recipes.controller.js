@@ -71,10 +71,11 @@ async function httpDeleteRecipe(req, res) {
 
 async function httpExtractRecipe(req, res) {
   const url = req.body.url;
+  const userId = req?.user?.uid;
 
   if (!url) return res.status(400).json({ error: "URL is required" });
 
-  const response = await extractRecipe(url);
+  const response = await extractRecipe(url, userId);
 
   if (!response.ok) {
     return res
@@ -88,10 +89,11 @@ async function httpExtractRecipe(req, res) {
 async function httpRecipeChatBotResponseRecipe(req, res) {
   const message = req.body.message;
   const recipe = req.body.recipe;
+  const userId = req?.user?.uid;
 
   logger.info("httpRecipeChatBotResponseRecipe | POST", { message, recipe });
 
-  const response = await recipeChatBotResponse(message, recipe);
+  const response = await recipeChatBotResponse(message, recipe, userId);
 
   if (!response.ok) {
     logger.error("httpRecipeChatBotResponseRecipe | POST", {
@@ -176,12 +178,13 @@ async function httpRecipeSteps(req, res) {
 async function httpRecipeGeneratorHelper(req, res) {
   try {
     const { input } = req.body;
+    const userId = req?.user?.uid;
 
     if (!input) {
       return res.status(400).json({ error: "חסרה בקשה" });
     }
 
-    const recipe = await RecipeRouterAgent(input);
+    const recipe = await RecipeRouterAgent(input, userId);
     return res.status(200).json(recipe);
   } catch (error) {
     return res.status(500).json({

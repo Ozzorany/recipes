@@ -163,7 +163,7 @@ function chunkString(str, size) {
   return chunks;
 }
 
-async function extractWithAI(url) {
+async function extractWithAI(url, userId) {
   try {
     const relevantHtml = await getRelevantHTML(url);
     const chunks = chunkString(relevantHtml, 5000);
@@ -188,6 +188,7 @@ async function extractWithAI(url) {
         model: "gpt-4o",
         parse: false,
         temperature: 0.1,
+        userId,
       });
 
       if (!response.ok) {
@@ -218,7 +219,7 @@ async function extractWithAI(url) {
   }
 }
 
-async function extractSiteData(url) {
+async function extractSiteData(url, userId) {
   try {
     const { data: html } = await axios.get(url);
     const $ = cheerio.load(html);
@@ -233,7 +234,7 @@ async function extractSiteData(url) {
 
     // If extraction fails, use AI with chunking
     if (!title || !method || !ingredients) {
-      const aiData = await extractWithAI(url);
+      const aiData = await extractWithAI(url, userId);
       if (!aiData.ok) return { ok: false };
       return { data: aiData.data, ok: true };
     }
@@ -243,8 +244,8 @@ async function extractSiteData(url) {
   }
 }
 
-async function extractRecipe(url) {
-  const { ok, data } = await extractSiteData(url);
+async function extractRecipe(url, userId) {
+  const { ok, data } = await extractSiteData(url, userId);
 
   if (!ok || !data) {
     return { ok: false };
@@ -281,12 +282,13 @@ async function extractRecipe(url) {
     messages,
     model: "gpt-4o",
     parse: true,
+    userId,
   });
 
   return response;
 }
 
-async function recipeChatBotResponse(userMessage, recipe) {
+async function recipeChatBotResponse(userMessage, recipe, userId) {
   try {
     const systemPrompt = `
 אתה עוזר חכם שמתמקד אך ורק במתכונים.  
@@ -313,6 +315,7 @@ ${recipe.instructions}
       model: "gpt-4o",
       temperature: 0.5,
       parse: false,
+      userId,
     });
   } catch (error) {
     logger.error("recipeChatBotResponse", { error });
@@ -320,7 +323,7 @@ ${recipe.instructions}
   }
 }
 
-async function recipeSteps(method) {
+async function recipeSteps(method, userId) {
   const prompt = `
     Return only an ordered array of Hebrew strings, without any extra text, newline characters, or formatting like "json". 
     An example of a response should be: ["תחילה יש לערבב את הנוזלים בקערה", "לאחר מכן יש לשבור את הביצים בקערה"]
@@ -333,6 +336,7 @@ async function recipeSteps(method) {
       model: "gpt-4o",
       temperature: 0.3,
       parse: true,
+      userId,
     });
 
     return { ok: true, data: response.data };
@@ -342,7 +346,13 @@ async function recipeSteps(method) {
   }
 }
 
-async function assistantResponse(currentStep, allSteps, question, recipe) {
+async function assistantResponse(
+  currentStep,
+  allSteps,
+  question,
+  recipe,
+  userId
+) {
   const prompt = `
   אתה עוזר קול אינטואיטיבי לבישול, שמתפקד כמו חבר במטבח.
   המטרה שלך היא לעזור למשתמש שמבשל כרגע ולא יכול להסתכל על הטלפון, אלא רק לשוחח איתך בקול.
@@ -371,11 +381,15 @@ async function assistantResponse(currentStep, allSteps, question, recipe) {
       model: "gpt-4o",
       temperature: 0.5,
       parse: true,
+      userId,
     });
 
     const { speech, nextStep } = response.data;
 
-    const speechResponse = await generateOpenAiVoiceResponse({ input: speech });
+    const speechResponse = await generateOpenAiVoiceResponse({
+      input: speech,
+      userId,
+    });
 
     return {
       ok: true,

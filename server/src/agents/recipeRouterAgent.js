@@ -76,7 +76,7 @@ const functionHandlers = {
   modify_recipe: ModifyRecipeAgent,
 };
 
-async function RecipeRouterAgent(input) {
+async function RecipeRouterAgent(input, userId) {
   try {
     const { choices } = await openai.chat.completions.create({
       model: "gpt-3.5-turbo-1106",
@@ -103,7 +103,7 @@ async function RecipeRouterAgent(input) {
     const fn = functionHandlers[call.name];
     const args = JSON.parse(call.arguments);
 
-    return await fn(args);
+    return await fn(args, userId);
   } catch (error) {
     console.error("Error in RecipeRouterAgent:", error);
     return { ok: false, error: error.message };
