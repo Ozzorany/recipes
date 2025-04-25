@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, TextField } from "@mui/material";
+import { Box, Typography, Paper, TextField, Skeleton } from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { SiteRecipe } from "../../models/recipe.model";
 import styles from "./RecipeReviewContent.styles";
@@ -22,24 +22,45 @@ const RecipeReviewContent = ({
   return (
     <Box sx={styles.container}>
       <Paper elevation={2} sx={styles.recipePaper}>
-        <Typography variant="h6" gutterBottom>
-          {generatedRecipe.title}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {generatedRecipe.method}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          מרכיבים:
-        </Typography>
-        <ul>
-          {generatedRecipe.ingredients.map(
-            (ingredient: string, index: number) => (
-              <li key={index}>
-                <Typography variant="body1">{ingredient}</Typography>
-              </li>
-            )
-          )}
-        </ul>
+        {isPending ? (
+          <>
+            <Skeleton variant="text" width="60%" height={32} />
+            <Skeleton variant="text" width="100%" height={80} />
+            <Skeleton variant="text" width="40%" height={32} />
+            <Box sx={{ mt: 2 }}>
+              {[1, 2, 3, 4].map((index) => (
+                <Skeleton
+                  key={index}
+                  variant="text"
+                  width="80%"
+                  height={24}
+                  sx={{ mb: 1 }}
+                />
+              ))}
+            </Box>
+          </>
+        ) : (
+          <>
+            <Typography variant="h6" gutterBottom>
+              {generatedRecipe.title}
+            </Typography>
+            <Typography variant="body1" paragraph>
+              {generatedRecipe.method}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              מרכיבים:
+            </Typography>
+            <ul>
+              {generatedRecipe.ingredients.map(
+                (ingredient: string, index: number) => (
+                  <li key={index}>
+                    <Typography variant="body1">{ingredient}</Typography>
+                  </li>
+                )
+              )}
+            </ul>
+          </>
+        )}
       </Paper>
 
       <Box sx={styles.commentsContainer}>
