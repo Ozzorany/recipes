@@ -289,7 +289,7 @@ const GenerateRecipeAssistantDialog = ({
                 size="small"
                 sx={{ px: 1 }}
               >
-                מעולה!
+                שמירת מתכון
               </Button>
             </>
           ) : (
