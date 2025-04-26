@@ -51,12 +51,16 @@ const GroceryListExtractor: React.FC<GroceryListExtractorProps> = ({
   );
   const [createNewList, setCreateNewList] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [extractError, setExtractError] = useState<string | null>(null);
 
   const { mutate: extractItems, isPending: extracting } =
     useExtractGroceryItems({
       onSuccess: (data) => {
         setSelectedItems(data);
         setCheckedItems(data);
+      },
+      onError: (error: any) => {
+        setExtractError(error?.response?.data?.error);
       },
     });
 
@@ -109,6 +113,10 @@ const GroceryListExtractor: React.FC<GroceryListExtractorProps> = ({
 
   const handleCloseSnackbar = () => {
     setShowSuccess(false);
+  };
+
+  const handleCloseErrorSnackbar = () => {
+    setExtractError(null);
   };
 
   const updateAmount = (index: number, newAmount: number) => {
@@ -301,6 +309,20 @@ const GroceryListExtractor: React.FC<GroceryListExtractorProps> = ({
           sx={{ width: "100%" }}
         >
           המצרכים נוספו בהצלחה לרשימת הקניות
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={!!extractError}
+        autoHideDuration={5000}
+        onClose={handleCloseErrorSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseErrorSnackbar}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {extractError}
         </Alert>
       </Snackbar>
     </>

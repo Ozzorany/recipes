@@ -14,6 +14,7 @@ const jwt = require("jsonwebtoken");
 const { generateOpenAiRequest } = require("../../models/openai.model");
 
 const winston = require("winston");
+const errorHandler = require("../../middleware/errorHandler");
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
@@ -241,13 +242,13 @@ async function httpExtractGroceryItems(req, res) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to extract grocery items");
+      return errorHandler(response.error, req, res);
     }
 
     res.status(200).json({ ok: true, data: response.data });
   } catch (error) {
     logger.error("httpExtractGroceryItems | ERROR", error);
-    res.status(400).json({ ok: false, error: error.message });
+    return errorHandler(error, req, res);
   }
 }
 
