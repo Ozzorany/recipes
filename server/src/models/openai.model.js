@@ -2,6 +2,7 @@ const { OpenAI } = require("openai");
 const { logger } = require("../logger");
 const { PLANS } = require("../constants");
 const admin = require("firebase-admin");
+const AppError = require("../errors/AppError");
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
@@ -43,7 +44,12 @@ const checkAndUpdateUsage = async (userId) => {
 
   // Check if user has exceeded hourly limit
   if (userData.hourlyUsage >= planData.hourlyLimit) {
-    throw new Error(`Hourly limit exceeded for ${planId} plan`);
+    const nextResetTime = new Date(lastReset.getTime() + 3600000);
+    const minutesRemaining = Math.ceil((nextResetTime - now) / 60000);
+    throw new AppError(
+      `הגעתם למגבלת השימוש השעתית בתוכנית שלכם. תוכלו להמשיך בעוד ${minutesRemaining} דקות`,
+      429
+    );
   }
 
   return true;

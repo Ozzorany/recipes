@@ -18,6 +18,7 @@ const path = require("path");
 
 const winston = require("winston");
 const RecipeRouterAgent = require("../../agents/recipeRouterAgent");
+const errorHandler = require("../../middleware/errorHandler");
 
 const logger = winston.createLogger({
   level: "info",
@@ -102,9 +103,7 @@ async function httpRecipeChatBotResponseRecipe(req, res) {
       error: response?.error,
     });
 
-    return res
-      .status(400)
-      .json({ error: "An issue occured. Please try again later" });
+    return errorHandler(response?.error, req, res);
   }
 
   res.status(200).json(response.data);
