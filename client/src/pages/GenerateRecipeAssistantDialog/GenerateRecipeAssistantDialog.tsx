@@ -49,8 +49,8 @@ const GenerateRecipeAssistantDialog = ({
         setGeneratedRecipe(recipe);
         setIsReviewMode(true);
       },
-      onError: (error) => {
-        const message = error?.message;
+      onError: (error: any) => {
+        const message = error?.response?.data?.error;
         setSnackbarMessage(message);
         setOpenSnackBar(true);
       },
@@ -70,8 +70,8 @@ const GenerateRecipeAssistantDialog = ({
         setGeneratedRecipe(recipe);
         setUserComments("");
       },
-      onError: (error) => {
-        const message = error?.message;
+      onError: (error: any) => {
+        const message = error?.response?.data?.error;
         setSnackbarMessage(message);
         setOpenSnackBar(true);
       },
@@ -236,7 +236,6 @@ const GenerateRecipeAssistantDialog = ({
       >
         <Alert
           severity="error"
-          variant="filled"
           onClose={() => setOpenSnackBar(false)}
           sx={{ width: "100%" }}
         >

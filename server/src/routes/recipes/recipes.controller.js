@@ -184,11 +184,14 @@ async function httpRecipeGeneratorHelper(req, res) {
     }
 
     const recipe = await RecipeRouterAgent(input, userId);
+
+    if (!recipe.ok) {
+      return errorHandler(recipe.error, req, res);
+    }
+
     return res.status(200).json(recipe);
   } catch (error) {
-    return res.status(500).json({
-      error: "אירעה שגיאה בעת יצירת המתכון",
-    });
+    return errorHandler(error, req, res);
   }
 }
 module.exports = {

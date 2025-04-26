@@ -94,10 +94,7 @@ async function RecipeRouterAgent(input, userId) {
     const call = choices[0].message.function_call;
 
     if (!call) {
-      return {
-        ok: false,
-        data: "בקשה לא רלוונטית",
-      };
+      throw new AppError("בקשה לא רלוונטית", 400);
     }
 
     const fn = functionHandlers[call.name];
@@ -106,7 +103,7 @@ async function RecipeRouterAgent(input, userId) {
     return await fn(args, userId);
   } catch (error) {
     console.error("Error in RecipeRouterAgent:", error);
-    return { ok: false, error: error.message };
+    throw new AppError(error.message, 500);
   }
 }
 module.exports = RecipeRouterAgent;
