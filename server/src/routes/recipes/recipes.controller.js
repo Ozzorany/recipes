@@ -45,13 +45,18 @@ async function httpGetRecipeById(req, res) {
       );
     });
 
-    res
-      .status(200)
-      .json(
-        isGroupShared || recipe?.creatorId === userId
-          ? { ok: true, data: recipe }
-          : { ok: false, data: undefined }
+    if (isGroupShared || recipe?.creatorId === userId) {
+      const accessibleRecipe = { ...recipe };
+
+      accessibleRecipe.sharedGroups = recipe.sharedGroups.filter(
+        (sharedGroup) =>
+          userGroups.some((userGroup) => userGroup.id === sharedGroup.id)
       );
+
+      res.status(200).json({ ok: true, data: accessibleRecipe });
+    } else {
+      res.status(200).json({ ok: false, data: undefined });
+    }
   } catch (error) {
     logger.error("httpGetRecipeById  | ERROR", error);
     res.status(400);
