@@ -8,10 +8,21 @@ import { Button } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "../../queries/useCreateUser";
+import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
   const useCreateUserMutation = useCreateUser();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigate("/all-recipes");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   const logGoogleUser = async () => {
     const response = await signInWithGooglePopup();
@@ -25,7 +36,7 @@ function Login() {
         logo: user?.photoURL!,
         managedGroups: [],
         sharedGroups: [],
-        favoriteRecipes: []
+        favoriteRecipes: [],
       });
     } else {
       console.log("existing");
