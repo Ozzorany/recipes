@@ -7,6 +7,7 @@ import {
   Typography,
   Divider,
   Button,
+  Badge,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { useState } from "react";
@@ -52,14 +53,22 @@ const FilterIcon = ({
   const hasActiveFilters = filterTags.length > 0 || ownershipFilter !== "all";
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
       <IconButton
         onClick={handleClick}
         sx={{
           color: hasActiveFilters ? "primary.main" : "inherit",
         }}
       >
-        <FilterListIcon />
+        <Badge variant="dot" color="primary" invisible={!hasActiveFilters}>
+          <FilterListIcon />
+        </Badge>
       </IconButton>
       <Popover
         open={open}
@@ -139,7 +148,7 @@ const FilterIcon = ({
           </Box>
         </Box>
       </Popover>
-    </>
+    </Box>
   );
 };
 
