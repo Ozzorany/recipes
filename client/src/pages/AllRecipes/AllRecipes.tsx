@@ -14,12 +14,17 @@ import Fab from "@mui/material/Fab";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "@mui/material";
+import { auth } from "../../utils/firebase.utils";
 
 function AllRecepis() {
   const { data: recipes, isLoading } = useAllRecipes();
   const [value, setValue] = useState<string>("");
   const [filterTags, setFilterTags] = useState<string[]>([]);
+  const [ownershipFilter, setOwnershipFilter] = useState<
+    "all" | "owned" | "not-owned"
+  >("all");
   const navigate = useNavigate();
+  const userId = auth.currentUser?.uid;
 
   if (isLoading) {
     return (
@@ -37,6 +42,19 @@ function AllRecepis() {
     return <AllRecipesEmptyState />;
   }
 
+  const filteredRecipes = sortRecipes(recipes)?.filter((recipe: Recipe) => {
+    const matchesSearch = recipe.description.includes(value);
+    const matchesTags =
+      filterTags.length === 0 ||
+      recipe.tags.some((tag) => filterTags.includes(tag));
+    const matchesOwnership =
+      ownershipFilter === "all" ||
+      (ownershipFilter === "owned" && recipe.creatorId === userId) ||
+      (ownershipFilter === "not-owned" && recipe.creatorId !== userId);
+
+    return matchesSearch && matchesTags && matchesOwnership;
+  });
+
   return (
     <div className={styles.container}>
       <AllRecipesFilters
@@ -44,6 +62,8 @@ function AllRecepis() {
         setFilterTags={setFilterTags}
         setValue={setValue}
         value={value}
+        ownershipFilter={ownershipFilter}
+        setOwnershipFilter={setOwnershipFilter}
       />
       <Box sx={{ flexGrow: 1, height: "20%", marginTop: "2rem" }}>
         <Grid
@@ -51,20 +71,13 @@ function AllRecepis() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
         >
-          {sortRecipes(recipes)
-            ?.filter(
-              (recipe: Recipe) =>
-                recipe.description.includes(value) &&
-                (filterTags.length === 0 ||
-                  recipe.tags.some((tag) => filterTags.includes(tag)))
-            )
-            ?.map((recipe: Recipe) => {
-              return (
-                <Grid size={{ xs: 2, sm: 4, md: 4 }} key={recipe.id}>
-                  <RecipeReviewCard recipe={recipe} />
-                </Grid>
-              );
-            })}
+          {filteredRecipes?.map((recipe: Recipe) => {
+            return (
+              <Grid size={{ xs: 2, sm: 4, md: 4 }} key={recipe.id}>
+                <RecipeReviewCard recipe={recipe} />
+              </Grid>
+            );
+          })}
         </Grid>
       </Box>
       <Tooltip title="רשימת קניות" placement="left">

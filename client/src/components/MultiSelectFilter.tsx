@@ -5,11 +5,12 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 interface MultiSelectProps {
   values: string[];
   valuesChanged: (values: string[]) => void;
+  selectedValues?: string[];
 }
 
 function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
@@ -25,6 +26,12 @@ function MultiSelectFilter(props: PropsWithChildren<MultiSelectProps>) {
       },
     },
   };
+
+  useEffect(() => {
+    if (props.selectedValues) {
+      setPersonName(props.selectedValues);
+    }
+  }, [props.selectedValues]);
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {

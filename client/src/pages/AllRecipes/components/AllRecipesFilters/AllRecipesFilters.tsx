@@ -1,20 +1,14 @@
-import {
-  Box,
-  debounce,
-  IconButton,
-  TextField,
-  useMediaQuery,
-} from "@mui/material";
-import GradeIcon from "@mui/icons-material/Grade";
-import MultiSelectFilter from "../../../../components/MultiSelectFilter";
-
+import { Box, debounce, TextField, useMediaQuery } from "@mui/material";
 import { useMemo } from "react";
-import { foodCategories } from "../../../../constants";
 import { AllRecipesFiltersProps } from "./AllRecipesFilters.types";
+import FilterIcon from "../FilterIcon/FilterIcon";
 
 const AllRecipesFilters = ({
   setValue,
   setFilterTags,
+  filterTags,
+  ownershipFilter,
+  setOwnershipFilter,
 }: AllRecipesFiltersProps) => {
   const matches = useMediaQuery("(min-width:600px)");
   const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,16 +16,13 @@ const AllRecipesFilters = ({
   };
   const debouncedChangeHandler = useMemo(() => debounce(changeValue, 100), []);
 
-  const handleFilterTagsChanged = (tags: string[]) => {
-    setFilterTags(tags);
-  };
-
   return (
     <div style={{ width: "100%" }}>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
+          alignItems: "center",
           p: 1,
           m: 1,
           borderRadius: 1,
@@ -54,18 +45,17 @@ const AllRecipesFilters = ({
                 border: "none",
               },
               "& .MuiOutlinedInput-root": {
-                borderRadius: "20px", // Adjust the value for more roundness
+                borderRadius: "20px",
               },
             }}
           />
         </Box>
-
-        <div className="mr-2" style={{ width: `${matches ? "15%" : "100%"}` }}>
-          <MultiSelectFilter
-            values={foodCategories}
-            valuesChanged={handleFilterTagsChanged}
-          />
-        </div>
+        <FilterIcon
+          filterTags={filterTags}
+          setFilterTags={setFilterTags}
+          ownershipFilter={ownershipFilter}
+          onOwnershipFilterChange={setOwnershipFilter}
+        />
       </Box>
     </div>
   );
