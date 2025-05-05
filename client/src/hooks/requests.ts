@@ -393,7 +393,11 @@ async function httpExtractGroceryItems(
   const response = await axios.post(
     `${serverUrl}/grocery/extract-items`,
     {
-      recipe,
+      recipe: {
+        name: recipe.description,
+        ingredients: recipe.ingredients,
+        method: recipe.method,
+      },
     },
     {
       headers: {

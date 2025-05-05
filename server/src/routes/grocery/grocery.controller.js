@@ -221,22 +221,25 @@ async function httpExtractGroceryItems(req, res) {
             2
           )}\n\nReturn a JSON array of objects where each object has 'name' (string) and 'amount' (number) properties. For example: [{"name": "eggs", "amount": 4}, {"name": "sugar", "amount": 1}]. Return only the JSON array, nothing else. 
                 Rules:
-                For each item, determine whether the quantity should be measured by weight or volume (e.g., grams, kilograms, cups) or by unit count (e.g., 4 eggs, 1 milk carton).
+                - For each item, determine whether the quantity should be measured by weight or volume (e.g., grams, kilograms, cups) or by unit count (e.g., 4 eggs, 1 milk carton).
                 If the item is measured by weight or volume, include the quantity directly in the product name, separated by a hyphen.
                 Example: "Flour - 500g", "Milk - 2 cups".
                 In this case, set "amount" to 1.
 
-                If the item is counted by units, write the name normally (e.g., "Eggs") and include the count in the "amount" field.
+                - If the item is counted by units, write the name normally (e.g., "Eggs") and include the count in the "amount" field.
                 Example: { "name": "Eggs", "amount": 4 }.
 
-                If no specific quantity is found, set "amount" to 1 by default (regardless of measurement type).
+                - If no specific quantity is found, set "amount" to 1 by default (regardless of measurement type).
                 
                 - Always separate combined ingredients into individual items.
-                  For example, if the text says "salt and pepper", return two separate entries: one for "Salt" and one for "Pepper". Never group multiple ingredients into a single item.`,
+                  For example, if the text says "salt and pepper", return two separate entries: one for "Salt" and one for "Pepper". Never group multiple ingredients into a single item.
+                  
+                - The response should be in hebrew.
+                `,
         },
       ],
-      model: "gpt-4",
-      temperature: 0.3,
+      model: "gpt-4-turbo",
+      temperature: 0.1,
       parse: true,
       userId,
     });
