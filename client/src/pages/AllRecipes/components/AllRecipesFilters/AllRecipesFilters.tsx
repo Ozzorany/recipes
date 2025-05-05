@@ -32,7 +32,10 @@ const AllRecipesFilters = ({
           component="form"
           noValidate
           autoComplete="off"
-          sx={{ width: `${matches ? "15%" : "100%"}` }}
+          sx={{
+            flex: 1,
+            marginRight: 2,
+          }}
         >
           <TextField
             id="outlined-multiline-flexible"
