@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import styles from "./RecipePage.module.css";
 import { useRecipeById } from "../../queries/useRecipeById";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -15,12 +16,27 @@ import {
   useTheme,
   Fab,
   Tooltip,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import noImagePath from "../../assets/images/recipe-book.jpg";
 import MicIcon from "@mui/icons-material/Mic";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import GroupIcon from "@mui/icons-material/Group";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { WhatsappIcon, WhatsappShareButton } from "react-share";
+import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
+import { useNavigate } from "react-router";
+import { auth } from "../../utils/firebase.utils";
+import { useDeleteRecipe } from "../../queries/mutations/useDeleteRecipe";
+import { useUserFeatures } from "../../queries/useUserFeatures";
+import { USER_FEATURES } from "../../models/user.model";
+import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
+import GroceryListExtractor from "./components/GroceryListExtractor/GroceryListExtractor";
+import GroupsDisplay from "./components/GroupsDisplay/GroupsDisplay";
 
 import {
   CopyIngredientsWrapper,
@@ -30,14 +46,8 @@ import {
   TagList,
 } from "./RecipePage.styles";
 
-import { useEffect, useState } from "react";
 import RecipePageEmptyState from "./components/RecipePageEmptyState";
 import FloatingChatbot from "../../components/FloatingChatbot/FloatingChatbot";
-import { useUserFeatures } from "../../queries/useUserFeatures";
-import { USER_FEATURES } from "../../models/user.model";
-import VoiceAssistant from "./components/VoiceAssistant/VoiceAssistant";
-import GroceryListExtractor from "./components/GroceryListExtractor/GroceryListExtractor";
-import GroupsDisplay from "./components/GroupsDisplay/GroupsDisplay";
 
 function RecipePage() {
   const params = useParams();
@@ -48,6 +58,9 @@ function RecipePage() {
   const theme = useTheme();
   const [voiceAssistantOpen, setVoiceAssistantOpen] = useState(false);
   const [groceryExtractorOpen, setGroceryExtractorOpen] = useState(false);
+  const navigate = useNavigate();
+  const { mutate: deleteRecipeMutation } = useDeleteRecipe();
+  const currentLoggedInUser = auth.currentUser;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -75,6 +88,17 @@ function RecipePage() {
       .catch((err) => console.error("Failed to copy:", err));
   };
 
+  const handleDeleteRecipe = (popupState: any) => {
+    popupState.close();
+    deleteRecipeMutation(recipe.id);
+    navigate("/");
+  };
+
+  const handleEditRecipe = (popupState: any) => {
+    popupState.close();
+    navigate("/edit-recipe", { state: { isEdit: true, recipe: recipe } });
+  };
+
   return (
     <>
       <VoiceAssistant
@@ -90,6 +114,62 @@ function RecipePage() {
       <div className={styles.pageContainer}>
         <PageCard>
           <TitleWrapper>
+            <PopupState variant="popover" popupId="recipe-menu">
+              {(popupState) => (
+                <React.Fragment>
+                  <Tooltip title="אפשרויות נוספות">
+                    <IconButton
+                      aria-label="settings"
+                      {...bindTrigger(popupState)}
+                      sx={{ color: theme.palette.text.secondary }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu {...bindMenu(popupState)}>
+                    {currentLoggedInUser?.uid === recipe?.creatorId && (
+                      <MenuItem
+                        onClick={() => handleEditRecipe(popupState)}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          direction: "rtl",
+                        }}
+                      >
+                        <ModeEditOutlineOutlinedIcon />
+                        <Typography textAlign="right">עריכה</Typography>
+                      </MenuItem>
+                    )}
+                    {currentLoggedInUser?.uid === recipe?.creatorId && (
+                      <MenuItem
+                        onClick={() => handleDeleteRecipe(popupState)}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          direction: "rtl",
+                        }}
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                        <Typography textAlign="right">מחיקה</Typography>
+                      </MenuItem>
+                    )}
+                    <MenuItem
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <WhatsappShareButton
+                        url={`https://recipes-e6692.web.app/recipe/${recipe.id}`}
+                        title={recipe.description}
+                        separator=":"
+                      >
+                        <WhatsappIcon size={32} round />
+                      </WhatsappShareButton>
+                    </MenuItem>
+                  </Menu>
+                </React.Fragment>
+              )}
+            </PopupState>
             <Typography variant="h4" className={styles.title}>
               {recipe?.description}
             </Typography>

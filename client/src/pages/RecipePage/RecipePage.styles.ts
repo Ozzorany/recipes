@@ -22,6 +22,9 @@ export const PageCard = styled(Box)`
 `;
 
 export const TitleWrapper = styled(Box)`
+  display: flex;
+  justify-content: start;
+  align-items: center;
   margin-bottom: 20px;
 `;
 
