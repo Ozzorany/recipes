@@ -27,13 +27,12 @@ export const titleStyles: SxProps<Theme> = (theme) => ({
   cursor: "pointer",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
-  transition: theme.transitions.create("color"),
-  color: theme.palette.text.primary,
+  display: "flex",
+  alignItems: "center",
   minHeight: theme.spacing(6),
   lineHeight: 1.4,
+  transition: theme.transitions.create("color"),
+  color: theme.palette.text.primary,
   "&:hover": {
     color: theme.palette.primary.main,
   },
@@ -223,6 +222,10 @@ export const cardHeaderStyles: SxProps<Theme> = (theme) => ({
   padding: theme.spacing(2),
   "& .MuiCardHeader-avatar": {
     marginRight: theme.spacing(1),
+  },
+  "& .MuiCardHeader-content": {
+    display: "flex",
+    alignItems: "center",
   },
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(1.5),
