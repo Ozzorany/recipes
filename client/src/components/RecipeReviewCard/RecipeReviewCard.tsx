@@ -33,6 +33,9 @@ import {
   menuIconStyles,
   cardContentStyles,
   tagsContainerStyles,
+  cardHeaderStyles,
+  cardActionsStyles,
+  avatarStyles,
 } from "./RecipeReviewCard.styles";
 
 export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
@@ -85,10 +88,11 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
   return (
     <Card sx={cardStyles}>
       <CardHeader
+        sx={cardHeaderStyles}
         avatar={
           <Box display="flex" alignItems="center">
             <Avatar
-              sx={{ bgcolor: red[500] }}
+              sx={avatarStyles}
               aria-label="recipe"
               src={userLogoUrl}
               imgProps={{ referrerPolicy: "no-referrer" }}
@@ -143,38 +147,60 @@ export default function RecipeReviewCard({ recipe }: { recipe: Recipe }) {
           </Typography>
         }
       />
-      <Box sx={!recipe.image ? noImageStyles : mediaStyles}>
+      <Box
+        sx={!recipe.image ? noImageStyles : mediaStyles}
+        onClick={navigateToRecipePage}
+        role="button"
+        tabIndex={0}
+        aria-label={`View recipe: ${recipe.description}`}
+      >
         <img
           src={!!recipe.image ? recipe.image : noImagePath}
           alt={recipe.description}
-          onClick={navigateToRecipePage}
+          loading="lazy"
         />
       </Box>
 
       <CardContent sx={cardContentStyles}>
         <Stack sx={tagsContainerStyles}>
           {recipe.tags.map((tag: string) => (
-            <Chip key={tag} label={tag} size="small" sx={tagStyles} />
+            <Chip
+              key={tag}
+              label={tag}
+              size="small"
+              sx={tagStyles}
+              aria-label={`Recipe tag: ${tag}`}
+            />
           ))}
         </Stack>
       </CardContent>
 
-      <CardActions disableSpacing>
+      <CardActions disableSpacing sx={cardActionsStyles}>
         <Box display="flex" alignItems="center" gap={1}>
           {recipeLikes?.length > 0 && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              aria-label={`${recipeLikes.length} likes`}
+            >
               {recipeLikes?.length}
             </Typography>
           )}
           <IconButton
-            aria-label="like"
+            aria-label={
+              recipeLikes?.includes(userId) ? "Unlike recipe" : "Like recipe"
+            }
             onClick={handleLike}
             sx={likeButtonStyles}
+            className={recipeLikes?.includes(userId) ? "Mui-liked" : ""}
           >
             <FavoriteIcon
-              style={{
+              sx={{
                 ...likeIconStyles,
-                color: recipeLikes?.includes(userId) ? "red" : "gray",
+                color: (theme) =>
+                  recipeLikes?.includes(userId)
+                    ? theme.palette.error.main
+                    : theme.palette.grey[500],
               }}
             />
           </IconButton>
