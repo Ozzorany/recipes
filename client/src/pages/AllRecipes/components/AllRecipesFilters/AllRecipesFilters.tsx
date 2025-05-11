@@ -1,4 +1,4 @@
-import { Box, debounce, TextField, useMediaQuery } from "@mui/material";
+import { Box, debounce, TextField } from "@mui/material";
 import { useMemo } from "react";
 import { AllRecipesFiltersProps } from "./AllRecipesFilters.types";
 import FilterIcon from "../FilterIcon/FilterIcon";
@@ -10,7 +10,6 @@ const AllRecipesFilters = ({
   ownershipFilter,
   setOwnershipFilter,
 }: AllRecipesFiltersProps) => {
-  const matches = useMediaQuery("(min-width:600px)");
   const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
@@ -44,6 +43,10 @@ const AllRecipesFilters = ({
             sx={{
               background: "white",
               width: "100%",
+              maxWidth: "600px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               "& .MuiOutlinedInput-notchedOutline": {
                 border: "none",
               },
