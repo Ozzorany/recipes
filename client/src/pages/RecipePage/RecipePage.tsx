@@ -19,7 +19,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import noImagePath from "../../assets/images/recipe-book.jpg";
+import noImagePath from "../../assets/images/recipe-book.png";
 import MicIcon from "@mui/icons-material/Mic";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";

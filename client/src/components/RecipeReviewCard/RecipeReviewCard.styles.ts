@@ -77,7 +77,7 @@ export const noImageStyles: SxProps<Theme> = (theme) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    objectFit: "cover",
+    objectFit: "fill",
     objectPosition: "center",
     opacity: 0.7,
     transition: theme.transitions.create(["transform", "opacity"], {
@@ -89,7 +89,6 @@ export const noImageStyles: SxProps<Theme> = (theme) => ({
     opacity: 0.9,
   },
   "&::after": {
-    content: '"אין תמונה זמינה"',
     position: "absolute",
     color: theme.palette.text.secondary,
     ...theme.typography.body2,
