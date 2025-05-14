@@ -67,7 +67,6 @@ export const mediaStyles: SxProps<Theme> = (theme) => ({
 
 export const noImageStyles: SxProps<Theme> = (theme) => ({
   ...mediaStyles(theme),
-  backgroundColor: theme.palette.grey[100],
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

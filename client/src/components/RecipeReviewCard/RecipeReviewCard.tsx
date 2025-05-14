@@ -15,7 +15,7 @@ import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
-import noImagePath from "../../assets/images/recipe-book.png";
+import noImagePath from "../../assets/images/recipe-book-icon.svg";
 import styles from "./RecipeReviewCard.module.css";
 import { useUserById } from "../../queries/useUserById";
 import { Recipe } from "../../models/recipe.model";

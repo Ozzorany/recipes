@@ -19,7 +19,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import noImagePath from "../../assets/images/recipe-book.png";
+import noImagePath from "../../assets/images/recipe-book-icon.svg";
 import MicIcon from "@mui/icons-material/Mic";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -267,6 +267,11 @@ function RecipePage() {
             className={styles.recipeImage}
             alt="The recipe"
             src={image || noImagePath}
+            sx={{
+              backgroundColor: (theme) =>
+                !image ? theme.palette.common.white : "transparent",
+              padding: (theme) => (!image ? theme.spacing(2) : 0),
+            }}
           />
         </PageCard>
       </div>
